@@ -2,6 +2,8 @@
 
 namespace CodeZero\LocalizedRoutes\Macros;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Lang;
 
 class UriTranslationMacro
@@ -15,7 +17,7 @@ class UriTranslationMacro
     {
         Lang::macro('uri', function ($uri, $locale = null) {
             // Split the URI into a Collection of segments.
-            $segments = collect(explode('/', trim($uri, '/')));
+            $segments = new Collection(explode('/', trim($uri, '/')));
 
             // Attempt to translate each segment. If there is no translation
             // for a specific segment, then its original value will be used.
@@ -24,7 +26,7 @@ class UriTranslationMacro
 
                 // If the segment is not a placeholder and the segment
                 // has a translation, then update the segment.
-                if ( ! starts_with($segment, '{') && Lang::has($translationKey, $locale)) {
+                if ( ! Str::startsWith($segment, '{') && Lang::has($translationKey, $locale)) {
                     $segment = Lang::get($translationKey, [], $locale);
                 }
 
