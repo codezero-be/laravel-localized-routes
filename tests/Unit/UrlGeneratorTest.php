@@ -14,7 +14,7 @@ class UrlGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        config()->set('app.locales', ['en', 'nl']);
+        config()->set('localized-routes.supported-locales', ['en', 'nl']);
 
         app()->setLocale('en');
     }

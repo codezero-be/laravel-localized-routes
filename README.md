@@ -19,16 +19,20 @@ composer require codezero/laravel-localized-routes
 
 > Laravel >= 5.5 will automatically register the ServiceProvider.
 
-## Configure Supported Locales
-
-Add a `locales` key to your `config/app.php` file.
+#### Publish Configuration File
 
 ```php
-'locales' => [
-    'en',
-    'nl',
-    //...
-],
+php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
+```
+
+You will now find a `localize-routes.php` file in the `config` folder.
+
+#### Configure Supported Locales
+
+Add any locales you wish to support to your published `config/localized-routes.php` file:
+
+```php
+'supported-locales' => ['en', 'nl', 'fr'],
 ```
 
 ## Register Routes

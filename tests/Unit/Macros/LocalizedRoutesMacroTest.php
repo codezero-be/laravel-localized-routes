@@ -9,7 +9,7 @@ class LocalizedRoutesMacroTest extends TestCase
 {
     protected function setAvailableLocales($locales)
     {
-        config()->set('app.locales', $locales);
+        config()->set('localized-routes.supported-locales', $locales);
     }
 
     /** @test */

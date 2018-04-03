@@ -9,12 +9,20 @@ use Illuminate\Support\ServiceProvider;
 class LocalizedRoutesServiceProvider extends ServiceProvider
 {
     /**
+     * The package name.
+     *
+     * @var string
+     */
+    protected $name = 'localized-routes';
+
+    /**
      * Bootstrap any application services.
      *
      * @return void
      */
     public function boot()
     {
+        $this->registerPublishableFiles();
         $this->registerMacros();
     }
 
@@ -25,6 +33,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfig();
         $this->registerUrlGenerator();
     }
 
@@ -37,6 +46,29 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     {
         LocalizedRoutesMacro::register();
         UriTranslationMacro::register();
+    }
+
+    /**
+     * Register the publishable files.
+     *
+     * @return void
+     */
+    protected function registerPublishableFiles()
+    {
+        $this->publishes([
+            __DIR__."/../config/{$this->name}.php" => config_path("{$this->name}.php"),
+        ], 'config');
+    }
+
+    /**
+     * Merge published configuration file with
+     * the original package configuration file.
+     *
+     * @return void
+     */
+    protected function mergeConfig()
+    {
+        $this->mergeConfigFrom(__DIR__."/../config/{$this->name}.php", $this->name);
     }
 
     /**

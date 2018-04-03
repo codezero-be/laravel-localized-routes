@@ -20,7 +20,7 @@ class LocalizedRoutesMacro
             // change it during route registration.
             $currentLocale = App::getLocale();
 
-            $locales = Config::get('app.locales', []);
+            $locales = Config::get('localized-routes.supported-locales', []);
 
             foreach ($locales as $locale) {
                 // Change the current locale so we can
