@@ -1,7 +1,16 @@
 {
     "name": "codezero/laravel-localized-routes",
-    "description": "",
-    "keywords": [],
+    "description": "A convenient way to set up, manage and use localized routes in a Laravel app.",
+    "keywords": [
+        "php",
+        "laravel",
+        "localization",
+        "locale",
+        "language",
+        "country",
+        "routes",
+        "routing"
+    ],
     "license": "MIT",
     "authors": [
         {
