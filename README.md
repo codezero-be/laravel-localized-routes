@@ -35,7 +35,7 @@ composer require codezero/laravel-localized-routes
 php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
 ```
 
-You will now find a `localize-routes.php` file in the `config` folder.
+You will now find a `localized-routes.php` file in the `config` folder.
 
 #### Configure Supported Locales
 
