@@ -38,14 +38,20 @@ class UrlGeneratorTest extends TestCase
     public function it_gets_the_url_of_a_named_route()
     {
         $this->registerRoute('weirdly-named-route', 'en');
-        $this->registerRoute('route', 'route.name');
-        $this->registerRoute('en/route', 'en.route.name');
-        $this->registerRoute('nl/route', 'nl.route.name');
+        $this->registerRoute('route', 'route');
+        $this->registerRoute('en/route', 'en.route');
+        $this->registerRoute('nl/route', 'nl.route');
+        $this->registerRoute('route/name', 'route.name');
+        $this->registerRoute('en/route/name', 'en.route.name');
+        $this->registerRoute('nl/route/name', 'nl.route.name');
 
         $this->assertEquals(url('weirdly-named-route'), route('en'));
-        $this->assertEquals(url('route'), route('route.name'));
-        $this->assertEquals(url('en/route'), route('en.route.name'));
-        $this->assertEquals(url('nl/route'), route('nl.route.name'));
+        $this->assertEquals(url('route'), route('route'));
+        $this->assertEquals(url('en/route'), route('en.route'));
+        $this->assertEquals(url('nl/route'), route('nl.route'));
+        $this->assertEquals(url('route/name'), route('route.name'));
+        $this->assertEquals(url('en/route/name'), route('en.route.name'));
+        $this->assertEquals(url('nl/route/name'), route('nl.route.name'));
     }
 
     /** @test */
@@ -59,6 +65,16 @@ class UrlGeneratorTest extends TestCase
 
     /** @test */
     public function it_throws_if_no_valid_route_can_be_found()
+    {
+        $this->registerRoute('wrong-route', 'wrong-route');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        route('route');
+    }
+
+    /** @test */
+    public function it_throws_if_no_valid_localized_route_can_be_found()
     {
         $this->registerRoute('nl/route', 'nl.route.name');
 
