@@ -37,10 +37,12 @@ class UrlGeneratorTest extends TestCase
     /** @test */
     public function it_gets_the_url_of_a_named_route()
     {
+        $this->registerRoute('weirdly-named-route', 'en');
         $this->registerRoute('route', 'route.name');
         $this->registerRoute('en/route', 'en.route.name');
         $this->registerRoute('nl/route', 'nl.route.name');
 
+        $this->assertEquals(url('weirdly-named-route'), route('en'));
         $this->assertEquals(url('route'), route('route.name'));
         $this->assertEquals(url('en/route'), route('en.route.name'));
         $this->assertEquals(url('nl/route'), route('nl.route.name'));
