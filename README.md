@@ -1,8 +1,13 @@
 # Laravel Localized Routes
 
-This package is in development. Feedback is much appreciated!
+[![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg)]()
+[![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg)]()
+[![Build Status](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/badges/build.png?b=master)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/build-status/master)
+[![Code Coverage](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
+[![Total Downloads](https://img.shields.io/packagist/dt/codezero/laravel-localized-routes.svg)](https://packagist.org/packages/codezero/laravel-localized-routes)
 
-## Features
+#### A convenient way to set up, manage and use localized routes in a Laravel app.
 
 - [Automatically register](#register-routes) a route for each locale you wish to support.
 - [Generate localized route URL's](#generate-route-urls) in the simplest way using the `route()` helper.
@@ -11,13 +16,18 @@ This package is in development. Feedback is much appreciated!
 - Let you work with routes without thinking too much about locales.
 - Optionally [translate each segment](#translate-routes) in your URI's.
 
+## Requirements
+
+- PHP >= 7.1
+- Laravel >= 5.6
+
 ## Install
 
-```
+```php
 composer require codezero/laravel-localized-routes
 ```
 
-> Laravel >= 5.5 will automatically register the ServiceProvider.
+> Laravel will automatically register the ServiceProvider.
 
 #### Publish Configuration File
 
@@ -68,7 +78,7 @@ In the above example there are 5 routes being registered. The routes defined in 
 | /en/admin/reports | en.admin.reports.index |
 | /nl/admin/reports | nl.admin.reports.index |
 
-## Generate Route URL's
+### Generate Route URL's
 
 You can get the URL of your named routes as usual, using the `route()` helper.
 
@@ -105,7 +115,7 @@ $url = route('en.about', [], true, 'nl'); // /nl/about
 
 > **Note:** in a most practical scenario you would register a route either localized **or** non-localized, but not both. If you do, you will always need to specify a locale to get the URL, because non-localized routes always have priority when using the `route()` function.
 
-## Redirect to Routes
+### Redirect to Routes
 
 Laravel's `Redirector` uses the same `UrlGenerator` as the `route()` function behind the scenes. Because we are overriding this class, you can easily redirect to your routes.
 
@@ -120,17 +130,17 @@ You can't redirect to URL's in a specific locale this way, but if you need to, y
 return redirect(route('about', [], true, 'nl')); // redirects to /nl/about
 ```
 
-## Translate Routes
+### Translate Routes
 
 If you want to translate the segments of your URI's, create a `routes.php` language file for each locale you [configured](#configure-supported-locales):
 
 ```
-resources/
- |-lang/
-    |-en/
-    |  |-routes.php
-    |-nl/
-       |-routes.php
+resources
+ └── lang
+      ├── en
+      │    └── routes.php
+      └── nl
+           └── routes.php
 ```
 
 In these files, add a translation for each segment.
