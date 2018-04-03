@@ -2,9 +2,11 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit;
 
+use App;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use CodeZero\LocalizedRoutes\UrlGenerator;
+use Config;
 use InvalidArgumentException;
 use Route;
 
@@ -14,9 +16,9 @@ class UrlGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        config()->set('localized-routes.supported-locales', ['en', 'nl']);
+        Config::set('localized-routes.supported-locales', ['en', 'nl']);
 
-        app()->setLocale('en');
+        App::setLocale('en');
     }
 
     protected function registerRoute($url, $name)
@@ -49,7 +51,7 @@ class UrlGeneratorTest extends TestCase
     {
         $this->registerRoute('en/route', 'en.route.name');
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('en', App::getLocale());
         $this->assertEquals(url('en/route'), route('route.name'));
     }
 
@@ -58,7 +60,7 @@ class UrlGeneratorTest extends TestCase
     {
         $this->registerRoute('nl/route', 'nl.route.name');
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('en', App::getLocale());
         $this->expectException(InvalidArgumentException::class);
 
         route('route.name');
@@ -70,7 +72,7 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('en/route', 'en.route.name');
         $this->registerRoute('nl/route', 'nl.route.name');
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('en', App::getLocale());
         $this->assertEquals(url('nl/route'), route('route.name', [], true, 'nl'));
         $this->assertEquals(url('nl/route'), route('en.route.name', [], true, 'nl'));
         $this->assertEquals(url('nl/route'), route('nl.route.name', [], true, 'nl'));
@@ -90,7 +92,7 @@ class UrlGeneratorTest extends TestCase
     {
         $this->registerRoute('en/route', 'en.route.name');
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('en', App::getLocale());
         $this->expectException(InvalidArgumentException::class);
 
         route('en.route.name', [], true, 'nl');
@@ -102,7 +104,7 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('en/route/{slug}', 'en.route.name');
         $this->registerRoute('nl/route/{slug}', 'nl.route.name');
 
-        app()->setLocale('en');
+        App::setLocale('en');
 
         $this->assertEquals(url('en/route/en-slug'), route('route.name', [new Model]));
         $this->assertEquals(url('en/route/en-slug'), route('route.name', [new Model], true, 'en'));

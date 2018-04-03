@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
+use App;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Lang;
 
@@ -30,10 +31,10 @@ class UriTranslationMacroTest extends TestCase
             ]
         ]);
 
-        app()->setLocale('en');
+        App::setLocale('en');
         $this->assertEquals('my/new/page', Lang::uri('my/new/page'));
 
-        app()->setLocale('nl');
+        App::setLocale('nl');
         $this->assertEquals('mijn/nieuwe/pagina', Lang::uri('my/new/page'));
     }
 

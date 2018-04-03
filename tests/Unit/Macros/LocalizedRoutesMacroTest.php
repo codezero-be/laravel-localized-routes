@@ -2,14 +2,16 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
+use App;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
+use Config;
 use Route;
 
 class LocalizedRoutesMacroTest extends TestCase
 {
     protected function setAvailableLocales($locales)
     {
-        config()->set('localized-routes.supported-locales', $locales);
+        Config::set('localized-routes.supported-locales', $locales);
     }
 
     /** @test */
@@ -43,12 +45,12 @@ class LocalizedRoutesMacroTest extends TestCase
     {
         $this->setAvailableLocales(['nl']);
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('en', App::getLocale());
 
         Route::localized(function () {
-            $this->assertEquals('nl', app()->getLocale());
+            $this->assertEquals('nl', App::getLocale());
         });
 
-        $this->assertEquals('en', app()->getLocale());
+        $this->assertEquals('en', App::getLocale());
     }
 }
