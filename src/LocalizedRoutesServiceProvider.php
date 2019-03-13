@@ -82,7 +82,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerUrlGenerator()
+    protected function registerUrlGenerator ()
     {
         $this->app->singleton('url', function ($app) {
             $routes = $app['router']->getRoutes();
@@ -95,11 +95,18 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
             $url = new UrlGenerator(
                 $routes, $app->rebinding(
                 'request', $this->requestRebinder()
-            )
+            ), $app['config']['app.asset_url']
             );
 
+            // Next we will set a few service resolvers on the URL generator so it can
+            // get the information it needs to function. This just provides some of
+            // the convenience features to this URL generator like "signed" URLs.
             $url->setSessionResolver(function () {
                 return $this->app['session'];
+            });
+
+            $url->setKeyResolver(function () {
+                return $this->app->make('config')->get('app.key');
             });
 
             // If the route collection is "rebound", for example, when the routes stay
