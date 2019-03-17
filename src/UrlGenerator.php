@@ -14,10 +14,9 @@ class UrlGenerator extends BaseUrlGenerator
     /**
      * Create a new URL Generator instance.
      *
-     * @param  \Illuminate\Routing\RouteCollection  $routes
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $assetRoot
-     * @return void
+     * @param \Illuminate\Routing\RouteCollection $routes
+     * @param \Illuminate\Http\Request $request
+     * @param string $assetRoot
      */
     public function __construct(RouteCollection $routes, Request $request, $assetRoot = null)
     {

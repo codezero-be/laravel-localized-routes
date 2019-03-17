@@ -82,7 +82,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    protected function registerUrlGenerator ()
+    protected function registerUrlGenerator()
     {
         $this->app->singleton('url', function ($app) {
             $routes = $app['router']->getRoutes();
