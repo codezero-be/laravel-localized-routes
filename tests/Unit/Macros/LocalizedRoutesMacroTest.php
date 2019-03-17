@@ -70,6 +70,31 @@ class LocalizedRoutesMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_registers_a_url_without_prefix_for_a_configured_main_locale()
+    {
+        $this->setAvailableLocales(['en', 'nl']);
+
+        Config::set('localized-routes.omit_url_prefix_for_locale', 'en');
+
+        Route::localized(function () {
+            Route::get('about', function () {})
+                ->name('about');
+        });
+
+        $routes = $this->getRoutes();
+        $names = $routes->pluck('action.as');
+        $uris = $routes->pluck('uri');
+
+        $this->assertNotContains('about', $names);
+        $this->assertContains('en.about', $names);
+        $this->assertContains('nl.about', $names);
+
+        $this->assertNotContains('en/about', $uris);
+        $this->assertContains('about', $uris);
+        $this->assertContains('nl/about', $uris);
+    }
+
+    /** @test */
     public function it_temporarily_changes_the_app_locale_when_registering_the_routes()
     {
         $this->setAvailableLocales(['nl']);

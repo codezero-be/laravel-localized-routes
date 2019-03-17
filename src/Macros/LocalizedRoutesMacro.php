@@ -21,6 +21,7 @@ class LocalizedRoutesMacro
             $currentLocale = App::getLocale();
 
             $locales = Config::get('localized-routes.supported-locales', []);
+            $omitPrefix = Config::get('localized-routes.omit_url_prefix_for_locale');
 
             foreach ($locales as $locale) {
                 // Change the current locale so we can
@@ -28,9 +29,17 @@ class LocalizedRoutesMacro
                 // to register translated route URI's.
                 App::setLocale($locale);
 
-                // Wrap the localized routes in a group and prepend
-                // the locale to the URI and the route name.
-                Route::prefix($locale)->name("{$locale}.")->group($callback);
+                // Create a new route and prepend
+                // the locale to the route name.
+                $route = Route::name("{$locale}.");
+
+                // Prefix the URL unless the locale
+                // is configured to be omitted.
+                if ($locale !== $omitPrefix) {
+                    $route->prefix($locale);
+                }
+
+                $route->group($callback);
             }
 
             // Restore the original locale.
