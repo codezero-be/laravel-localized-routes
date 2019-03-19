@@ -10,6 +10,7 @@
 #### A convenient way to set up, manage and use localized routes in a Laravel app.
 
 - [Automatically register](#register-routes) a route for each locale you wish to support.
+- Optionally remove the locale slug from the URL for your main language.
 - [Generate localized route URL's](#generate-route-urls) in the simplest way using the `route()` helper.
 - [Redirect to localized routes](#redirect-to-routes) using the `redirect()->route()` helper.
 - Allow routes to be [cached](#cache-routes).
@@ -37,13 +38,25 @@ php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesS
 
 You will now find a `localized-routes.php` file in the `config` folder.
 
-#### Configure Supported Locales
+#### Configure
 
 Add any locales you wish to support to your published `config/localized-routes.php` file:
 
 ```php
 'supported-locales' => ['en', 'nl', 'fr'],
 ```
+
+Specify your main locale if you want to omit its slug from the URL:
+
+```php
+'omit_url_prefix_for_locale' => null
+```
+
+Setting this option to `'en'` will result, for example, in URL's like this:
+
+- English: `/some-url` instead of the default `/en/some-url`
+- Dutch: `/nl/some-url` as usual
+- French: `/fr/some-url` as usual
 
 ## Register Routes
 
@@ -77,6 +90,18 @@ In the above example there are 5 routes being registered. The routes defined in 
 | /nl/about         | nl.about               |
 | /en/admin/reports | en.admin.reports.index |
 | /nl/admin/reports | nl.admin.reports.index |
+
+If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the resulting routes look like this: 
+
+| URI               | Name                   |
+| ----------------- | ---------------------- |
+| /home             | home                   |
+| /about            | en.about               |
+| /nl/about         | nl.about               |
+| /admin/reports    | en.admin.reports.index |
+| /nl/admin/reports | nl.admin.reports.index |
+
+**Beware that you don't register the same URL twice when omitting the locale.** You can't have a localized `/about` route and also register a non-localized `/about` route in this case. The same idea applies to the `/` (root) route! Also note that the route names still have the locale prfix.
 
 ### Generate Route URL's
 
