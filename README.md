@@ -101,7 +101,7 @@ If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the
 | /admin/reports    | en.admin.reports.index |
 | /nl/admin/reports | nl.admin.reports.index |
 
-**Beware that you don't register the same URL twice when omitting the locale.** You can't have a localized `/about` route and also register a non-localized `/about` route in this case. The same idea applies to the `/` (root) route! Also note that the route names still have the locale prfix.
+**Beware that you don't register the same URL twice when omitting the locale.** You can't have a localized `/about` route and also register a non-localized `/about` route in this case. The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
 
 ### Generate Route URL's
 
