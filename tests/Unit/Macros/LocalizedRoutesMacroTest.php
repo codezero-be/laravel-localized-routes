@@ -34,8 +34,12 @@ class LocalizedRoutesMacroTest extends TestCase
         });
 
         $routes = $this->getRoutes();
+        $domains = $routes->pluck('action.domain');
         $names = $routes->pluck('action.as');
         $uris = $routes->pluck('uri');
+
+        // Verify that no custom domains are registered.
+        $this->assertTrue($domains->filter()->isEmpty());
 
         $this->assertNotContains('route.name', $names);
         $this->assertContains('en.route.name', $names);
@@ -67,6 +71,32 @@ class LocalizedRoutesMacroTest extends TestCase
         $this->assertNotContains('/', $uris);
         $this->assertContains('en', $uris);
         $this->assertContains('nl', $uris);
+    }
+
+    /** @test */
+    public function it_maps_a_custom_domain_to_each_locale()
+    {
+        $this->setAvailableLocales([
+            'en' => 'english-domain.com',
+            'nl' => 'dutch-domain.com',
+        ]);
+
+        Route::localized(function () {
+            Route::get('/', function () {})
+                ->name('home');
+        });
+
+        $routes = $this->getRoutes();
+
+        $route = $routes->first();
+        $this->assertEquals('english-domain.com', $route->action['domain']);
+        $this->assertEquals('en.home', $route->action['as']);
+        $this->assertEquals('/', $route->uri);
+
+        $route = $routes->last();
+        $this->assertEquals('dutch-domain.com', $route->action['domain']);
+        $this->assertEquals('nl.home', $route->action['as']);
+        $this->assertEquals('/', $route->uri);
     }
 
     /** @test */
