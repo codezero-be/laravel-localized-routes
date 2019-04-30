@@ -10,12 +10,13 @@
 #### A convenient way to set up, manage and use localized routes in a Laravel app.
 
 - [Automatically register](#register-routes) a route for each locale you wish to support.
+- Use [route slugs or custom domains](#supported-locales) (or subdomains)
 - Optionally remove the locale slug from the URL for your main language.
 - [Generate localized route URL's](#generate-route-urls) in the simplest way using the `route()` helper.
 - [Redirect to localized routes](#redirect-to-routes) using the `redirect()->route()` helper.
 - Allow routes to be [cached](#cache-routes).
-- Let you work with routes without thinking too much about locales.
 - Optionally [translate each segment](#translate-routes) in your URI's.
+- **Let you work with routes without thinking too much about locales.**
 
 ## Requirements
 
@@ -30,6 +31,8 @@ composer require codezero/laravel-localized-routes
 
 > Laravel will automatically register the ServiceProvider.
 
+## Configure
+
 #### Publish Configuration File
 
 ```php
@@ -38,13 +41,31 @@ php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesS
 
 You will now find a `localized-routes.php` file in the `config` folder.
 
-#### Configure
+#### Supported Locales
+
+##### Using Slugs
 
 Add any locales you wish to support to your published `config/localized-routes.php` file:
 
 ```php
 'supported-locales' => ['en', 'nl', 'fr'],
 ```
+
+ This will automically prepend a slug to your localized routes. [More on this below](#register-routes).
+
+##### Using Domains
+
+Alternatively, you can use a different domain or subdomain for each locale by adding them to the `supported-locales` like this:
+
+```php
+'supported-locales' => [
+  'en' => 'example.com',
+  'nl' => 'nl.example.com',
+  'fr' => 'fr.example.com',
+],
+```
+
+#### Omit Slug for Main Locale
 
 Specify your main locale if you want to omit its slug from the URL:
 
@@ -57,6 +78,8 @@ Setting this option to `'en'` will result, for example, in URL's like this:
 - English: `/some-url` instead of the default `/en/some-url`
 - Dutch: `/nl/some-url` as usual
 - French: `/fr/some-url` as usual
+
+> This option has no effect if you use domains instead of slugs.
 
 ## Register Routes
 
@@ -81,7 +104,7 @@ Route::localized(function () {
 });
 ```
 
-In the above example there are 5 routes being registered. The routes defined in the `Route::localized` closure are automatically registered for each configured locale. This will prepend the locale to the route's URI and name.
+In the above example there are 5 routes being registered. The routes defined in the `Route::localized` closure are automatically registered for each configured locale. This will prepend the locale to the route's URI and name. If you configured custom domains, it will use those instead of the slugs.
 
 | URI               | Name                   |
 | ----------------- | ---------------------- |
