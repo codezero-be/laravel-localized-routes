@@ -24,6 +24,9 @@ class LocalizedRoutesMacro
             $omitPrefix = Config::get('localized-routes.omit_url_prefix_for_locale');
 
             foreach ($locales as $locale => $domain) {
+                // Allow supported locales to be a
+                // simple array of locales or an
+                // array of ['locale' => 'domain']
                 if (is_numeric($locale)) {
                     $locale = $domain;
                     $domain = null;
@@ -38,14 +41,16 @@ class LocalizedRoutesMacro
                 // the locale to the route name.
                 $route = Route::name("{$locale}.");
 
+                // Add a custom domain route group
+                // if a domain is configured.
+                if ($domain !== null) {
+                    $route->domain($domain);
+                }
+
                 // Prefix the URL unless the locale
                 // is configured to be omitted.
                 if ($domain === null && $locale !== $omitPrefix) {
                     $route->prefix($locale);
-                }
-
-                if ($domain !== null) {
-                    $route->domain($domain);
                 }
 
                 $route->group($callback);
