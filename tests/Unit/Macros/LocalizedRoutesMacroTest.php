@@ -10,7 +10,7 @@ use Route;
 
 class LocalizedRoutesMacroTest extends TestCase
 {
-    protected function setAvailableLocales($locales)
+    protected function setSupportedLocales($locales)
     {
         Config::set('localized-routes.supported-locales', $locales);
     }
@@ -26,7 +26,7 @@ class LocalizedRoutesMacroTest extends TestCase
     /** @test */
     public function it_registers_a_route_for_each_locale()
     {
-        $this->setAvailableLocales(['en', 'nl']);
+        $this->setSupportedLocales(['en', 'nl']);
 
         Route::localized(function () {
             Route::get('route', function () {})
@@ -53,7 +53,7 @@ class LocalizedRoutesMacroTest extends TestCase
     /** @test */
     public function it_registers_a_root_route_for_each_locale()
     {
-        $this->setAvailableLocales(['en', 'nl']);
+        $this->setSupportedLocales(['en', 'nl']);
 
         Route::localized(function () {
             Route::get('/', function () {})
@@ -76,7 +76,7 @@ class LocalizedRoutesMacroTest extends TestCase
     /** @test */
     public function it_registers_a_url_without_prefix_for_a_configured_main_locale()
     {
-        $this->setAvailableLocales(['en', 'nl']);
+        $this->setSupportedLocales(['en', 'nl']);
 
         Config::set('localized-routes.omit_url_prefix_for_locale', 'en');
 
@@ -101,7 +101,7 @@ class LocalizedRoutesMacroTest extends TestCase
     /** @test */
     public function it_maps_a_custom_domain_to_each_locale()
     {
-        $this->setAvailableLocales([
+        $this->setSupportedLocales([
             'en' => 'english-domain.com',
             'nl' => 'dutch-domain.com',
         ]);
@@ -127,7 +127,7 @@ class LocalizedRoutesMacroTest extends TestCase
     /** @test */
     public function it_temporarily_changes_the_app_locale_when_registering_the_routes()
     {
-        $this->setAvailableLocales(['nl']);
+        $this->setSupportedLocales(['nl']);
 
         $this->assertEquals('en', App::getLocale());
 
