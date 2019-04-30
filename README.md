@@ -18,12 +18,12 @@
 - Optionally [translate each segment](#translate-routes) in your URI's.
 - **Let you work with routes without thinking too much about locales.**
 
-## Requirements
+## ✅ Requirements
 
 - PHP >= 7.1
 - Laravel >= 5.6
 
-## Install
+## 📦 Install
 
 ```php
 composer require codezero/laravel-localized-routes
@@ -31,9 +31,9 @@ composer require codezero/laravel-localized-routes
 
 > Laravel will automatically register the ServiceProvider.
 
-## Configure
+## ⚙️ Configure
 
-#### Publish Configuration File
+#### ☑️ Publish Configuration File
 
 ```php
 php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
@@ -41,7 +41,7 @@ php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesS
 
 You will now find a `localized-routes.php` file in the `config` folder.
 
-#### Supported Locales
+#### ☑️ Supported Locales
 
 ##### Using Slugs
 
@@ -65,7 +65,7 @@ Alternatively, you can use a different domain or subdomain for each locale by ad
 ],
 ```
 
-#### Omit Slug for Main Locale
+#### ☑️ Omit Slug for Main Locale
 
 Specify your main locale if you want to omit its slug from the URL:
 
@@ -81,7 +81,7 @@ Setting this option to `'en'` will result, for example, in URL's like this:
 
 > This option has no effect if you use domains instead of slugs.
 
-## Register Routes
+## 🚗 Register Routes
 
 Example:
 
@@ -124,9 +124,9 @@ If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the
 | /admin/reports    | en.admin.reports.index |
 | /nl/admin/reports | nl.admin.reports.index |
 
-**Beware that you don't register the same URL twice when omitting the locale.** You can't have a localized `/about` route and also register a non-localized `/about` route in this case. The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
+**⚠️ Beware that you don't register the same URL twice when omitting the locale.** You can't have a localized `/about` route and also register a non-localized `/about` route in this case. The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
 
-### Generate Route URL's
+### 🚕 Generate Route URL's
 
 You can get the URL of your named routes as usual, using the `route()` helper.
 
@@ -163,7 +163,7 @@ $url = route('en.about', [], true, 'nl'); // /nl/about
 
 > **Note:** in a most practical scenario you would register a route either localized **or** non-localized, but not both. If you do, you will always need to specify a locale to get the URL, because non-localized routes always have priority when using the `route()` function.
 
-### Redirect to Routes
+### 🚌 Redirect to Routes
 
 Laravel's `Redirector` uses the same `UrlGenerator` as the `route()` function behind the scenes. Because we are overriding this class, you can easily redirect to your routes.
 
@@ -178,7 +178,7 @@ You can't redirect to URL's in a specific locale this way, but if you need to, y
 return redirect(route('about', [], true, 'nl')); // redirects to /nl/about
 ```
 
-### Translate Routes
+### 🌎 Translate Routes
 
 If you want to translate the segments of your URI's, create a `routes.php` language file for each locale you [configured](#configure-supported-locales):
 
@@ -219,7 +219,7 @@ The above will generate:
 
 > If a translation is not found, the original segment is used.
 
-## Route Placeholders
+## 🚏 Route Placeholders
 
 Placeholders are not translated via language files. These are values you would provide via the `route()` function. The `Lang::uri()` macro will skip any placeholder segment.
 
@@ -269,7 +269,7 @@ $url = route('posts.show', $post); // /en/posts/en-slug
 $url = route('posts.show', $post, true, 'nl'); // /nl/posts/nl-slug
 ```
 
-## Cache Routes
+## 🗃 Cache Routes
 
 In production you can safely cache your routes per usual.
 
@@ -277,20 +277,20 @@ In production you can safely cache your routes per usual.
 php artisan route:cache
 ```
 
-## Testing
+## 🚧 Testing
 
 ```
 composer test
 ```
 
-## Security
+## 🔐 Security
 
 If you discover any security related issues, please [e-mail me](mailto:ivan@codezero.be) instead of using the issue tracker.
 
-## Changelog
+## 📖 Changelog
 
 See a list of important changes in the [changelog](CHANGELOG.md).
 
-## License
+## 📜 License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
