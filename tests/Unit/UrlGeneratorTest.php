@@ -7,6 +7,7 @@ use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use CodeZero\LocalizedRoutes\UrlGenerator;
 use Config;
+use Illuminate\Support\Facades\URL;
 use InvalidArgumentException;
 use Route;
 
@@ -21,10 +22,10 @@ class UrlGeneratorTest extends TestCase
         App::setLocale('en');
     }
 
-    protected function registerRoute($url, $name)
+    protected function registerRoute($url, $name, $callback = null)
     {
         Route::getRoutes()->add(
-            Route::name($name)->get($url, function () use ($name) { return $name; })
+            Route::name($name)->get($url, $callback ?: function () {})
         );
     }
 
@@ -127,5 +128,24 @@ class UrlGeneratorTest extends TestCase
         $this->assertEquals(url('en/route/en-slug'), route('route.name', [new Model]));
         $this->assertEquals(url('en/route/en-slug'), route('route.name', [new Model], true, 'en'));
         $this->assertEquals(url('nl/route/nl-slug'), route('route.name', [new Model], true, 'nl'));
+    }
+
+    /** @test */
+    public function it_generates_a_localized_signed_route_url()
+    {
+        $callback = function () {
+            return request()->hasValidSignature()
+                ? 'Valid Signature'
+                : 'Invalid Signature';
+        };
+
+        $this->registerRoute('en/route', 'en.route.name', $callback);
+        $this->registerRoute('en/other/route', 'en.other.route.name', $callback);
+
+        $validUrl = URL::signedRoute('route.name');
+        $tamperedUrl = str_replace('en/route', 'en/other/route', $validUrl);
+
+        $this->get($validUrl)->assertSee('Valid Signature');
+        $this->get($tamperedUrl)->assertSee('Invalid Signature');
     }
 }
