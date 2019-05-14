@@ -68,6 +68,32 @@ class UrlGenerator extends BaseUrlGenerator
 
         return $url;
     }
+    
+    /**
+     * Create a signed route URL for a named route.
+     *
+     * @param  string  $name
+     * @param  array  $parameters
+     * @param  \DateTimeInterface|\DateInterval|int  $expiration
+     * @param  bool  $absolute
+     * @return string
+     */
+    public function signedRoute($name, $parameters = [], $expiration = null, $absolute = true, $locale = null)
+    {
+        $parameters = $this->formatParameters($parameters);
+
+        if ($expiration) {
+            $parameters = $parameters + ['expires' => $this->availableAt($expiration)];
+        }
+
+        ksort($parameters);
+
+        $key = call_user_func($this->keyResolver);
+
+        return $this->route($name, $parameters + [
+                'signature' => hash_hmac('sha256', $this->route($name, $parameters, $absolute, $locale), $key),
+            ], $absolute, $locale);
+    }
 
     /**
      * Strip the locale from the beginning of a route name.
