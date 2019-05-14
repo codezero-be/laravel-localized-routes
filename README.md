@@ -11,14 +11,14 @@
 
 #### A convenient way to set up, manage and use localized routes in a Laravel app.
 
-- [Automatically register](#register-routes) a route for each locale you wish to support.
-- Use [route slugs or custom domains](#supported-locales) (or subdomains)
+- [Automatically register](#-register-routes) a route for each locale you wish to support.
+- Use [route slugs or custom domains](#-supported-locales) (or subdomains)
 - Optionally remove the locale slug from the URL for your main language.
-- [Generate localized route URL's](#generate-route-urls) in the simplest way using the `route()` helper.
-- [Redirect to localized routes](#redirect-to-routes) using the `redirect()->route()` helper.
-- Generate localized signed route URL's
-- Allow routes to be [cached](#cache-routes).
-- Optionally [translate each segment](#translate-routes) in your URI's.
+- [Generate localized route URL's](#-generate-route-urls) in the simplest way using the `route()` helper.
+- [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
+- [Generate localized signed route URL's](#-generate-signed-route-urls)
+- Allow routes to be [cached](#-cache-routes).
+- Optionally [translate each segment](#-translate-routes) in your URI's.
 - **Let you work with routes without thinking too much about locales.**
 
 ## ✅ Requirements
@@ -54,7 +54,7 @@ Add any locales you wish to support to your published `config/localized-routes.p
 'supported-locales' => ['en', 'nl', 'fr'],
 ```
 
- This will automically prepend a slug to your localized routes. [More on this below](#register-routes).
+ This will automically prepend a slug to your localized routes. [More on this below](#-register-routes).
 
 ##### Using Domains
 
