@@ -68,14 +68,16 @@ class UrlGenerator extends BaseUrlGenerator
 
         return $url;
     }
-    
+
     /**
      * Create a signed route URL for a named route.
      *
-     * @param  string  $name
-     * @param  array  $parameters
-     * @param  \DateTimeInterface|\DateInterval|int  $expiration
-     * @param  bool  $absolute
+     * @param string $name
+     * @param array $parameters
+     * @param \DateTimeInterface|\DateInterval|int $expiration
+     * @param bool $absolute
+     * @param string|null $locale
+     *
      * @return string
      */
     public function signedRoute($name, $parameters = [], $expiration = null, $absolute = true, $locale = null)
