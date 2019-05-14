@@ -131,7 +131,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
-    public function it_generates_a_localized_signed_route_url()
+    public function it_generates_a_signed_route_url_for_the_current_locale()
     {
         $callback = function () {
             return request()->hasValidSignature()
@@ -144,6 +144,25 @@ class UrlGeneratorTest extends TestCase
 
         $validUrl = URL::signedRoute('route.name');
         $tamperedUrl = str_replace('en/route', 'en/other/route', $validUrl);
+
+        $this->get($validUrl)->assertSee('Valid Signature');
+        $this->get($tamperedUrl)->assertSee('Invalid Signature');
+    }
+
+    /** @test */
+    public function it_generates_a_signed_route_url_for_a_specific_locale()
+    {
+        $callback = function () {
+            return request()->hasValidSignature()
+                ? 'Valid Signature'
+                : 'Invalid Signature';
+        };
+
+        $this->registerRoute('en/route', 'en.route.name', $callback);
+        $this->registerRoute('nl/route', 'nl.route.name', $callback);
+
+        $validUrl = URL::signedRoute('route.name', [], null, true, 'nl');
+        $tamperedUrl = str_replace('nl/route', 'en/route', $validUrl);
 
         $this->get($validUrl)->assertSee('Valid Signature');
         $this->get($tamperedUrl)->assertSee('Invalid Signature');
