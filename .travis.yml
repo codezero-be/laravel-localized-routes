@@ -1,18 +1,40 @@
 language: php
 
-php:
-  - 7.1
-  - 7.2
+matrix:
+    include:
+        - php: 7.1
+          env: ILLUMINATE_VERSION=5.8.* TESTBENCH_VERSION=3.8.*
+        - php: 7.1
+          env: ILLUMINATE_VERSION=5.7.* TESTBENCH_VERSION=3.7.*
+        - php: 7.1
+          env: ILLUMINATE_VERSION=5.6.* TESTBENCH_VERSION=3.6.*
+        - php: 7.2
+          env: ILLUMINATE_VERSION=5.8.* TESTBENCH_VERSION=3.8.*
+        - php: 7.2
+          env: ILLUMINATE_VERSION=5.7.* TESTBENCH_VERSION=3.7.*
+        - php: 7.2
+          env: ILLUMINATE_VERSION=5.6.* TESTBENCH_VERSION=3.6.*
+        - php: 7.3
+          env: ILLUMINATE_VERSION=5.8.* TESTBENCH_VERSION=3.8.*
+        - php: 7.3
+          env: ILLUMINATE_VERSION=5.7.* TESTBENCH_VERSION=3.7.*
+        - php: 7.3
+          env: ILLUMINATE_VERSION=5.6.* TESTBENCH_VERSION=3.6.*
+
+before_script:
+
+before_install:
+    - travis_retry composer self-update
+    - composer require "orchestra/testbench:${TESTBENCH_VERSION}" --no-update --dev
+    - composer require "illuminate/support:${ILLUMINATE_VERSION}" --no-update
+
+install: composer update --prefer-source --no-interaction
 
 sudo: false
 
 cache:
   directories:
     - $HOME/.composer/cache
-
-before_script:
-  - travis_retry composer self-update
-  - travis_retry composer update --no-interaction
 
 script:
   - vendor/bin/phpunit
