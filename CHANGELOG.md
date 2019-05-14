@@ -2,6 +2,10 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 1.3.0 (2019-05-14)
+
+- Add support for signed Routes with locale (#5)
+
 ## 1.2.0 (2019-04-30)
 
 - Enable the use of customs domains or subdomains instead of slugs.
