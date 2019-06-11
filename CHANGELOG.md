@@ -2,6 +2,11 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 1.3.1 (2019-06-11)
+
+- Swap `funkjedi/composer-include-files` with `0.0.0/composer-include-files`.
+ The former was no longer working in vendor packages (https://github.com/funkjedi/composer-include-files/pull/9).
+
 ## 1.3.0 (2019-05-14)
 
 - Add support for signed Routes with locale (#5)
