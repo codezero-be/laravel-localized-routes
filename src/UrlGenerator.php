@@ -2,8 +2,6 @@
 
 namespace CodeZero\LocalizedRoutes;
 
-use App;
-use Config;
 use Illuminate\Http\Request;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\UrlGenerator as BaseUrlGenerator;
@@ -48,7 +46,7 @@ class UrlGenerator extends BaseUrlGenerator
         // Cache the current locale so we can change it
         // to automatically resolve any translatable
         // route parameters such as slugs.
-        $currentLocale = App::getLocale();
+        $currentLocale = app()->getLocale();
 
         // Use the specified or current locale
         // as a prefix for the route name.
@@ -56,14 +54,14 @@ class UrlGenerator extends BaseUrlGenerator
 
         // Update the current locale if needed.
         if ($locale !== $currentLocale) {
-            App::setLocale($locale);
+            app()->setLocale($locale);
         }
 
         $url = parent::route("{$locale}.{$name}", $parameters, $absolute);
 
         // Restore the current locale if needed.
         if ($locale !== $currentLocale) {
-            App::setLocale($currentLocale);
+            app()->setLocale($currentLocale);
         }
 
         return $url;
@@ -114,7 +112,7 @@ class UrlGenerator extends BaseUrlGenerator
             return $name;
         }
 
-        $locales = Config::get('localized-routes.supported-locales', []);
+        $locales = config('localized-routes.supported-locales', []);
 
         // If the first part of the route name is a valid
         // locale, then remove it from the array.

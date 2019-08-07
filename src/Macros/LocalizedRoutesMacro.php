@@ -2,8 +2,6 @@
 
 namespace CodeZero\LocalizedRoutes\Macros;
 
-use App;
-use Config;
 use Route;
 
 class LocalizedRoutesMacro
@@ -18,10 +16,10 @@ class LocalizedRoutesMacro
         Route::macro('localized', function ($callback) {
             // Remember the current locale so we can
             // change it during route registration.
-            $currentLocale = App::getLocale();
+            $currentLocale = app()->getLocale();
 
-            $locales = Config::get('localized-routes.supported-locales', []);
-            $omitPrefix = Config::get('localized-routes.omit_url_prefix_for_locale');
+            $locales = config('localized-routes.supported-locales', []);
+            $omitPrefix = config('localized-routes.omit_url_prefix_for_locale');
 
             foreach ($locales as $locale => $domain) {
                 // Allow supported locales to be a
@@ -35,7 +33,7 @@ class LocalizedRoutesMacro
                 // Change the current locale so we can
                 // use it in the callback, for example
                 // to register translated route URI's.
-                App::setLocale($locale);
+                app()->setLocale($locale);
 
                 // Create a new route and prepend
                 // the locale to the route name.
@@ -57,7 +55,7 @@ class LocalizedRoutesMacro
             }
 
             // Restore the original locale.
-            App::setLocale($currentLocale);
+            app()->setLocale($currentLocale);
         });
     }
 }

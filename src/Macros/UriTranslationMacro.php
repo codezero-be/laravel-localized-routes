@@ -26,8 +26,8 @@ class UriTranslationMacro
 
                 // If the segment is not a placeholder and the segment
                 // has a translation, then update the segment.
-                if ( ! Str::startsWith($segment, '{') && Lang::has($translationKey, $locale)) {
-                    $segment = Lang::get($translationKey, [], $locale);
+                if ( ! Str::startsWith($segment, '{') && trans()->has($translationKey, $locale)) {
+                    $segment = trans($translationKey, [], $locale);
                 }
 
                 return $segment;
