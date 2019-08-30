@@ -15,4 +15,10 @@ return [
      */
     'omit_url_prefix_for_locale' => null,
 
+    /**
+     * If you want to automatically set the locale
+     * for localized routes set this to true.
+     */
+    'use_locale_middleware' => false,
+
 ];

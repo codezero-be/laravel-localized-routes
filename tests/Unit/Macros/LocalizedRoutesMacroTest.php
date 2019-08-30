@@ -15,6 +15,28 @@ class LocalizedRoutesMacroTest extends TestCase
         Config::set('localized-routes.supported-locales', $locales);
     }
 
+    /**
+     * Set the use_locale_middleware config option
+     *
+     * @param boolean $value
+     * @return void
+     */
+    protected function setUseLocaleMiddleware($value)
+    {
+        Config::set('localized-routes.use_locale_middleware', $value);
+    }
+
+    /**
+     * Set the omit_url_prefix_for_locale config option
+     *
+     * @param string $value
+     * @return void
+     */
+    protected function setOmitUrlPrefixForLocale($value)
+    {
+        Config::set('localized-routes.omit_url_prefix_for_locale', $value);
+    }
+
     protected function getRoutes()
     {
         // Route::has() doesn't seem to be working
@@ -136,5 +158,184 @@ class LocalizedRoutesMacroTest extends TestCase
         });
 
         $this->assertEquals('en', App::getLocale());
+    }
+
+    /** @test */
+    public function it_does_not_change_the_locale_without_activation()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        $originalLocale = App::getLocale();
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return App::getLocale();
+            });
+        });
+
+        $response = $this->call('GET', '/en');
+        $response->assertOk();
+        $this->assertEquals($originalLocale, $response->original);
+
+        $response = $this->call('GET', '/nl');
+        $response->assertOk();
+        $this->assertEquals($originalLocale, $response->original);
+    }
+
+    /** @test */
+    public function it_sets_the_right_locale_when_accessing_localized_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return App::getLocale();
+            });
+        });
+
+        $response = $this->call('GET', '/en');
+        $response->assertOk();
+        $this->assertEquals('en', $response->original);
+
+        $response = $this->call('GET', '/nl');
+        $response->assertOk();
+        $this->assertEquals('nl', $response->original);
+    }
+
+    /** @test */
+    public function it_sets_the_right_locale_when_accessing_localized_routes_with_omitted_prefix()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+        $this->setOmitUrlPrefixForLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return App::getLocale();
+            });
+        });
+
+        $response = $this->call('GET', '/');
+        $response->assertOk();
+        $this->assertEquals('en', $response->original);
+
+        $response = $this->call('GET', '/nl');
+        $response->assertOk();
+        $this->assertEquals('nl', $response->original);
+    }
+
+    /** @test */
+    public function it_correctly_uses_scoped_config_options()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setOmitUrlPrefixForLocale(null);
+        $this->setUseLocaleMiddleware(false);
+
+        $otherLocale = 'none_of_the_above';
+
+        App::setLocale($otherLocale);
+
+        Route::localized(function () {
+            Route::get('/without', function () {
+                return App::getLocale();
+            });
+        });
+
+        Route::localized(function () {
+            Route::get('/with', function () {
+                return App::getLocale();
+            });
+        }, [
+            'use_locale_middleware' => true,
+            'omit_url_prefix_for_locale' => 'en',
+            'supported-locales' => ['en', 'nl', 'de']
+        ]);
+
+        $response = $this->call('GET', '/without');
+        $response->assertNotFound();
+
+        $response = $this->call('GET', '/en/without');
+        $response->assertOk();
+        $this->assertEquals($otherLocale, $response->original);
+
+        $response = $this->call('GET', '/nl/without');
+        $response->assertOk();
+        $this->assertEquals($otherLocale, $response->original);
+
+        $response = $this->call('GET', '/with');
+        $response->assertOk();
+        $this->assertEquals('en', $response->original);
+
+        $response = $this->call('GET', '/nl/with');
+        $response->assertOk();
+        $this->assertEquals('nl', $response->original);
+
+        $response = $this->call('GET', '/de/with');
+        $response->assertOk();
+        $this->assertEquals('de', $response->original);
+    }
+
+    /** @test */
+    public function it_creates_localized_routes_within_route_groups()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::group([
+            'as' => 'admin.',
+            'prefix' => 'admin'
+        ], function () {
+            Route::localized(function () {
+                Route::get('route', function () {})
+                    ->name('route.name');
+            });
+        });
+
+        $routes = $this->getRoutes();
+        $domains = $routes->pluck('action.domain');
+        $names = $routes->pluck('action.as');
+        $uris = $routes->pluck('uri');
+
+        // Verify that no custom domains are registered.
+        $this->assertTrue($domains->filter()->isEmpty());
+
+        $this->assertNotContains('admin.route.name', $names);
+        $this->assertContains('admin.en.route.name', $names);
+        $this->assertContains('admin.nl.route.name', $names);
+
+        $this->assertNotContains('admin/route', $uris);
+        $this->assertContains('admin/en/route', $uris);
+        $this->assertContains('admin/nl/route', $uris);
+
+        $this->call('GET', '/admin/route')->assertNotFound();
+        $this->call('GET', '/admin/en/route')->assertOk();
+        $this->call('GET', '/admin/nl/route')->assertOk();
+    }
+
+    /** @test */
+    public function it_sets_the_locale_for_localized_routes_within_route_groups()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+
+        Route::group([
+            'as' => 'admin.',
+            'prefix' => 'admin'
+        ], function () {
+            Route::localized(function () {
+                Route::get('route', function () {
+                    return App::getLocale();
+                })
+                    ->name('route.name');
+            });
+        });
+
+        $response = $this->call('GET', '/admin/en/route');
+        $response->assertOk();
+        $this->assertEquals('en', $response->original);
+
+        $response = $this->call('GET', '/admin/nl/route');
+        $response->assertOk();
+        $this->assertEquals('nl', $response->original);
     }
 }
