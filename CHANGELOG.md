@@ -2,6 +2,10 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 1.3.2 (2019-08-31)
+
+- Add locale middleware for localized routes
+
 ## 1.3.1 (2019-06-11)
 
 - Swap `funkjedi/composer-include-files` with `0.0.0/composer-include-files`.
