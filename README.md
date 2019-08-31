@@ -84,6 +84,53 @@ Setting this option to `'en'` will result, for example, in URL's like this:
 
 > This option has no effect if you use domains instead of slugs.
 
+#### Automatically Set Locale for Localized Routes
+
+To automatically set the locale when a localized route is active via a middleware simply set the option to true:
+
+```php
+'use_locale_middleware' => true
+```
+
+Alternatively, you can omit it completely or specify it for a specific route or route group:
+
+```php
+Route::localized(function () {
+
+    Route::get('about', AboutController::class.'@index')
+        ->name('about')
+        ->middleware(\CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class);
+
+    Route::group(
+        [
+            'as' => 'admin.',
+            'middleware' => [\CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class],
+        ],
+        function () {
+            Route::get('admin/reports', ReportsController::class.'@index')
+                ->name('reports.index');
+        });
+
+});
+```
+
+#### ☑️ Set Options for the Current Localized Route Group
+
+To set an option for one localized route group only, you can specify it as the second parameter of the localized route macro:
+
+```php
+Route::localized(function () {
+
+    Route::get('about', AboutController::class.'@index')
+        ->name('about');
+
+}, [
+    'supported-locales' => ['en', 'nl', 'fr'],
+    'omit_url_prefix_for_locale' => null,
+    'use_locale_middleware' => false,
+]);
+```
+
 ## 🚗 Register Routes
 
 Example:
