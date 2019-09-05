@@ -25,8 +25,8 @@
         "illuminate/support": "^5.6|^6.0"
     },
     "require-dev": {
-        "orchestra/testbench": "3.6.*",
-        "phpunit/phpunit": "^7.0"
+        "orchestra/testbench": "3.6.*|^4.0",
+        "phpunit/phpunit": "^7.0|^8.0"
     },
     "scripts": {
         "test": "phpunit"
