@@ -2,12 +2,12 @@
 
 namespace CodeZero\LocalizedRoutes;
 
-use App;
-use Config;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
 use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\UrlGenerator as BaseUrlGenerator;
-use Route;
+use Illuminate\Support\Facades\Route;
 
 class UrlGenerator extends BaseUrlGenerator
 {

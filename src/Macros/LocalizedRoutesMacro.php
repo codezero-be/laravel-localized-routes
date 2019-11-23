@@ -2,9 +2,9 @@
 
 namespace CodeZero\LocalizedRoutes\Macros;
 
-use App;
-use Config;
-use Route;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 use CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler;
 
 class LocalizedRoutesMacro
