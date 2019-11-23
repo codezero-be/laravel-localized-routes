@@ -4,7 +4,7 @@ namespace CodeZero\LocalizedRoutes\Macros;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Lang;
+use Illuminate\Support\Facades\Lang;
 
 class UriTranslationMacro
 {
