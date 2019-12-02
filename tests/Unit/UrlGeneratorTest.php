@@ -33,6 +33,7 @@ class UrlGeneratorTest extends TestCase
     public function it_binds_our_custom_url_generator_class()
     {
         $this->assertInstanceOf(UrlGenerator::class, app('url'));
+        $this->assertInstanceOf(UrlGenerator::class, redirect()->getUrlGenerator());
     }
 
     /** @test */
