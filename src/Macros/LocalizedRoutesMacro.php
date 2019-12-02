@@ -42,7 +42,7 @@ class LocalizedRoutesMacro
                 // to register translated route URI's.
                 App::setLocale($locale);
 
-                // Prepent the locale to the route name
+                // Prepend the locale to the route name
                 $attributes = [
                     'as'=>"{$locale}.",
                     'localized-routes-locale'=>$locale
