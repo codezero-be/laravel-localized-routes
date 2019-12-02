@@ -3,48 +3,11 @@
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
 class LocalizedRoutesMacroTest extends TestCase
 {
-    protected function setSupportedLocales($locales)
-    {
-        Config::set('localized-routes.supported-locales', $locales);
-    }
-
-    /**
-     * Set the use_locale_middleware config option
-     *
-     * @param boolean $value
-     * @return void
-     */
-    protected function setUseLocaleMiddleware($value)
-    {
-        Config::set('localized-routes.use_locale_middleware', $value);
-    }
-
-    /**
-     * Set the omit_url_prefix_for_locale config option
-     *
-     * @param string $value
-     * @return void
-     */
-    protected function setOmitUrlPrefixForLocale($value)
-    {
-        Config::set('localized-routes.omit_url_prefix_for_locale', $value);
-    }
-
-    protected function getRoutes()
-    {
-        // Route::has() doesn't seem to be working
-        // when you create routes on the fly.
-        // So this is a bit of a workaround...
-        return new Collection(Route::getRoutes());
-    }
-
     /** @test */
     public function it_registers_a_route_for_each_locale()
     {
