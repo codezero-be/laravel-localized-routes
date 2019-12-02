@@ -25,6 +25,23 @@ class Model extends BaseModel
     public function getRouteKey()
     {
         return $this->slugs[App::getLocale()];
+    }
 
+    /**
+     * Fake route model binding.
+     *
+     * @param string $slug
+     *
+     * @return mixed
+     */
+    public function resolveRouteBinding($slug)
+    {
+        $validSlug = $this->slugs[App::getLocale()];
+
+        if ($validSlug !== $slug) {
+            abort(404);
+        }
+
+        return $validSlug;
     }
 }

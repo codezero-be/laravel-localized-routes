@@ -60,6 +60,18 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
+     * Resolve application Console Kernel implementation.
+     *
+     * @param \Illuminate\Foundation\Application $app
+     *
+     * @return void
+     */
+    protected function resolveApplicationHttpKernel($app)
+    {
+        $app->singleton('Illuminate\Contracts\Http\Kernel', 'CodeZero\LocalizedRoutes\Tests\Stubs\Kernel');
+    }
+
+    /**
      * Get the packages service providers.
      *
      * @param \Illuminate\Foundation\Application $app

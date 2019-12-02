@@ -77,4 +77,21 @@ class LocalizedRouteLocaleHandlerTest extends TestCase
         $response->assertOk();
         $this->assertEquals('nl', $response->original);
     }
+
+    /** @test */
+    public function it_allows_for_localized_route_model_binding()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::localized(function () {
+            Route::get('route/{model}', function (Model $model) {
+                return App::getLocale();
+            })->name('route.name')->middleware(['web', LocalizedRouteLocaleHandler::class]);
+        });
+
+        $this->call('GET', '/en/route/en-slug')->assertOk();
+        $this->call('GET', '/nl/route/nl-slug')->assertOk();
+        $this->call('GET', '/en/route/nl-slug')->assertNotFound();
+        $this->call('GET', '/nl/route/en-slug')->assertNotFound();
+    }
 }
