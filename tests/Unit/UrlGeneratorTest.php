@@ -2,14 +2,14 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit;
 
-use App;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use CodeZero\LocalizedRoutes\UrlGenerator;
-use Config;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use InvalidArgumentException;
-use Route;
 
 class UrlGeneratorTest extends TestCase
 {

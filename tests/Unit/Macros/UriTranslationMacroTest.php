@@ -2,9 +2,9 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
-use App;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use Lang;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Lang;
 
 class UriTranslationMacroTest extends TestCase
 {

@@ -3,8 +3,8 @@
 namespace CodeZero\LocalizedRoutes\Macros;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Str;
 
 class UriTranslationMacro
 {

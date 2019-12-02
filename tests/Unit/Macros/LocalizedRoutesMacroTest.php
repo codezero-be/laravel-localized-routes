@@ -2,11 +2,11 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
-use App;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use Config;
 use Illuminate\Support\Collection;
-use Route;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 
 class LocalizedRoutesMacroTest extends TestCase
 {

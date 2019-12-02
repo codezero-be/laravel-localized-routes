@@ -3,7 +3,7 @@
 namespace CodeZero\LocalizedRoutes\Middleware;
 
 use Closure;
-use \Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\App;
 
 class LocalizedRouteLocaleHandler
 {
