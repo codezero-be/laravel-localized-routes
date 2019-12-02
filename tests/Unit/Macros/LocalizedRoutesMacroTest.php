@@ -62,8 +62,7 @@ class LocalizedRoutesMacroTest extends TestCase
     public function it_registers_a_url_without_prefix_for_a_configured_main_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
-
-        Config::set('localized-routes.omit_url_prefix_for_locale', 'en');
+        $this->setOmitUrlPrefixForLocale('en');
 
         Route::localized(function () {
             Route::get('about', function () {})
