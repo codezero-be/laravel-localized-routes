@@ -123,7 +123,7 @@ class LocalizedRoutesMacroTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_change_the_locale_without_activation()
+    public function it_does_not_permanently_change_the_locale_without_middleware()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
