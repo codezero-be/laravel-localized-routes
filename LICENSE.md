@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-Copyright (c) 2018 Ivan Vermeyen (<ivan@codezero.be>)
+Copyright (c) Ivan Vermeyen (<ivan@codezero.be>)
 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
