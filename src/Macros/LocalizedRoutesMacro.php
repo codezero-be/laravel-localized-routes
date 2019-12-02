@@ -43,9 +43,11 @@ class LocalizedRoutesMacro
                 App::setLocale($locale);
 
                 // Prepend the locale to the route name
+                // and set a custom attribute so the middleware
+                // can find it to set the correct app locale.
                 $attributes = [
-                    'as'=>"{$locale}.",
-                    'localized-routes-locale'=>$locale
+                    'as' => "{$locale}.",
+                    'localized-routes-locale' => $locale
                 ];
 
                 // Add a custom domain route group
