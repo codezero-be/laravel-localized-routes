@@ -42,6 +42,6 @@ class Model extends BaseModel
             abort(404);
         }
 
-        return $validSlug;
+        return $this;
     }
 }
