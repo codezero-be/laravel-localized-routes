@@ -68,7 +68,13 @@ abstract class TestCase extends  BaseTestCase
      */
     protected function resolveApplicationHttpKernel($app)
     {
-        $app->singleton('Illuminate\Contracts\Http\Kernel', 'CodeZero\LocalizedRoutes\Tests\Stubs\Kernel');
+        // In Laravel 6+, we need to add the middleware to
+        // $middlewarePriority in Kernel.php for route
+        // model binding to work properly.
+        $app->singleton(
+            'Illuminate\Contracts\Http\Kernel',
+            'CodeZero\LocalizedRoutes\Tests\Stubs\Kernel'
+        );
     }
 
     /**
