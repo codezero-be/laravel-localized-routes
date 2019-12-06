@@ -22,6 +22,13 @@
 - Use the middleware to [automatically set the appropriate app locale](#-use-middleware-to-update-app-locale) (and use route model binding).
 - **Work with routes without thinking too much about locales.**
 
+## 🔌 Demo App
+
+To test and demonstrate some of the features this package provides, I have created a basic Laravel 6 demo app.
+Feel free to open any issues there if you want me to test/demonstrate more stuff.
+
+- https://github.com/ivanvermeyen/test-app-laravel-localized-routes
+
 ## ✅ Requirements
 
 - PHP >= 7.1
