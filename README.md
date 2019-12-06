@@ -19,7 +19,7 @@
 - [Generate localized signed route URL's](#-generate-signed-route-urls)
 - Allow routes to be [cached](#-cache-routes).
 - Optionally [translate each segment](#-translate-routes) in your URI's.
-- Use the middleware to [automatically set the appropriate app locale](#-use-middleware-to-update-app-locale) (and use route model binding).
+- Use the middleware to [automatically set the appropriate app locale](#-use-middleware-to-update-app-locale) (and use [route model binding](#-route-model-binding)).
 - **Work with routes without thinking too much about locales.**
 
 ## 🔌 Demo App
@@ -393,6 +393,26 @@ $post = new Post;
 $url = route('posts.show', [$post]); // /en/posts/en-slug
 $url = route('posts.show', [$post], true, 'nl'); // /nl/posts/nl-slug
 ```
+
+## 🚴‍ Route Model Binding
+
+If you enable the [middleware](#-use-middleware-to-update-app-locale) included in this package,
+you can use [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding)
+to automatically inject models with localized route keys in your controllers.
+
+All you need to do is add a `resolveRouteBinding()` method to your model.
+Check [Laravel's documentation](https://laravel.com/docs/routing#route-model-binding)
+for alternative ways to enable route model binding.
+
+```php
+public function resolveRouteBinding($value)
+{
+    // Perform the logic to find the given slug in the database...
+    return $this->where('slug->'.app()->getLocale(), $value)->firstOrFail();
+}
+```
+
+> **TIP:** checkout [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable) for translatable models.
 
 ## 🗃 Cache Routes
 
