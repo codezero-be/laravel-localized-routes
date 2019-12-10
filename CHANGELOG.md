@@ -2,6 +2,15 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 1.3.4 (2019-12-10)
+
+- Refactor tests
+- Update README
+
+## 1.3.3 (2019-09-05)
+
+- Add support for Laravel 6
+
 ## 1.3.2 (2019-08-31)
 
 - Add locale middleware for localized routes
