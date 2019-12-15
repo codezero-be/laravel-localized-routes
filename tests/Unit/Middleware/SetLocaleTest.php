@@ -98,7 +98,7 @@ class SetLocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_auto_detect_the_preferred_locale_with_localizer_for_localized_routes()
+    public function it_does_not_detect_the_preferred_locale_with_localizer_for_localized_routes()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -119,7 +119,7 @@ class SetLocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_auto_detects_the_preferred_locale_with_localizer_for_non_localized_routes()
+    public function it_detects_the_preferred_locale_with_localizer_for_non_localized_routes()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
