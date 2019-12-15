@@ -2,7 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Macros;
 
-use CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler;
+use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
@@ -63,7 +63,7 @@ class LocalizedRoutesMacro
                 }
 
                 if ($setMiddleware) {
-                    $attributes['middleware'] = [LocalizedRouteLocaleHandler::class];
+                    $attributes['middleware'] = [SetLocale::class];
                 }
 
                 // Execute the callback inside route group

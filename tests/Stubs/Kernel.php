@@ -52,7 +52,7 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\Authenticate::class,
         \Illuminate\Routing\Middleware\ThrottleRequests::class,
         \Illuminate\Session\Middleware\AuthenticateSession::class,
-        \CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class, // <== Added Middleware Here
+        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class, // <== Added Middleware Here
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
         \Illuminate\Auth\Middleware\Authorize::class,
     ];

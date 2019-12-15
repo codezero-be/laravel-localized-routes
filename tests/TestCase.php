@@ -3,6 +3,7 @@
 namespace CodeZero\LocalizedRoutes\Tests;
 
 use CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider;
+use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
@@ -87,6 +88,7 @@ abstract class TestCase extends  BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
+            LocalizerServiceProvider::class,
             LocalizedRoutesServiceProvider::class,
         ];
     }
