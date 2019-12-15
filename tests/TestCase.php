@@ -48,6 +48,18 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
+     * Set the use_localizer config option
+     *
+     * @param boolean $value
+     *
+     * @return void
+     */
+    protected function setUseLocalizer($value)
+    {
+        Config::set('localized-routes.use_localizer', $value);
+    }
+
+    /**
      * Get the currently registered routes.
      *
      * @return \Illuminate\Support\Collection

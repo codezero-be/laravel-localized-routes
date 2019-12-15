@@ -4,6 +4,7 @@ namespace CodeZero\LocalizedRoutes\Middleware;
 
 use Closure;
 use CodeZero\Localizer\Localizer;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 
 class SetLocale
@@ -36,12 +37,19 @@ class SetLocale
     public function handle($request, Closure $next)
     {
         // This package sets a custom route attribute for the locale.
-        // If it is present, set it as the locale with 'codezero/laravel-localizer'.
-        // If not, auto-detect the locale with 'codezero/laravel-localizer'
-        $locale = $request->route()->getAction('localized-routes-locale') ?: $this->detectLocales();
+        // If it is present, use this as the locale.
+        $locale = $request->route()->getAction('localized-routes-locale');
 
-        if ($locale) {
+        if ( ! $locale && $this->shouldUseLocalizer()) {
+            $locale = $this->detectLocales();
+        }
+
+        if ($locale && $this->shouldUseLocalizer()) {
             $this->localizer->store($locale);
+        }
+
+        if ($locale && ! $this->shouldUseLocalizer()) {
+            App::setLocale($locale);
         }
 
         return $next($request);
@@ -59,5 +67,15 @@ class SetLocale
         $this->localizer->setSupportedLocales($supportedLocales);
 
         return $this->localizer->detect();
+    }
+
+    /**
+     * Check if the 'use_localizer' option is enabled.
+     *
+     * @return bool
+     */
+    protected function shouldUseLocalizer()
+    {
+        return Config::get('localized-routes.use_localizer', false);
     }
 }
