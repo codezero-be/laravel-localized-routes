@@ -197,4 +197,23 @@ class SetLocaleTest extends TestCase
         $response->assertOk();
         $this->assertEquals('fr', $response->original);
     }
+
+    /** @test */
+    public function it_passes_the_supported_locales_to_localizer_in_the_correct_format()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en' => 'en.domain.com', 'nl' => 'nl.domain.com']);
+        $this->setUseLocalizer(true);
+
+        $localizer = Mockery::spy(Localizer::class);
+        $localizer->shouldReceive('detect')->andReturn('en');
+        App::instance(Localizer::class, $localizer);
+
+        Route::get('route', function () {})
+            ->middleware(['web', SetLocale::class]);
+
+        $this->call('GET', '/route')->assertOk();
+
+        $localizer->shouldHaveReceived('setSupportedLocales')->with(['en', 'nl']);
+    }
 }

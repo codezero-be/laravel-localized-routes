@@ -149,7 +149,27 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
             $useLocalizer = $app['config']->get('localized-routes.use_localizer', false);
             $localizer = $useLocalizer ? $app->make(Localizer::class) : null;
 
-            return new LocaleHandler($supportedLocales, $localizer);
+            return new LocaleHandler($this->formatLocales($supportedLocales), $localizer);
         });
+    }
+
+    /**
+     * Format the locales to pass them to Localizer.
+     *
+     * @param array $locales
+     *
+     * @return array
+     */
+    protected function formatLocales($locales)
+    {
+        $keys = array_keys($locales);
+
+        // If the locales are in a key => value format (locale => domain)
+        // then only return the keys; else return the original array.
+        if (isset($keys[0]) && is_numeric($keys[0])) {
+            return $locales;
+        }
+
+        return $keys;
     }
 }
