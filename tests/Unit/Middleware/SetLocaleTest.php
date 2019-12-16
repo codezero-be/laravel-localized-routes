@@ -59,15 +59,13 @@ class SetLocaleTest extends TestCase
     public function it_sets_the_locale_for_localized_routes_within_route_groups()
     {
         $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
 
-        Route::group([
-            'as' => 'admin.',
-            'prefix' => 'admin',
-        ], function () {
+        Route::group(['as' => 'admin.', 'prefix' => 'admin'], function () {
             Route::localized(function () {
                 Route::get('route', function () {
                     return App::getLocale();
-                })->name('route.name')->middleware(['web', SetLocale::class]);
+                });
             });
         });
 
@@ -81,14 +79,14 @@ class SetLocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_for_localized_route_model_binding()
+    public function it_allows_for_route_model_binding_using_a_localized_route_key()
     {
         $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
 
         Route::localized(function () {
-            Route::get('route/{model}', function (Model $model) {
-                return App::getLocale();
-            })->name('route.name')->middleware(['web', SetLocale::class]);
+            Route::get('route/{model}', function (Model $model) {})
+                ->middleware(['web']);
         });
 
         $this->call('GET', '/en/route/en-slug')->assertOk();
@@ -98,72 +96,70 @@ class SetLocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_detect_the_preferred_locale_with_localizer_for_localized_routes()
+    public function it_detects_the_locale_with_localizer_for_non_localized_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocalizer(true);
 
-        $localizer = Mockery::mock(Localizer::class);
-        $localizer->shouldReceive('setSupportedLocales')->with(['en', 'nl']);
-        $localizer->shouldNotReceive('detect');
-        $localizer->shouldReceive('store')->with('en');
+        $localizer = Mockery::spy(Localizer::class);
+        $localizer->shouldReceive('detect')->andReturn('en');
+        App::instance(Localizer::class, $localizer);
 
+        Route::get('non-localized-route', function () {})
+            ->middleware(['web', SetLocale::class]);
+
+        $this->call('GET', '/non-localized-route')->assertOk();
+
+        $localizer->shouldHaveReceived('setSupportedLocales')->with(['en', 'nl']);
+        $localizer->shouldHaveReceived('detect');
+        $localizer->shouldHaveReceived('store')->with('en');
+    }
+
+    /** @test */
+    public function it_does_not_detect_the_locale_with_localizer_for_localized_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocalizer(true);
+
+        $localizer = Mockery::spy(Localizer::class);
         App::instance(Localizer::class, $localizer);
 
         Route::localized(function () {
             Route::get('localized-route', function () {})
-                ->name('localized.route')
                 ->middleware(['web', SetLocale::class]);
         });
 
         $this->call('GET', '/en/localized-route')->assertOk();
-    }
 
-    /** @test */
-    public function it_detects_the_preferred_locale_with_localizer_for_non_localized_routes()
-    {
-        $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocalizer(true);
-
-        $localizer = Mockery::mock(Localizer::class);
-        $localizer->shouldReceive('setSupportedLocales')->with(['en', 'nl']);
-        $localizer->shouldReceive('detect')->andReturn('en');
-        $localizer->shouldReceive('store')->with('en');
-
-        App::instance(Localizer::class, $localizer);
-
-        Route::get('non-localized-route', function () {})
-            ->name('non-localized.route')
-            ->middleware(['web', SetLocale::class]);
-
-        $this->call('GET', '/non-localized-route')->assertOk();
+        $localizer->shouldNotHaveReceived('detect');
+        $localizer->shouldHaveReceived('store')->with('en');
     }
 
     /** @test */
     public function it_does_not_use_localizer_when_disabled()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocalizer(false);
 
-        $localizer = Mockery::mock(Localizer::class);
-        $localizer->shouldNotReceive('setSupportedLocales');
-        $localizer->shouldNotReceive('detect');
-        $localizer->shouldNotReceive('store');
-
+        $localizer = Mockery::spy(Localizer::class);
         App::instance(Localizer::class, $localizer);
 
         Route::localized(function () {
             Route::get('localized-route', function () {})
-                ->name('localized.route')
                 ->middleware(['web', SetLocale::class]);
         });
 
-        Route::get('/non-localized-route', function () {})
-            ->name('non-localized.route')
+        Route::get('non-localized-route', function () {})
             ->middleware(['web', SetLocale::class]);
 
         $this->call('GET', '/non-localized-route')->assertOk();
         $this->call('GET', '/en/localized-route')->assertOk();
+
+        $localizer->shouldNotHaveReceived('detect');
+        $localizer->shouldNotHaveReceived('store');
     }
 
     /** @test */
@@ -177,11 +173,11 @@ class SetLocaleTest extends TestCase
         Route::localized(function () {
             Route::get('localized-route', function () {
                 return App::getLocale();
-            })->name('localized.route')->middleware(['web', SetLocale::class]);
+            })->middleware(['web', SetLocale::class]);
         });
 
         $response = $this->call('GET', '/en/localized-route');
-
+        $response->assertOk();
         $this->assertEquals('en', $response->original);
     }
 
@@ -193,12 +189,12 @@ class SetLocaleTest extends TestCase
 
         App::setLocale('fr');
 
-        Route::get('/non-localized-route', function () {
+        Route::get('non-localized-route', function () {
             return App::getLocale();
-        })->name('non-localized.route')->middleware(['web', SetLocale::class]);
+        })->middleware(['web', SetLocale::class]);
 
         $response = $this->call('GET', '/non-localized-route');
-
+        $response->assertOk();
         $this->assertEquals('fr', $response->original);
     }
 }
