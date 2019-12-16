@@ -4,6 +4,7 @@ namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\LocalizedRoutes\Macros\UriTranslationMacro;
 use CodeZero\LocalizedRoutes\Macros\LocalizedRoutesMacro;
+use CodeZero\Localizer\Localizer;
 use Illuminate\Support\ServiceProvider;
 
 class LocalizedRoutesServiceProvider extends ServiceProvider
@@ -35,6 +36,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     {
         $this->mergeConfig();
         $this->registerUrlGenerator();
+        $this->registerLocaleHandler();
     }
 
     /**
@@ -133,5 +135,21 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         return function ($app, $request) {
             $app['url']->setRequest($request);
         };
+    }
+
+    /**
+     * Register the LocaleHandler..
+     *
+     * @return void
+     */
+    protected function registerLocaleHandler()
+    {
+        $this->app->bind(LocaleHandler::class, function ($app) {
+            $supportedLocales = $app['config']->get('localized-routes.supported-locales', []);
+            $useLocalizer = $app['config']->get('localized-routes.use_localizer', false);
+            $localizer = $useLocalizer ? $app->make(Localizer::class) : null;
+
+            return new LocaleHandler($supportedLocales, $localizer);
+        });
     }
 }

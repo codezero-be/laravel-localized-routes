@@ -4,7 +4,6 @@ namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\Localizer\Localizer;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 
 class LocaleHandler
 {
@@ -23,22 +22,15 @@ class LocaleHandler
     protected $supportedLocales;
 
     /**
-     * Should the Localizer package be used?
-     *
-     * @var bool
-     */
-    protected $shouldUseLocalizer;
-
-    /**
      * Create a new SetLocale instance.
      *
+     * @param array $supportedLocales
      * @param \CodeZero\Localizer\Localizer $localizer
      */
-    public function __construct(Localizer $localizer)
+    public function __construct(array $supportedLocales, Localizer $localizer = null)
     {
+        $this->supportedLocales = $supportedLocales;
         $this->localizer = $localizer;
-        $this->supportedLocales = Config::get('localized-routes.supported-locales', []);
-        $this->shouldUseLocalizer = Config::get('localized-routes.use_localizer', false);
     }
 
     /**
@@ -64,7 +56,7 @@ class LocaleHandler
      */
     protected function detectLocales()
     {
-        if ( ! $this->shouldUseLocalizer) return false;
+        if ( ! $this->localizer) return false;
 
         $this->localizer->setSupportedLocales($this->supportedLocales);
 
@@ -80,7 +72,7 @@ class LocaleHandler
      */
     protected function setLocale($locale)
     {
-        $this->shouldUseLocalizer
+        $this->localizer
             ? $this->localizer->store($locale)
             : App::setLocale($locale);
     }
