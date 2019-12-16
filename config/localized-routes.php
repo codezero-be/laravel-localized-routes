@@ -44,6 +44,6 @@ return [
      *
      * This option has no effect if 'use_locale_middleware' is false.
      */
-    'use_localizer' => true,
+    'use_localizer' => false,
 
 ];
