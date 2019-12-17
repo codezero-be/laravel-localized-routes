@@ -5,6 +5,7 @@ namespace CodeZero\LocalizedRoutes\Tests;
 use CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider;
 use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -12,9 +13,21 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 abstract class TestCase extends  BaseTestCase
 {
     /**
+     * Set the app locale.
+     *
+     * @param string $locale
+     *
+     * @return void
+     */
+    protected function setAppLocale($locale)
+    {
+        App::setLocale($locale);
+    }
+
+    /**
      * Set the supported locales config option.
      *
-     * @param $locales
+     * @param array $locales
      *
      * @return void
      */

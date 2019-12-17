@@ -167,8 +167,7 @@ class SetLocaleTest extends TestCase
     {
         $this->setSupportedLocales(['en']);
         $this->setUseLocalizer(false);
-
-        App::setLocale('fr');
+        $this->setAppLocale('fr');
 
         Route::localized(function () {
             Route::get('localized-route', function () {
@@ -186,8 +185,7 @@ class SetLocaleTest extends TestCase
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocalizer(false);
-
-        App::setLocale('fr');
+        $this->setAppLocale('fr');
 
         Route::get('non-localized-route', function () {
             return App::getLocale();

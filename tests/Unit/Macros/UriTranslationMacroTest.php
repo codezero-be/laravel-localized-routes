@@ -3,23 +3,10 @@
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Lang;
 
 class UriTranslationMacroTest extends TestCase
 {
-    protected function setTranslations($translations)
-    {
-        // Fake that we created a routes.php file in
-        // 'resources/lang/' for each language
-        // with the given translations.
-        Lang::setLoaded([
-            '*' => [
-                'routes' => $translations
-            ]
-        ]);
-    }
-
     /** @test */
     public function it_translates_every_segment_in_a_uri_to_the_current_locale()
     {
@@ -31,10 +18,10 @@ class UriTranslationMacroTest extends TestCase
             ]
         ]);
 
-        App::setLocale('en');
+        $this->setAppLocale('en');
         $this->assertEquals('my/new/page', Lang::uri('my/new/page'));
 
-        App::setLocale('nl');
+        $this->setAppLocale('nl');
         $this->assertEquals('mijn/nieuwe/pagina', Lang::uri('my/new/page'));
     }
 
@@ -90,5 +77,22 @@ class UriTranslationMacroTest extends TestCase
         ]);
 
         $this->assertEquals('artikels/{article}', Lang::uri('articles/{article}', 'nl'));
+    }
+
+    /**
+     * Fake that we created a routes.php file in 'resources/lang/'
+     * for each language with the given translations.
+     *
+     * @param $translations
+     *
+     * @return void
+     */
+    protected function setTranslations($translations)
+    {
+        Lang::setLoaded([
+            '*' => [
+                'routes' => $translations
+            ]
+        ]);
     }
 }
