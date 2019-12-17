@@ -9,18 +9,21 @@
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R3UQ8V)
 
-#### A convenient way to set up, manage and use localized routes in a Laravel app.
+#### A convenient way to set up and use localized routes in a Laravel app.
 
-- [Automatically register](#-register-routes) a route for each locale you wish to support.
-- Use [URL slugs or custom domains](#-supported-locales) (or subdomains).
-- Optionally omit the locale slug from the URL for your main locale.
+## 🧩 Features
+
+- [Automatically register](#-register-routes) a route for each locale.
+- Use [URL slugs or custom domains](#%EF%B8%8F-supported-locales) (or subdomains).
+- Optionally [omit the locale slug from the URL for your main locale](#%EF%B8%8F-omit-slug-for-main-locale).
+- Optionally [translate each segment](#-translate-routes) in your URI's.
 - [Generate localized route URL's](#-generate-route-urls) using the `route()` helper.
 - [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
-- [Generate localized signed route URL's](#-generate-signed-route-urls)
+- [Generate localized signed route URL's](#-generate-signed-route-urls).
+- [Automatically set the appropriate app locale](#%EF%B8%8F-use-middleware-to-update-app-locale) using the middleware.
+- Optionally [detect and set the preferred locale in multiple sources](#%EF%B8%8F-use-localizer-to-detect-and-set-the-locale).
+- Use localized route keys with [route model binding](#-route-model-binding).
 - Allow routes to be [cached](#-cache-routes).
-- Optionally [translate each segment](#-translate-routes) in your URI's.
-- Use the middleware to [automatically set the appropriate app locale](#-use-middleware-to-update-app-locale) (and use [route model binding](#-route-model-binding)).
-- **Work with routes without thinking too much about locales.**
 
 ## 🔌 Demo App
 
@@ -46,7 +49,7 @@ composer require codezero/laravel-localized-routes
 
 #### ☑️ Publish Configuration File
 
-```php
+```bash
 php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
 ```
 
@@ -62,11 +65,11 @@ Add any locales you wish to support to your published `config/localized-routes.p
 'supported-locales' => ['en', 'nl', 'fr'],
 ```
 
- This will automically prepend a slug to your localized routes. [More on this below](#-register-routes).
+ This will automatically prepend a slug to your localized routes. [More on this below](#-register-routes).
 
 ##### Using Domains
 
-Alternatively, you can use a different domain or subdomain for each locale by adding them to the `supported-locales` like this:
+Alternatively, you can use a different domain or subdomain for each locale by configuring the `supported-locales` like this:
 
 ```php
 'supported-locales' => [
@@ -94,17 +97,19 @@ Setting this option to `'en'` will result, for example, in URL's like this:
 
 #### ☑️ Use Middleware to Update App Locale
 
-By default, the app locale will always be what you configured in `config/app.php`. To automatically update the app locale when a localized route is accessed, you need to use a middleware.
+By default, the app locale will always be what you configured in `config/app.php`.
+To automatically update the app locale when a localized route is accessed, you need to use a middleware.
 
 **⚠️ Important note for Laravel 6+**
 
-To make route model binding work in Laravel 6+ you always also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` so it runs before `SubstituteBindings`:
+To make route model binding work in Laravel 6+ you always also need to add the middleware
+to the `$middlewarePriority` array in `app/Http/Kernel.php` so it runs before `SubstituteBindings`:
 
 ```php
 protected $middlewarePriority = [
     \Illuminate\Session\Middleware\StartSession::class, // <= after this
     //...
-    \CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class,
+    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
     //...
     \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
 ];
@@ -112,13 +117,15 @@ protected $middlewarePriority = [
 
 You can then enable the middleware in a few ways:
 
-**For every route, via our config file**
+**For every localized route, via our config file**
 
-Simply set the option to `true`:
+Simply set the option to `true` to add the middleware to every localized route:
 
 ```php
 'use_locale_middleware' => true
 ```
+
+> This will not add the middleware to non-localized routes!
 
 **OR, for every route using the `web` middleware group**
 
@@ -129,7 +136,7 @@ protected $middlewareGroups = [
     'web' => [
         \Illuminate\Session\Middleware\StartSession::class, // <= after this
         //...
-        \CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class,
+        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
         //...
         \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
     ],
@@ -145,11 +152,11 @@ Route::localized(function () {
 
     Route::get('about', AboutController::class.'@index')
         ->name('about')
-        ->middleware(\CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class);
+        ->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
 
     Route::group([
         'as' => 'admin.',
-        'middleware' => [\CodeZero\LocalizedRoutes\Middleware\LocalizedRouteLocaleHandler::class],
+        'middleware' => [\CodeZero\LocalizedRoutes\Middleware\SetLocale::class],
     ], function () {
 
         Route::get('admin/reports', ReportsController::class.'@index')
@@ -160,9 +167,34 @@ Route::localized(function () {
 });
 ```
 
+#### ☑️ Use Localizer to Detect and Set the Locale
+
+This package can use [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer) to automatically detect and set the locale.
+
+With this option disabled, the app locale will only be updated when accessing localized routes.
+
+With this option enabled, the app locale can also be updated when accessing non-localized routes.
+For non-localized routes it will look for a preferred locale in the session, in a cookie or in the browser.
+Additionally, it will also store the app locale in the session and in a cookie.
+
+> Enabling this option can be handy if you have, for example, a generic homepage and you want to know the preferred locale.
+
+To enable this option, set it to `true` in the published config file.
+
+```php
+'use_localizer' => true
+```
+
+This option only has effect on routes that use our `SetLocale` middleware.
+
+> You can review [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer),
+> publish its config file and tweak it as needed.
+> The only option we will override is  `supported-locales`, to match the option in our own config file.
+
 #### ☑️ Set Options for the Current Localized Route Group
 
-To set an option for one localized route group only, you can specify it as the second parameter of the localized route macro. This will override the config file settings.
+To set an option for one localized route group only, you can specify it as the second parameter of the localized route macro.
+This will override the config file settings.
 
 ```php
 Route::localized(function () {
@@ -200,7 +232,9 @@ Route::localized(function () {
 });
 ```
 
-In the above example there are 5 routes being registered. The routes defined in the `Route::localized` closure are automatically registered for each configured locale. This will prepend the locale to the route's URI and name. If you configured custom domains, it will use those instead of the slugs.
+In the above example there are 5 routes being registered.
+The routes defined in the `Route::localized` closure are automatically registered for each configured locale.
+This will prepend the locale to the route's URI and name. If you configured custom domains, it will use those instead of the slugs.
 
 | URI               | Name                   |
 | ----------------- | ---------------------- |
@@ -220,7 +254,9 @@ If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the
 | /admin/reports    | en.admin.reports.index |
 | /nl/admin/reports | nl.admin.reports.index |
 
-**⚠️ Beware that you don't register the same URL twice when omitting the locale.** You can't have a localized `/about` route and also register a non-localized `/about` route in this case. The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
+**⚠️ Beware that you don't register the same URL twice when omitting the locale.**
+You can't have a localized `/about` route and also register a non-localized `/about` route in this case.
+The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
 
 ### 🚕 Generate Route URL's
 
@@ -236,7 +272,10 @@ $url = route(app()->getLocale().'.admin.reports.index');
 
 ##### 👍 A much nicer way...
 
-Because the former is rather ugly, this package overwrites the `route()` function and the underlying `UrlGenerator` class with an additional, optional `$locale` argument and takes care of the locale prefix for you. If you don't specify a locale, either a normal, non-localized route or a route in the current locale is returned.
+Because the former is rather ugly, this package overwrites the `route()` function
+and the underlying `UrlGenerator` class with an additional, optional `$locale` argument
+and takes care of the locale prefix for you. If you don't specify a locale, either a normal,
+non-localized route or a route in the current locale is returned.
 
 ```php
 $url = route('admin.reports.index'); // current locale
@@ -268,11 +307,14 @@ $url = route('en.about'); // /en/about
 $url = route('en.about', [], true, 'nl'); // /nl/about
 ```
 
-> **Note:** in a most practical scenario you would register a route either localized **or** non-localized, but not both. If you do, you will always need to specify a locale to get the URL, because non-localized routes always have priority when using the `route()` function.
+> **Note:** in a most practical scenario you would register a route either localized **or** non-localized, but not both.
+> If you do, you will always need to specify a locale to get the URL, because non-localized routes always have priority
+> when using the `route()` function.
 
 ### 🚌 Redirect to Routes
 
-Laravel's `Redirector` uses the same `UrlGenerator` as the `route()` function behind the scenes. Because we are overriding this class, you can easily redirect to your routes.
+Laravel's `Redirector` uses the same `UrlGenerator` as the `route()` function behind the scenes.
+Because we are overriding this class, you can easily redirect to your routes.
 
 ```php
 return redirect()->route('home'); // non-localized route, redirects to /home
@@ -346,9 +388,11 @@ The above will generate:
 
 ## 🚏 Route Parameters
 
-Parameter placeholders are not translated via language files. These are values you would provide via the `route()` function. The `Lang::uri()` macro will skip any parameter placeholder segment.
+Parameter placeholders are not translated via language files. These are values you would provide via the `route()` function.
+The `Lang::uri()` macro will skip any parameter placeholder segment.
 
-If you have a model that uses a route key that is translated in the current locale, then you can still simply pass the model to the `route()` function to get translated URL's.
+If you have a model that uses a route key that is translated in the current locale,
+then you can still simply pass the model to the `route()` function to get translated URL's.
 
 An example...
 
