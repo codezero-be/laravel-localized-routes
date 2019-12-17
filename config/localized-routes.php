@@ -42,7 +42,7 @@ return [
      * For more info, visit:
      * https://github.com/codezero-be/laravel-localizer
      *
-     * This option has no effect if 'use_locale_middleware' is false.
+     * This option only has effect if you use the SetLocale middleware.
      */
     'use_localizer' => false,
 
