@@ -2,6 +2,11 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.0.0 (2019-12-17)
+
+- Add option to automatically detect and set locales with [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer)
+- Rename middleware to `SetLocale`
+
 ## 1.3.4 (2019-12-10)
 
 - Refactor tests
