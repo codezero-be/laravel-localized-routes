@@ -84,6 +84,15 @@ class SetLocaleTest extends TestCase
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocaleMiddleware(true);
 
+        $model = (new Model([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('slug');
+
+        App::instance(Model::class, $model);
+
         Route::localized(function () {
             Route::get('route/{model}', function (Model $model) {})
                 ->middleware(['web']);

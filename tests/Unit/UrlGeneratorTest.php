@@ -125,12 +125,21 @@ class UrlGeneratorTest extends TestCase
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
 
+        $model = (new Model([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('slug');
+
+        App::instance(Model::class, $model);
+
         $this->registerRoute('en/route/{slug}', 'en.route.name');
         $this->registerRoute('nl/route/{slug}', 'nl.route.name');
 
-        $this->assertEquals(url('en/route/en-slug'), route('route.name', [new Model]));
-        $this->assertEquals(url('en/route/en-slug'), route('route.name', [new Model], true, 'en'));
-        $this->assertEquals(url('nl/route/nl-slug'), route('route.name', [new Model], true, 'nl'));
+        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model]));
+        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model], true, 'en'));
+        $this->assertEquals(url('nl/route/nl-slug'), route('route.name', [$model], true, 'nl'));
     }
 
     /** @test */

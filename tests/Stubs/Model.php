@@ -7,24 +7,16 @@ use Illuminate\Support\Facades\App;
 
 class Model extends BaseModel
 {
-    /**
-     * Fake localized slugs.
-     *
-     * @var array
-     */
-    protected $slugs = [
-        'en' => 'en-slug',
-        'nl' => 'nl-slug',
-    ];
+    protected $guarded = [];
 
     /**
-     * Fake localized route key.
+     * Get the (fake) slug attribute.
      *
-     * @return mixed
+     * @return string
      */
-    public function getRouteKey()
+    protected function getSlugAttribute()
     {
-        return $this->slugs[App::getLocale()];
+        return $this->attributes['slug'][App::getLocale()];
     }
 
     /**
@@ -36,7 +28,7 @@ class Model extends BaseModel
      */
     public function resolveRouteBinding($slug)
     {
-        $validSlug = $this->slugs[App::getLocale()];
+        $validSlug = $this->attributes['slug'][App::getLocale()];
 
         if ($validSlug !== $slug) {
             abort(404);
