@@ -16,13 +16,15 @@ class LocalizedUrlMacro
     public static function register()
     {
         Route::macro('localizedUrl', function ($locale = null, $parameters = null, $absolute = true) {
-            if ( ! $parameters) {
-                $parameters = Route::current()->parameters();
-                $model = Collection::make($parameters)->first();
+            $parameters = $parameters ?: Route::current()->parameters();
+            $model = Collection::make($parameters)->first();
 
-                if ($model instanceof ProvidesRouteParameters) {
-                    $parameters = $model->getRouteParameters($locale);
-                }
+            if ($model instanceof ProvidesRouteParameters) {
+                $parameters = $model->getRouteParameters($locale);
+            }
+
+            if (is_callable($parameters)) {
+                $parameters = $parameters($locale);
             }
 
             return route(Route::currentRouteName(), $parameters, $absolute, $locale);

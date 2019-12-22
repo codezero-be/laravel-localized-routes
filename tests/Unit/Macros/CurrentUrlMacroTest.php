@@ -111,7 +111,7 @@ class CurrentUrlMacroTest extends TestCase
     }
 
     /** @test */
-    public function you_can_pass_it_a_model_with_a_localized_route_key()
+    public function you_can_pass_it_a_model_with_a_localized_route_key_without_route_model_binding()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -140,6 +140,45 @@ class CurrentUrlMacroTest extends TestCase
             'current' => url('/en/route/en-slug'),
             'en' => url('/en/route/en-slug'),
             'nl' => url('/nl/route/nl-slug'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function you_can_pass_it_a_closure_that_returns_the_parameters_without_route_model_binding()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        $model = (new Model([
+            'id' => 1,
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('id');
+
+        App::instance(Model::class, $model);
+
+        Route::localized(function () use ($model) {
+            Route::get('route/{id}/{slug}', function ($id, $slug) use ($model) {
+
+                $closure = function ($locale) use ($model) {
+                    return [$model->id, $model->getSlug($locale)];
+                };
+
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en', $closure),
+                    'nl' => Route::localizedUrl('nl', $closure),
+                ];
+            });
+        });
+
+        $response = $this->call('GET', '/en/route/1/en-slug');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/en/route/1/en-slug'),
+            'en' => url('/en/route/1/en-slug'),
+            'nl' => url('/nl/route/1/nl-slug'),
         ], $response->original);
     }
 }
