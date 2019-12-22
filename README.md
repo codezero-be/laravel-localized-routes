@@ -20,6 +20,7 @@
 - [Generate localized route URL's](#-generate-route-urls) using the `route()` helper.
 - [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
 - [Generate localized signed route URL's](#-generate-signed-route-urls).
+- [Generate localized versions of the current URL](#-generate-localized-versions-of-the-current-url) with our `Route::localizedUrl()` macro.
 - [Automatically set the appropriate app locale](#%EF%B8%8F-use-middleware-to-update-app-locale) using the middleware.
 - Optionally [detect and set the preferred locale in multiple sources](#%EF%B8%8F-use-localizer-to-detect-and-set-the-locale).
 - Use localized route keys with [route model binding](#-route-model-binding).
@@ -326,6 +327,62 @@ You can't redirect to URL's in a specific locale this way, but if you need to, y
 ```php
 return redirect(route('about', [], true, 'nl')); // localized route, redirects to /nl/about
 ```
+
+### ⚓️ Generate Localized Versions of the Current URL
+
+To generate a URL for the current route in any locale, you can use this `Route` macro:
+
+##### With Route Model Binding
+
+If your route uses a localized key (like a slug) and you are using [route model binding](#-route-model-binding),
+then the key will automatically be localized.
+
+```php
+$current = \Route::localizedUrl(); // /en/posts/en-slug
+$en = \Route::localizedUrl('en'); // /en/posts/en-slug
+$nl = \Route::localizedUrl('nl'); // /nl/posts/nl-slug
+```
+
+If you have a route **with multiple keys**, like `/en/posts/{id}/{slug}`, then you can pass the parameters yourself
+(like in the example without route model binding below) or you can implement this interface in your model:
+
+```php
+use CodeZero\LocalizedRoutes\ProvidesRouteParameters;
+use Illuminate\Database\Eloquent\Model;
+
+class Post extends Model implements ProvidesRouteParameters
+{
+    public function getRouteParameters($locale = null)
+    {
+        return [
+            $this->id,
+            $this->getSlug($locale) // Add this method yourself of course :)
+        ];
+    }
+}
+```
+
+Now, as long as you use route model binding, you can still just do:
+
+```php
+$current = \Route::localizedUrl(); // /en/posts/en-slug
+$en = \Route::localizedUrl('en'); // /en/posts/en-slug
+$nl = \Route::localizedUrl('nl'); // /nl/posts/nl-slug
+```
+
+##### Without Route Model Binding
+
+If you don't use [route model binding](#-route-model-binding) and you need a localized slug in the URL,
+then you will have to pass it manually.
+
+For example:
+
+```php
+$nl = \Route::localizedUrl('nl'); // Wrong: /nl/posts/en-slug
+$nl = \Route::localizedUrl('nl', [$post->getSlug('nl')]); // Right: /nl/posts/nl-slug
+```
+
+The `getSlug()` method is just for illustration, so you will need to implement that yourself of course.
 
 ### ✍🏻 Generate Signed Route URL's
 
