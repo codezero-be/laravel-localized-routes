@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 class CurrentUrlMacroTest extends TestCase
 {
     /** @test */
-    public function it_automatically_generates_urls_with_localized_route_keys_for_the_current_route_using_route_model_binding()
+    public function it_generates_urls_with_localized_route_keys_for_the_current_route_using_route_model_binding()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
