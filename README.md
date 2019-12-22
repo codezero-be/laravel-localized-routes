@@ -20,7 +20,7 @@
 - [Generate localized route URL's](#-generate-route-urls) using the `route()` helper.
 - [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
 - [Generate localized signed route URL's](#-generate-signed-route-urls).
-- [Generate localized versions of the current URL](#-generate-localized-versions-of-the-current-url) with our `Route::localizedUrl()` macro.
+- [Generate localized versions of the current URL](#%EF%B8%8F-generate-localized-versions-of-the-current-url) with our `Route::localizedUrl()` macro.
 - [Automatically set the appropriate app locale](#%EF%B8%8F-use-middleware-to-update-app-locale) using the middleware.
 - Optionally [detect and set the preferred locale in multiple sources](#%EF%B8%8F-use-localizer-to-detect-and-set-the-locale).
 - Use localized route keys with [route model binding](#-route-model-binding).
@@ -386,9 +386,9 @@ The `getSlug()` method is just for illustration, so you will need to implement t
 
 ### ✍🏻 Generate Signed Route URL's
 
-Generating a [signed route URL](https://laravel.com/docs/5.8/urls#signed-urls) is just as easy.
+Generating a [signed route URL](https://laravel.com/docs/urls#signed-urls) is just as easy.
 
-Pass it the route name, the nescessary parameters and you will get the URL for the current locale.
+Pass it the route name, the necessary parameters and you will get the URL for the current locale.
 
 ```php
 $signedUrl = URL::signedRoute('reset.password', ['user' => $id], now()->addMinutes(30));
@@ -400,7 +400,7 @@ You can also generate a signed URL for a specific locale:
 $signedUrl = URL::signedRoute($name, $parameters, $expiration, true, 'nl');
 ```
 
-Check out the [Laravel docs](https://laravel.com/docs/5.8/urls#signed-urls) for more info on signed routes.
+Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more info on signed routes.
 
 ### 🌎 Translate Routes
 
