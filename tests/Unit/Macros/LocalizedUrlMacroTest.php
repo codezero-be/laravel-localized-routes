@@ -184,6 +184,28 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_the_current_url_for_non_localized_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('non/localized/route', function () {
+            return [
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ];
+        });
+
+        $response = $this->call('GET', '/non/localized/route');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/non/localized/route'),
+            'en' => url('/non/localized/route'),
+            'nl' => url('/non/localized/route'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function nothing_happens_in_case_of_a_404()
     {
         View::composer('*', function ($view) {

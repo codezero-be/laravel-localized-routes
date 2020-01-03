@@ -17,7 +17,7 @@ class LocalizedUrlMacro
     public static function register()
     {
         Route::macro('localizedUrl', function ($locale = null, $parameters = null, $absolute = true) {
-            if ( ! $route = Route::current()) {
+            if (( ! $route = Route::current()) || ! $route->getAction('localized-routes-locale')) {
                 return URL::current();
             }
 
