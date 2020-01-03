@@ -5,6 +5,7 @@ namespace CodeZero\LocalizedRoutes\Macros;
 use CodeZero\LocalizedRoutes\ProvidesRouteParameters;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 
 class LocalizedUrlMacro
 {
@@ -16,7 +17,11 @@ class LocalizedUrlMacro
     public static function register()
     {
         Route::macro('localizedUrl', function ($locale = null, $parameters = null, $absolute = true) {
-            $parameters = $parameters ?: Route::current()->parameters();
+            if ( ! $route = Route::current()) {
+                return URL::current();
+            }
+
+            $parameters = $parameters ?: $route->parameters();
             $model = Collection::make($parameters)->first();
 
             if ($model instanceof ProvidesRouteParameters) {
@@ -27,7 +32,7 @@ class LocalizedUrlMacro
                 $parameters = $parameters($locale);
             }
 
-            return route(Route::currentRouteName(), $parameters, $absolute, $locale);
+            return route($route->getName(), $parameters, $absolute, $locale);
         });
     }
 }

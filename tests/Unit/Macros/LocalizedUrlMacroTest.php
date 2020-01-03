@@ -7,6 +7,7 @@ use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
 class LocalizedUrlMacroTest extends TestCase
 {
@@ -180,5 +181,16 @@ class LocalizedUrlMacroTest extends TestCase
             'en' => url('/en/route/1/en-slug'),
             'nl' => url('/nl/route/1/nl-slug'),
         ], $response->original);
+    }
+
+    /** @test */
+    public function nothing_happens_in_case_of_a_404()
+    {
+        View::composer('*', function ($view) {
+            $view->with('url', Route::localizedUrl());
+        });
+
+        $response = $this->get('/en/route/does/not/exist');
+        $response->assertNotFound();
     }
 }
