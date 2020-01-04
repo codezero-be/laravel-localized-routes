@@ -218,4 +218,28 @@ class LocalizedUrlMacroTest extends TestCase
         $response->assertNotFound();
         $response->assertResponseHasNoView();
     }
+
+    /** @test */
+    public function it_returns_localized_urls_for_non_existing_routes_that_have_a_supported_locale_in_their_url_if_you_register_a_fallback_route()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::localized(function () {
+            Route::fallback(function () {
+                return response([
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ], 404);
+            })->name('404');
+        });
+
+        $response = $this->call('GET', '/nl/non/existing/route');
+        $response->assertNotFound();
+        $this->assertEquals([
+            'current' => url('/nl/non/existing/route'),
+            'en' => url('/en/non/existing/route'),
+            'nl' => url('/nl/non/existing/route'),
+        ], $response->original);
+    }
 }
