@@ -114,7 +114,7 @@ class UrlGenerator extends BaseUrlGenerator
             return $name;
         }
 
-        $locales = Config::get('localized-routes.supported-locales', []);
+        $locales = $this->getSupportedLocales();
 
         // If the first part of the route name is a valid
         // locale, then remove it from the array.
@@ -126,5 +126,22 @@ class UrlGenerator extends BaseUrlGenerator
         $name = join('.', $parts);
 
         return $name;
+    }
+
+    /**
+     * Get the supported locales and not the custom domains.
+     *
+     * @return array
+     */
+    protected function getSupportedLocales()
+    {
+        $locales = Config::get('localized-routes.supported-locales', []);
+        $keys = array_keys($locales);
+
+        if ( ! empty($locales) && is_numeric($keys[0])) {
+            return $locales;
+        }
+
+        return $keys;
     }
 }

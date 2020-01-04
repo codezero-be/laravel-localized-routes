@@ -95,6 +95,23 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
+    public function it_gets_the_url_of_a_route_in_the_given_locale_when_using_custom_domains()
+    {
+        $this->setSupportedLocales([
+            'en' => 'en.domain.test',
+            'nl' => 'nl.domain.test',
+        ]);
+        $this->setAppLocale('en');
+
+        $this->registerRoute('route', 'en.route.name')->domain('en.domain.test');
+        $this->registerRoute('route', 'nl.route.name')->domain('nl.domain.test');
+
+        $this->assertEquals('http://nl.domain.test/route', route('route.name', [], true, 'nl'));
+        $this->assertEquals('http://nl.domain.test/route', route('en.route.name', [], true, 'nl'));
+        $this->assertEquals('http://nl.domain.test/route', route('nl.route.name', [], true, 'nl'));
+    }
+
+    /** @test */
     public function it_always_gets_the_url_of_a_localized_route_if_a_locale_is_specified()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -193,10 +210,10 @@ class UrlGeneratorTest extends TestCase
      * @param string $name
      * @param \Closure|null $callback
      *
-     * @return void
+     * @return \Illuminate\Routing\Route
      */
     protected function registerRoute($url, $name, $callback = null)
     {
-        Route::name($name)->get($url, $callback ?: function () {});
+        return Route::name($name)->get($url, $callback ?: function () {});
     }
 }
