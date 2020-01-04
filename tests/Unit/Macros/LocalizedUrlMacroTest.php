@@ -184,7 +184,7 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_the_current_url_for_non_localized_routes()
+    public function it_returns_the_current_url_for_existing_non_localized_routes()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -194,7 +194,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ];
-        });
+        })->name('non.localized.route');
 
         $response = $this->call('GET', '/non/localized/route');
         $response->assertOk();
@@ -206,13 +206,16 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
-    public function nothing_happens_in_case_of_a_404()
+    public function the_macro_does_not_blow_up_on_a_default_404_error()
     {
+        // Although a default 404 has no Route::current(), the composer still triggers.
+        // Custom 404 views that trigger the macro still don't have a Route::current().
         View::composer('*', function ($view) {
             $view->with('url', Route::localizedUrl());
         });
 
         $response = $this->get('/en/route/does/not/exist');
         $response->assertNotFound();
+        $response->assertResponseHasNoView();
     }
 }
