@@ -220,7 +220,7 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
-    public function it_returns_localized_urls_for_non_existing_routes_that_have_a_supported_locale_in_their_url_if_you_register_a_fallback_route()
+    public function it_returns_a_localized_url_for_a_localized_fallback_route()
     {
         $this->setSupportedLocales(['en', 'nl']);
 
