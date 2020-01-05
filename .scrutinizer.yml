@@ -19,10 +19,17 @@ checks:
         fix_identation_4spaces: true
         fix_doc_comments: true
 build:
-    tests:
-        override:
-            -
-                command: 'vendor/bin/phpunit --coverage-clover=coverage.clover'
-                coverage:
-                    file: 'coverage.clover'
-                    format: 'clover'
+    nodes:
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
+
+        tests-and-coverage:
+            tests:
+                override:
+                    -
+                        command: 'vendor/bin/phpunit --coverage-clover=coverage.clover'
+                        coverage:
+                            file: 'coverage.clover'
+                            format: 'clover'
