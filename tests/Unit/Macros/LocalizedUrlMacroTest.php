@@ -242,4 +242,100 @@ class LocalizedUrlMacroTest extends TestCase
             'nl' => url('/nl/non/existing/route'),
         ], $response->original);
     }
+
+    /** @test */
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_contains_a_supported_locale()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('nl');
+
+        Route::fallback(function () {
+            return response([
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ], 404);
+        })->name('404');
+
+        $response = $this->call('GET', '/nl/non/existing/route');
+        $response->assertNotFound();
+        $this->assertEquals([
+            'current' => url('/nl/non/existing/route'),
+            'en' => url('/en/non/existing/route'),
+            'nl' => url('/nl/non/existing/route'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_does_not_contain_a_supported_locale()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('nl');
+
+        Route::fallback(function () {
+            return response([
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ], 404);
+        })->name('404');
+
+        $response = $this->call('GET', '/non/existing/route');
+        $response->assertNotFound();
+        $this->assertEquals([
+            'current' => url('/nl/non/existing/route'),
+            'en' => url('/en/non/existing/route'),
+            'nl' => url('/nl/non/existing/route'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_omitting_the_main_locale()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setOmitUrlPrefixForLocale('nl');
+        $this->setAppLocale('nl');
+
+        Route::fallback(function () {
+            return response([
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ], 404);
+        })->name('404');
+
+        $response = $this->call('GET', '/non/existing/route');
+        $response->assertNotFound();
+        $this->assertEquals([
+            'current' => url('/non/existing/route'),
+            'en' => url('/en/non/existing/route'),
+            'nl' => url('/non/existing/route'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_using_custom_domains()
+    {
+        $this->setSupportedLocales([
+            'en' => 'en.domain.test',
+            'nl' => 'nl.domain.test',
+        ]);
+        $this->setAppLocale('nl');
+
+        Route::fallback(function () {
+            return response([
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ], 404);
+        })->name('404');
+
+        $response = $this->call('GET', '/en/non/existing/route');
+        $response->assertNotFound();
+        $this->assertEquals([
+            'current' => 'http://nl.domain.test/en/non/existing/route',
+            'en' => 'http://en.domain.test/en/non/existing/route',
+            'nl' => 'http://nl.domain.test/en/non/existing/route',
+        ], $response->original);
+    }
 }
