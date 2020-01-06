@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
+use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
@@ -247,7 +248,7 @@ class LocalizedUrlMacroTest extends TestCase
     public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_contains_a_supported_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setAppLocale('nl');
+        $this->setAppLocale('en');
 
         Route::fallback(function () {
             return response([
@@ -255,7 +256,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ], 404);
-        })->name('404');
+        })->middleware(SetLocale::class)->name('404');
 
         $response = $this->call('GET', '/nl/non/existing/route');
         $response->assertNotFound();
@@ -294,7 +295,7 @@ class LocalizedUrlMacroTest extends TestCase
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmitUrlPrefixForLocale('nl');
-        $this->setAppLocale('nl');
+        $this->setAppLocale('en');
 
         Route::fallback(function () {
             return response([
@@ -302,7 +303,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ], 404);
-        })->name('404');
+        })->middleware(SetLocale::class)->name('404');
 
         $response = $this->call('GET', '/non/existing/route');
         $response->assertNotFound();

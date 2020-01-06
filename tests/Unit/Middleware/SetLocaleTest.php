@@ -56,6 +56,26 @@ class SetLocaleTest extends TestCase
     }
 
     /** @test */
+    public function it_sets_the_right_locale_when_accessing_non_localized_fallback_routes_with_omitted_prefix()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setOmitUrlPrefixForLocale('nl');
+        $this->setAppLocale('en');
+
+        Route::fallback(function () {
+            return App::getLocale();
+        })->middleware(SetLocale::class);
+
+        $response = $this->call('GET', '/non/existing/route');
+        $response->assertOk();
+        $this->assertEquals('nl', $response->original);
+
+        $response = $this->call('GET', '/en/non/existing/route');
+        $response->assertOk();
+        $this->assertEquals('en', $response->original);
+    }
+
+    /** @test */
     public function it_sets_the_locale_for_localized_routes_within_route_groups()
     {
         $this->setSupportedLocales(['en', 'nl']);
