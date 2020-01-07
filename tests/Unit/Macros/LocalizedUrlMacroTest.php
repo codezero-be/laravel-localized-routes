@@ -185,6 +185,82 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_handles_unnamed_non_localized_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/one', function () {
+            return [
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ];
+        });
+        Route::get('route/two', function () {
+            return [
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ];
+        });
+
+        $response = $this->call('GET', '/route/one');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/one'),
+            'en' => url('/route/one'),
+            'nl' => url('/route/one'),
+        ], $response->original);
+
+        $response = $this->call('GET', '/route/two');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/two'),
+            'en' => url('/route/two'),
+            'nl' => url('/route/two'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_handles_unnamed_localized_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::localized(function () {
+            Route::get('route/one', function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            });
+            Route::get('route/two', function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            });
+        });
+
+        $response = $this->call('GET', '/en/route/one');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/en/route/one'),
+            'en' => url('/en/route/one'),
+            'nl' => url('/nl/route/one'),
+        ], $response->original);
+
+        $response = $this->call('GET', '/en/route/two');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/en/route/two'),
+            'en' => url('/en/route/two'),
+            'nl' => url('/nl/route/two'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function it_returns_the_current_url_for_existing_non_localized_routes()
     {
         $this->setSupportedLocales(['en', 'nl']);

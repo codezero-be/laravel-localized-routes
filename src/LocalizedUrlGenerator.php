@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -45,7 +46,7 @@ class LocalizedUrlGenerator
      */
     public function generateFromRequest($locale = null, $parameters = null, $absolute = true)
     {
-        return ($this->isDefault404() || $this->isNonLocalizedFallback404())
+        return ($this->isDefault404() || $this->isNonLocalizedFallback404() || ! $this->routeHasName())
             ? $this->generateFromUrl($locale, $parameters, $absolute)
             : $this->generateFromRoute($locale, $parameters, $absolute);
     }
@@ -113,6 +114,10 @@ class LocalizedUrlGenerator
         // or use the current host by default.
         $urlParts['host'] = $domains[$locale] ?? $urlParts['host'];
 
+        if ($this->routeExists() && ! $this->route->isFallback) {
+            $urlParts['path'] = $this->replaceParameters($locale, $this->route->uri(), $this->prepareParameters($locale, $parameters));
+        }
+
         if (empty($domains)) {
             // Localize the path if no custom domains are configured.
             $currentPath = $urlParts['path'] ?? '';
@@ -137,16 +142,7 @@ class LocalizedUrlGenerator
             return URL::current();
         }
 
-        $parameters = $parameters ?: $this->route->parameters();
-        $model = Collection::make($parameters)->first();
-
-        if ($model instanceof ProvidesRouteParameters) {
-            $parameters = $model->getRouteParameters($locale);
-        }
-
-        if (is_callable($parameters)) {
-            $parameters = $parameters($locale);
-        }
+        $parameters = $this->prepareParameters($locale, $parameters);
 
         return route($this->route->getName(), $parameters, $absolute, $locale);
     }
@@ -260,5 +256,103 @@ class LocalizedUrlGenerator
     protected function getSupportedLocales()
     {
         return Config::get('localized-routes.supported-locales', []);
+    }
+
+    /**
+     * Check if the route has a name.
+     *
+     * @return bool
+     */
+    protected function routeHasName()
+    {
+        return $this->routeExists() && $this->stripLocaleFromRouteName($this->route->getName()) !== '';
+    }
+
+    /**
+     * Strip the locale from the beginning of a route name.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function stripLocaleFromRouteName($name)
+    {
+        $parts = explode('.', $name);
+
+        // If there is no dot in the route name,
+        // there is no locale in the route name.
+        if (count($parts) === 1) {
+            return $name;
+        }
+
+        $locales = $this->getLocaleKeys();
+
+        // If the first part of the route name is a valid
+        // locale, then remove it from the array.
+        if (in_array($parts[0], $locales)) {
+            array_shift($parts);
+        }
+
+        // Rebuild the normalized route name.
+        $name = join('.', $parts);
+
+        return $name;
+    }
+
+    /**
+     * Prepare any route parameters.
+     *
+     * @param string $locale
+     * @param mixed $parameters
+     *
+     * @return array
+     */
+    protected function prepareParameters($locale, $parameters)
+    {
+        if ($this->routeExists() && $parameters === null) {
+            $parameters = $this->route->parameters();
+        }
+
+        $model = Collection::make($parameters)->first();
+
+        if ($model instanceof ProvidesRouteParameters) {
+            $parameters = $model->getRouteParameters($locale);
+        }
+
+        if (is_callable($parameters)) {
+            $parameters = $parameters($locale);
+        }
+
+        return $parameters;
+    }
+
+    /**
+     * Replace parameter placeholders with their value.
+     *
+     * @param string $locale
+     * @param string $uri
+     * @param array $parameters
+     *
+     * @return string
+     */
+    protected function replaceParameters($locale, $uri, array $parameters)
+    {
+        preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
+        $paramKeys = $matches[1] ?? [];
+
+        foreach ($paramKeys as $index => $key) {
+            $value = $parameters[$key] ?? $parameters[$index];
+
+            if ($value instanceof Model) {
+                $originalLocale = App::getLocale();
+                App::setLocale($locale);
+                $value = $value->getRouteKey();
+                App::setLocale($originalLocale);
+            }
+
+            $uri = str_replace("{{$key}}", $value, $uri);
+        }
+
+        return $uri;
     }
 }
