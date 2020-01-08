@@ -463,7 +463,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ], 404);
-        })->name('404');
+        })->middleware(SetLocale::class)->name('404');
 
         $response = $this->call('GET', '/non/existing/route');
         $response->assertNotFound();

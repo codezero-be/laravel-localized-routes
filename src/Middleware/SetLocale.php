@@ -51,6 +51,10 @@ class SetLocale
             return $omittedLocale;
         }
 
+        if ( ! $localeIsSupported) {
+            return null;
+        }
+
         return $locale;
     }
 
