@@ -25,6 +25,7 @@
 - Optionally [detect and set the preferred locale in multiple sources](#%EF%B8%8F-use-localizer-to-detect-and-set-the-locale).
 - Use localized route keys with [route model binding](#-route-model-binding).
 - Allow routes to be [cached](#-cache-routes).
+- Localize [`404` pages](#-localized-404-pages).
 
 ## 🔌 Demo App
 
