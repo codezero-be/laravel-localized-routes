@@ -407,6 +407,7 @@ class LocalizedUrlMacroTest extends TestCase
     public function it_returns_a_localized_url_for_a_localized_fallback_route()
     {
         $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
 
         Route::localized(function () {
             Route::fallback(function () {
