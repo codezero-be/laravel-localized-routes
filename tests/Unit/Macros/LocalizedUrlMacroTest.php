@@ -287,7 +287,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function the_macro_does_not_blow_up_on_a_default_404_error()
     {
-        // Although a default 404 has no Route::current(), the composer still triggers.
+        // Although a default 404 has no Route::current() and is no real View, the composer still triggers.
         // Custom 404 views that trigger the macro still don't have a Route::current().
         View::composer('*', function ($view) {
             $view->with('url', Route::localizedUrl());
