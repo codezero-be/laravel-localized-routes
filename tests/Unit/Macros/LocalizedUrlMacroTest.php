@@ -513,6 +513,6 @@ class LocalizedUrlMacroTest extends TestCase
      */
     protected function setCustomErrorViewPath()
     {
-        Config::set('view.paths', __DIR__ . '/../../Stubs/views');
+        Config::set('view.paths', [__DIR__ . '/../../Stubs/views']);
     }
 }
