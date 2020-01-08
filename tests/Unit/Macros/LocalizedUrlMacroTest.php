@@ -6,7 +6,9 @@ use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
@@ -297,6 +299,94 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function a_404_is_not_localized_when_triggered_by_a_non_existing_route()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+        $this->setAppLocale('en');
+        $this->setCustomErrorViewPath();
+
+        $response = $this->get('/nl/abort');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertEquals('en', trim($response->original));
+    }
+
+    /** @test */
+    public function a_404_is_localized_when_a_registered_route_throws_a_not_found_exception()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+        $this->setAppLocale('en');
+        $this->setCustomErrorViewPath();
+
+        Route::localized(function () {
+            Route::get('abort', function () {
+                abort(404);
+            });
+        });
+
+        $response = $this->get('/nl/abort');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertEquals('nl', trim($response->original));
+    }
+
+    /** @test */
+    public function a_404_is_localized_when_a_registered_route_throws_a_model_not_found_exception()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+        $this->setAppLocale('en');
+        $this->setCustomErrorViewPath();
+
+        Route::localized(function () {
+            Route::get('route/{model}', function ($model) {
+                throw new ModelNotFoundException();
+            });
+        });
+
+        $response = $this->get('/nl/route/mismatch');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertEquals('nl', trim($response->original));
+    }
+
+    /** @test */
+    public function a_fallback_route_is_not_triggered_when_a_registered_route_throws_a_not_found_exception()
+    {
+        Route::get('abort', function () {
+            return abort(404);
+        });
+
+        Route::fallback(function () {
+            return 'fallback';
+        });
+
+        $response = $this->get('/abort');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertNotEquals('fallback', $response->original);
+    }
+
+    /** @test */
+    public function a_fallback_route_is_not_triggered_when_a_registered_route_throws_a_model_not_found_exception()
+    {
+        Route::get('route/{model}', function ($model) {
+            throw new ModelNotFoundException();
+        });
+
+        Route::fallback(function () {
+            return 'fallback';
+        });
+
+        $response = $this->call('GET', '/route/mismatch');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertNotEquals('fallback', $response->original);
+    }
+
+    /** @test */
     public function it_returns_a_localized_url_for_a_localized_fallback_route()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -414,5 +504,15 @@ class LocalizedUrlMacroTest extends TestCase
             'en' => 'http://en.domain.test/en/non/existing/route',
             'nl' => 'http://nl.domain.test/en/non/existing/route',
         ], $response->original);
+    }
+
+    /**
+     * Set a custom view path so Laravel will find our custom 440 error view.
+     *
+     * @return void
+     */
+    protected function setCustomErrorViewPath()
+    {
+        Config::set('view.paths', __DIR__ . '/../../Stubs/views');
     }
 }
