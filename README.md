@@ -259,6 +259,36 @@ If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the
 You can't have a localized `/about` route and also register a non-localized `/about` route in this case.
 The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
 
+### 🔦 Localized `404` Pages
+
+By default, Laravel's `404` pages don't go trough the middleware and have no `Route::current()` associated with it.
+Not even when you create your custom `errors.404` view.
+Therefor, the locale can't be set to match the requested URL automatically via middleware.
+
+To enable localized `404` pages, you need to register a `fallback` route
+and make sure it has the `SetLocale` middleware and a name of `404`.
+This is basically a catch all route that will trigger for all non existing URL's.
+
+```php
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+})->name('404')->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
+```
+
+> Because you might use a `fallback` route for another purpose,
+this package will only consider it to be a `404` if you name the route `404`.
+
+Another thing to keep in mind is that a `fallback` route returns a `200` status by default.
+So to make it a real `404` you need to return a `404` response yourself.
+
+Fallback routes will not be triggered when:
+
+- your existing routes throw a `404` error (as in `abort(404)`)
+- your existing routes throw a `ModelNotFoundException` (like with route model binding)
+- your existing routes throw any other exception
+
+Because those routes are in fact registered, the `404` page will have the correct `App::getLocale()` set.
+
 ### 🚕 Generate Route URL's
 
 You can get the URL of your named routes as usual, using the `route()` helper.
