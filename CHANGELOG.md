@@ -2,6 +2,10 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.1 (2020-01-08)
+
+- Fix issue where first slug was duplicated on fallback routes
+
 ## 2.2.0 (2020-01-08)
 
 - Localize 404 and fallback URL's
