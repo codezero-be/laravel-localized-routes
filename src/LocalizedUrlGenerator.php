@@ -105,8 +105,16 @@ class LocalizedUrlGenerator
      */
     protected function generateFromUrl($locale = null, $parameters = null, $absolute = true)
     {
-        $locale = $locale ?: App::getLocale();
         $currentUrl = Request::fullUrl();
+
+        // If its a default 404 (no route exists)
+        // and there is no specific locale requested
+        // return the current URL.
+        if ( ! $this->routeExists() && $locale === null) {
+            return $currentUrl;
+        }
+
+        $locale = $locale ?: App::getLocale();
         $urlParts = parse_url($currentUrl);
         $domains = $this->getCustomDomains();
 

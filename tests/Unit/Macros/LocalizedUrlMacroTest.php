@@ -299,6 +299,23 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function a_404_receives_the_correct_localized_url_from_a_view_composer()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+        $this->setCustomErrorViewPath();
+
+        View::composer('*', function ($view) {
+            $view->with('response', Route::localizedUrl());
+        });
+
+        $response = $this->get('/nl/route/does/not/exist');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertEquals(url('/nl/route/does/not/exist'), trim($response->original));
+    }
+
+    /** @test */
     public function a_404_is_not_localized_when_triggered_by_a_non_existing_route()
     {
         $this->setSupportedLocales(['en', 'nl']);

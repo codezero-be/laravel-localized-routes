@@ -1,1 +1,1 @@
-{{ App::getLocale() }}
+{{ $response ?? App::getLocale() }}
