@@ -2,6 +2,16 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.0 (2020-01-08)
+
+- Localize 404 and fallback URL's
+- Add README instructions on how to localize your 404 pages properly
+- Add `Route::isLocalized()` macro
+- Fix issue with `Route::localizedUrl()` on 404 pages (#16)
+- Fix issue with `Route::localizedUrl()` on non localized routes
+- Fix issue with generating localized URL's using custom domains
+- Enable use of Route::localizedUrl() with unnamed routes
+
 ## 2.1.0 (2019-12-22)
 
 - Add `Route::localizedUrl()` macro to generate a URL for the current route in any locale.
