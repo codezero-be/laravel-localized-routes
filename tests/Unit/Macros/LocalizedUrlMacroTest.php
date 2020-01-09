@@ -524,6 +524,32 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
+    /** @test */
+    public function it_generates_non_absolute_urls_for_existing_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+        $this->setAppLocale('en');
+
+        Route::localized(function () {
+            Route::get('route', function () {
+                return [
+                    'current' => Route::localizedUrl(null, [], false),
+                    'en' => Route::localizedUrl('en', [], false),
+                    'nl' => Route::localizedUrl('nl', [], false),
+                ];
+            });
+        });
+
+        $response = $this->call('GET', '/nl/route');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => '/nl/route',
+            'en' => '/en/route',
+            'nl' => '/nl/route',
+        ], $response->original);
+    }
+
     /**
      * Set a custom view path so Laravel will find our custom 440 error view.
      *

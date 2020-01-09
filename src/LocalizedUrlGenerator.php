@@ -134,7 +134,7 @@ class LocalizedUrlGenerator
             $urlParts['path'] = $this->localizeUrlPath($currentPath, $locale);
         }
 
-        return $this->unparseUrl($urlParts);
+        return $this->unparseUrl($urlParts, $absolute);
     }
 
     /**
@@ -170,12 +170,15 @@ class LocalizedUrlGenerator
      * Create a string from parsed URL parts.
      *
      * @param array $parts
+     * @param bool $absolute
      *
      * @return string
      */
-    protected function unparseUrl(array $parts)
+    protected function unparseUrl(array $parts, $absolute = true)
     {
-        return $parts['scheme'] . '://' . $parts['host'] . ($parts['port'] ?? '') . ($parts['path'] ?? '');
+        $host = $absolute ? $parts['scheme'] . '://' . $parts['host'] . ($parts['port'] ?? '') : '';
+
+        return  $host . ($parts['path'] ?? '');
     }
 
     /**
