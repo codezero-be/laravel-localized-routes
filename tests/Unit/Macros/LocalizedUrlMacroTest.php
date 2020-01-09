@@ -505,7 +505,7 @@ class LocalizedUrlMacroTest extends TestCase
             'en' => 'en.domain.test',
             'nl' => 'nl.domain.test',
         ]);
-        $this->setAppLocale('nl');
+        $this->setAppLocale('en');
 
         Route::fallback(function () {
             return response([
@@ -515,7 +515,7 @@ class LocalizedUrlMacroTest extends TestCase
             ], 404);
         })->name('404');
 
-        $response = $this->call('GET', '/en/non/existing/route');
+        $response = $this->call('GET', 'http://nl.domain.test/en/non/existing/route');
         $response->assertNotFound();
         $this->assertEquals([
             'current' => 'http://nl.domain.test/en/non/existing/route',
@@ -528,26 +528,40 @@ class LocalizedUrlMacroTest extends TestCase
     public function it_generates_non_absolute_urls_for_existing_routes()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
 
-        Route::localized(function () {
-            Route::get('route', function () {
-                return [
-                    'current' => Route::localizedUrl(null, [], false),
-                    'en' => Route::localizedUrl('en', [], false),
-                    'nl' => Route::localizedUrl('nl', [], false),
-                ];
-            });
+        Route::get('route', function () {
+            return [
+                'current' => Route::localizedUrl(null, [], false),
+                'en' => Route::localizedUrl('en', [], false),
+                'nl' => Route::localizedUrl('nl', [], false),
+            ];
         });
 
-        $response = $this->call('GET', '/nl/route');
+        $response = $this->call('GET', '/route');
         $response->assertOk();
         $this->assertEquals([
-            'current' => '/nl/route',
-            'en' => '/en/route',
-            'nl' => '/nl/route',
+            'current' => '/route',
+            'en' => '/route',
+            'nl' => '/route',
         ], $response->original);
+    }
+
+    /** @test */
+    public function it_generates_non_absolute_urls_for_non_existing_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+        $this->setCustomErrorViewPath();
+
+        View::composer('*', function ($view) {
+            $view->with('response', Route::localizedUrl(null, [], false));
+        });
+
+        $response = $this->get('/en/route/does/not/exist');
+        $response->assertNotFound();
+        $response->assertResponseHasNoView();
+        $this->assertEquals('/en/route/does/not/exist', trim($response->original));
     }
 
     /**

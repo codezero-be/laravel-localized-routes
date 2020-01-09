@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\URL;
 
 class LocalizedUrlGenerator
 {
@@ -46,7 +45,23 @@ class LocalizedUrlGenerator
      */
     public function generateFromRequest($locale = null, $parameters = null, $absolute = true)
     {
-        return $this->generateFromUrl($locale, $parameters, $absolute);
+        $url = UrlBuilder::make(Request::fullUrl());
+        $locale = $locale ?: $this->detectLocale($url);
+
+        if ( ! $this->is404()) {
+            $parameters = $parameters ?: $this->route->parameters();
+            $url->setPath($this->replaceParameters($this->route->uri(), $parameters, $locale));
+        }
+
+        if ( ! $this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
+            $url->setSlugs($this->updateLocaleInSlugs($url->getSlugs(), $locale));
+        }
+
+        if ($domain = $this->getCustomDomain($locale)) {
+            $url->setHost($domain);
+        }
+
+        return $url->build($absolute);
     }
 
     /**
@@ -60,25 +75,23 @@ class LocalizedUrlGenerator
     }
 
     /**
-     * Check if the current request is a default 404.
-     * Default 404 requests will not have a Route.
+     * Check if the current request is a 404.
      *
      * @return bool
      */
-    protected function isDefault404()
+    protected function is404()
     {
-        return ! $this->routeExists();
+        return ! $this->routeExists() || $this->isFallback();
     }
 
     /**
-     * Check if the current request is a non localized fallback 404 route.
-     * If a fallback route is used as a 404, we expect it to be named '404'.
+     * Check if the current route is a fallback route.
      *
      * @return bool
      */
-    protected function isNonLocalizedFallback404()
+    protected function isFallback()
     {
-        return $this->routeExists() && $this->route->isFallback && $this->route->getName() === '404';
+        return $this->route->isFallback;
     }
 
     /**
@@ -90,95 +103,6 @@ class LocalizedUrlGenerator
     protected function routeExists()
     {
         return $this->route !== null;
-    }
-
-    /**
-     * Generate a localized version of a URL.
-     *
-     * @param string|null $locale
-     * @param mixed $parameters
-     * @param bool $absolute
-     *
-     * @return string
-     */
-    protected function generateFromUrl($locale = null, $parameters = null, $absolute = true)
-    {
-        $currentUrl = Request::fullUrl();
-
-        // If its a default 404 (no route exists)
-        // and there is no specific locale requested
-        // return the current URL.
-        if ( ! $this->routeExists() && $locale === null) {
-            return $currentUrl;
-        }
-
-        if ( ! $this->isNonLocalizedFallback404() && ! $this->isLocalized()) {
-            return URL::current();
-        }
-
-        $locale = $locale ?: App::getLocale();
-        $urlParts = parse_url($currentUrl);
-        $domains = $this->getCustomDomains();
-
-        // Replace the host with a matching custom domain
-        // or use the current host by default.
-        $urlParts['host'] = $domains[$locale] ?? $urlParts['host'];
-
-        if ($this->routeExists() && ! $this->route->isFallback) {
-            $urlParts['path'] = $this->replaceParameters($locale, $this->route->uri(), $this->prepareParameters($locale, $parameters));
-        }
-
-        if (empty($domains)) {
-            // Localize the path if no custom domains are configured.
-            $currentPath = $urlParts['path'] ?? '';
-            $urlParts['path'] = $this->localizeUrlPath($currentPath, $locale);
-        }
-
-        return $this->unparseUrl($urlParts, $absolute);
-    }
-
-    /**
-     * Localize the URL path.
-     *
-     * @param string $path
-     * @param string $requestedLocale
-     *
-     * @return string
-     */
-    protected function localizeUrlPath($path, $requestedLocale)
-    {
-        $slugs = explode('/', trim($path, '/'));
-
-        if (isset($slugs[0]) && $this->localeIsSupported($slugs[0])) {
-            // If the existing slug is a supported locale
-            // replace it with the requested locale.
-            $slugs[0] = $requestedLocale;
-        } else {
-            // If there is no slug, or it is not a supported locale
-            // prepend the requested locale to the slugs array.
-            array_unshift($slugs, $requestedLocale);
-        }
-
-        if ($this->localeShouldBeOmitted($requestedLocale)) {
-            array_shift($slugs);
-        }
-
-        return '/' . join('/', $slugs);
-    }
-
-    /**
-     * Create a string from parsed URL parts.
-     *
-     * @param array $parts
-     * @param bool $absolute
-     *
-     * @return string
-     */
-    protected function unparseUrl(array $parts, $absolute = true)
-    {
-        $host = $absolute ? $parts['scheme'] . '://' . $parts['host'] . ($parts['port'] ?? '') : '';
-
-        return  $host . ($parts['path'] ?? '');
     }
 
     /**
@@ -198,13 +122,66 @@ class LocalizedUrlGenerator
     }
 
     /**
-     * Get the custom domains from the supported locales configuration.
+     * Get the domain for the given locale if one is configured.
+     *
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    protected function getCustomDomain($locale)
+    {
+        return $this->supportedLocales[$locale] ?? null;
+    }
+
+    /**
+     * Get the custom domains if configured.
      *
      * @return array
      */
     protected function getCustomDomains()
     {
         return $this->hasCustomDomains() ? $this->supportedLocales : [];
+    }
+
+    /**
+     * Find the locale that belongs to a custom domain.
+     *
+     * @param string $domain
+     *
+     * @return false|string
+     */
+    protected function findLocaleByDomain($domain)
+    {
+        return array_search($domain, $this->getCustomDomains());
+    }
+
+    /**
+     * Get the locale from the slugs if it exists.
+     *
+     * @param array $slugs
+     *
+     * @return string|null
+     */
+    protected function getLocaleFromSlugs(array $slugs)
+    {
+        $locale = $slugs[0] ?? null;
+
+        return ($locale && $this->localeIsSupported($locale)) ? $locale : null;
+    }
+
+    /**
+     * Replace the locale in the slugs or prepend it if no locale exists yet.
+     *
+     * @param array $slugs
+     * @param string $locale
+     *
+     * @return array
+     */
+    protected function setLocaleInSlugs(array $slugs, $locale)
+    {
+        $slugs[0] = $locale;
+
+        return $slugs;
     }
 
     /**
@@ -215,18 +192,6 @@ class LocalizedUrlGenerator
     protected function getLocaleKeys()
     {
         return $this->hasCustomDomains() ? array_keys($this->supportedLocales) : $this->supportedLocales;
-    }
-
-    /**
-     * Check if the given locale should be omitted from the URL.
-     *
-     * @param string $locale
-     *
-     * @return bool
-     */
-    protected function localeShouldBeOmitted($locale)
-    {
-        return $locale === Config::get('localized-routes.omit_url_prefix_for_locale');
     }
 
     /**
@@ -242,52 +207,77 @@ class LocalizedUrlGenerator
     }
 
     /**
-     * Get the supported locales and not the custom domains.
+     * Check if the given locale should be omitted from the URL.
      *
-     * @return array
-     */
-    protected function getSupportedLocales()
-    {
-        return Config::get('localized-routes.supported-locales', []);
-    }
-
-    /**
-     * Check if the route has a name.
+     * @param string $locale
      *
      * @return bool
      */
-    protected function routeHasName()
+    protected function localeShouldBeOmitted($locale)
     {
-        return $this->routeExists() && $this->stripLocaleFromRouteName($this->route->getName()) !== '';
+        return $locale === $this->getOmitLocale();
     }
 
     /**
-     * Strip the locale from the beginning of a route name.
+     * Detect the locale.
      *
-     * @param string $name
+     * @param \CodeZero\LocalizedRoutes\UrlBuilder $url
      *
      * @return string
      */
-    protected function stripLocaleFromRouteName($name)
+    protected function detectLocale(UrlBuilder $url)
     {
-        $parts = explode('.', $name);
+        $locale = $this->findLocaleByDomain($url->getHost())
+            ?: $this->getLocaleFromSlugs($url->getSlugs());
 
-        // If there is no dot in the route name,
-        // there is no locale in the route name.
-        if (count($parts) === 1) {
-            return $name;
+        return $locale ?: App::getLocale();
+    }
+
+    /**
+     * Localize the URL path.
+     *
+     * @param array $slugs
+     * @param string $locale
+     *
+     * @return array
+     */
+    protected function updateLocaleInSlugs(array $slugs, $locale)
+    {
+        if ($this->getLocaleFromSlugs($slugs)) {
+            $slugs = $this->setLocaleInSlugs($slugs, $locale);
+        } else {
+            array_unshift($slugs, $locale);
         }
 
-        // If the first part of the route name is a valid
-        // locale, then remove it from the array.
-        if ($this->localeIsSupported($parts[0])) {
-            array_shift($parts);
+        if ($this->localeShouldBeOmitted($locale)) {
+            array_shift($slugs);
         }
 
-        // Rebuild the normalized route name.
-        $name = join('.', $parts);
+        return $slugs;
+    }
 
-        return $name;
+    /**
+     * Replace parameter placeholders with their value.
+     *
+     * @param string $uri
+     * @param mixed $parameters
+     * @param string $locale
+     *
+     * @return string
+     */
+    protected function replaceParameters($uri, $parameters, $locale)
+    {
+        $parameters = $this->prepareParameters($locale, $parameters);
+
+        preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
+        $paramKeys = $matches[1] ?? [];
+
+        foreach ($paramKeys as $index => $key) {
+            $value = $parameters[$key] ?? $parameters[$index];
+            $uri = str_replace("{{$key}}", $value, $uri);
+        }
+
+        return $uri;
     }
 
     /**
@@ -300,10 +290,6 @@ class LocalizedUrlGenerator
      */
     protected function prepareParameters($locale, $parameters)
     {
-        if ($this->routeExists() && $parameters === null) {
-            $parameters = $this->route->parameters();
-        }
-
         $model = Collection::make($parameters)->first();
 
         if ($model instanceof ProvidesRouteParameters) {
@@ -321,28 +307,6 @@ class LocalizedUrlGenerator
         }
 
         return $parameters;
-    }
-
-    /**
-     * Replace parameter placeholders with their value.
-     *
-     * @param string $locale
-     * @param string $uri
-     * @param array $parameters
-     *
-     * @return string
-     */
-    protected function replaceParameters($locale, $uri, array $parameters)
-    {
-        preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
-        $paramKeys = $matches[1] ?? [];
-
-        foreach ($paramKeys as $index => $key) {
-            $value = $parameters[$key] ?? $parameters[$index];
-            $uri = str_replace("{{$key}}", $value, $uri);
-        }
-
-        return $uri;
     }
 
     /**
@@ -364,5 +328,25 @@ class LocalizedUrlGenerator
         App::setLocale($originalLocale);
 
         return $routeKey;
+    }
+
+    /**
+     * Get the locale that should be omitted in the URI path.
+     *
+     * @return string|null
+     */
+    protected function getOmitLocale()
+    {
+        return Config::get('localized-routes.omit_url_prefix_for_locale', null);
+    }
+
+    /**
+     * Get the supported locales and not the custom domains.
+     *
+     * @return array
+     */
+    protected function getSupportedLocales()
+    {
+        return Config::get('localized-routes.supported-locales', []);
     }
 }
