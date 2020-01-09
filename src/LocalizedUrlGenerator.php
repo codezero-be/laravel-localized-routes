@@ -293,11 +293,9 @@ class LocalizedUrlGenerator
             return $name;
         }
 
-        $locales = $this->getLocaleKeys();
-
         // If the first part of the route name is a valid
         // locale, then remove it from the array.
-        if (in_array($parts[0], $locales)) {
+        if ($this->localeIsSupported($parts[0])) {
             array_shift($parts);
         }
 
