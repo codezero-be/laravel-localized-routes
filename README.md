@@ -267,17 +267,14 @@ Not even when you create your custom `errors.404` view.
 Therefor, the locale can't be set to match the requested URL automatically via middleware.
 
 To enable localized `404` pages, you need to register a `fallback` route
-and make sure it has the `SetLocale` middleware and a name of `404`.
+and make sure it has the `SetLocale` middleware.
 This is basically a catch all route that will trigger for all non existing URL's.
 
 ```php
 Route::fallback(function () {
     return response()->view('errors.404', [], 404);
-})->name('404')->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
+})->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
 ```
-
-> Because you might use a `fallback` route for another purpose,
-this package will only consider it to be a `404` if you name the route `404`.
 
 Another thing to keep in mind is that a `fallback` route returns a `200` status by default.
 So to make it a real `404` you need to return a `404` response yourself.
@@ -289,6 +286,8 @@ Fallback routes will not be triggered when:
 - your existing routes throw any other exception
 
 Because those routes are in fact registered, the `404` page will have the correct `App::getLocale()` set.
+
+[Here is a good read about fallback routes](https://themsaid.com/laravel-55-better-404-response-20170921).
 
 ### 🚕 Generate Route URL's
 
