@@ -2,6 +2,12 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.2 (2020-01-09)
+
+- Generate absolute and non absolute URL's using `Route::localizedUrl($locale, $parameters, $absolute)`
+- Fallback routes no longer require a name of `404`
+- Refactor code and improve tests
+
 ## 2.2.1 (2020-01-08)
 
 - Fix issue where first slug was duplicated on fallback routes
