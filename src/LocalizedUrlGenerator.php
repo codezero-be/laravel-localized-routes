@@ -2,7 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Contracts\Routing\UrlRoutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -331,6 +331,12 @@ class LocalizedUrlGenerator
             $parameters = $parameters($locale);
         }
 
+        foreach ($parameters as $key => $parameter) {
+            if ($parameter instanceof UrlRoutable) {
+                $parameters[$key] = $this->getLocalizedRouteKey($parameter, $locale);
+            }
+        }
+
         return $parameters;
     }
 
@@ -350,17 +356,30 @@ class LocalizedUrlGenerator
 
         foreach ($paramKeys as $index => $key) {
             $value = $parameters[$key] ?? $parameters[$index];
-
-            if ($value instanceof Model) {
-                $originalLocale = App::getLocale();
-                App::setLocale($locale);
-                $value = $value->getRouteKey();
-                App::setLocale($originalLocale);
-            }
-
             $uri = str_replace("{{$key}}", $value, $uri);
         }
 
         return $uri;
+    }
+
+    /**
+     * Get the localized route key from a model.
+     *
+     * @param \Illuminate\Contracts\Routing\UrlRoutable $model
+     * @param string $locale
+     *
+     * @return string
+     */
+    protected function getLocalizedRouteKey(UrlRoutable $model, $locale)
+    {
+        $originalLocale = App::getLocale();
+
+        App::setLocale($locale);
+
+        $routeKey = $model->getRouteKey();
+
+        App::setLocale($originalLocale);
+
+        return $routeKey;
     }
 }
