@@ -46,9 +46,7 @@ class LocalizedUrlGenerator
      */
     public function generateFromRequest($locale = null, $parameters = null, $absolute = true)
     {
-        return ($this->isDefault404() || $this->isNonLocalizedFallback404() || ! $this->routeHasName())
-            ? $this->generateFromUrl($locale, $parameters, $absolute)
-            : $this->generateFromRoute($locale, $parameters, $absolute);
+        return $this->generateFromUrl($locale, $parameters, $absolute);
     }
 
     /**
@@ -114,6 +112,10 @@ class LocalizedUrlGenerator
             return $currentUrl;
         }
 
+        if ( ! $this->isNonLocalizedFallback404() && ! $this->isLocalized()) {
+            return URL::current();
+        }
+
         $locale = $locale ?: App::getLocale();
         $urlParts = parse_url($currentUrl);
         $domains = $this->getCustomDomains();
@@ -133,26 +135,6 @@ class LocalizedUrlGenerator
         }
 
         return $this->unparseUrl($urlParts);
-    }
-
-    /**
-     * Generate a localized URL using the current Route instance.
-     *
-     * @param string|null $locale
-     * @param mixed $parameters
-     * @param bool $absolute
-     *
-     * @return string
-     */
-    protected function generateFromRoute($locale = null, $parameters = null, $absolute = true)
-    {
-        if ( ! $this->isLocalized()) {
-            return URL::current();
-        }
-
-        $parameters = $this->prepareParameters($locale, $parameters);
-
-        return route($this->route->getName(), $parameters, $absolute, $locale);
     }
 
     /**
