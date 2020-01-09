@@ -29,7 +29,7 @@ class LocalizedUrlMacroTest extends TestCase
         App::instance(Model::class, $model);
 
         Route::localized(function () {
-            Route::get('route/{model}', function (Model $model) {
+            Route::get('route/{first}/{second}', function (Model $first, Model $second) {
                 return [
                     'current' => Route::localizedUrl(),
                     'en' => Route::localizedUrl('en'),
@@ -38,12 +38,12 @@ class LocalizedUrlMacroTest extends TestCase
             })->middleware(['web']);
         });
 
-        $response = $this->call('GET', '/en/route/en-slug');
+        $response = $this->call('GET', '/en/route/en-slug/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/en-slug'),
-            'en' => url('/en/route/en-slug'),
-            'nl' => url('/nl/route/nl-slug'),
+            'current' => url('/en/route/en-slug/en-slug'),
+            'en' => url('/en/route/en-slug/en-slug'),
+            'nl' => url('/nl/route/nl-slug/nl-slug'),
         ], $response->original);
     }
 
