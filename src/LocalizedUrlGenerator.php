@@ -50,7 +50,7 @@ class LocalizedUrlGenerator
         $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
 
         if ( ! $this->is404()) {
-            $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $parameters, $locale));
+            $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $parameters));
         }
 
         if ( ! $this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
@@ -261,11 +261,10 @@ class LocalizedUrlGenerator
      *
      * @param string $uri
      * @param array $parameters
-     * @param string $locale
      *
      * @return string
      */
-    protected function replaceParameters($uri, $parameters, $locale)
+    protected function replaceParameters($uri, $parameters)
     {
         preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
         $paramKeys = $matches[1] ?? [];
