@@ -122,6 +122,16 @@ class UrlBuilder
     }
 
     /**
+     * Get the query string.
+     *
+     * @return string
+     */
+    public function getQueryString()
+    {
+        return $this->get('query') ? '?' . $this->get('query') : '';
+    }
+
+    /**
      * Get the value of a URL part.
      *
      * @param string $part

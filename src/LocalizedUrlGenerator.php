@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class LocalizedUrlGenerator
 {
@@ -49,6 +50,10 @@ class LocalizedUrlGenerator
         $locale = $locale ?: $this->detectLocale($urlBuilder);
         $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
 
+        if ($url = $this->generateFromNamedRoute($locale, $parameters, $absolute)) {
+            return $url . $urlBuilder->getQueryString();
+        }
+
         if ( ! $this->is404()) {
             $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $parameters));
         }
@@ -62,6 +67,67 @@ class LocalizedUrlGenerator
         }
 
         return $urlBuilder->build($absolute);
+    }
+
+    /**
+     * Generate a URL for a named route.
+     *
+     * @param string $locale
+     * @param array $parameters
+     * @param bool $absolute
+     *
+     * @return string
+     */
+    protected function generateFromNamedRoute($locale, $parameters, $absolute)
+    {
+        if ( ! $this->routeExists()) {
+            return '';
+        }
+
+        $name = $this->route->getName();
+
+        // Localized routes without a name will still have the locale prefix as a name.
+        // Strip the prefix from the name to make sure the route has a base name set.
+        if ($this->stripLocaleFromRouteName($name) === '') {
+            return '';
+        }
+
+        try {
+            return route($name, $parameters, $absolute, $locale);
+        } catch (RouteNotFoundException $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Strip the locale from the beginning of a route name.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function stripLocaleFromRouteName($name)
+    {
+        $parts = explode('.', $name);
+
+        // If there is no dot in the route name,
+        // there is no locale in the route name.
+        if (count($parts) === 1) {
+            return $name;
+        }
+
+        $locales = $this->getLocaleKeys();
+
+        // If the first part of the route name is a valid
+        // locale, then remove it from the array.
+        if (in_array($parts[0], $locales)) {
+            array_shift($parts);
+        }
+
+        // Rebuild the normalized route name.
+        $name = join('.', $parts);
+
+        return $name;
     }
 
     /**

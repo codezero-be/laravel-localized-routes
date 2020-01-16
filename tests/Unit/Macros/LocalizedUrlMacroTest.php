@@ -9,6 +9,7 @@ use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
 
@@ -657,6 +658,41 @@ class LocalizedUrlMacroTest extends TestCase
             'current' => url('/nl/route?another=one&param=value'),
             'en' => url('/en/route?another=one&param=value'),
             'nl' => url('/nl/route?another=one&param=value'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_returns_a_url_with_translated_slugs_for_named_routes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setUseLocaleMiddleware(true);
+        $this->setAppLocale('en');
+
+        $this->setTranslations([
+            'nl' => [
+                'my-route' => 'nl-route',
+            ],
+            'en' => [
+                'my-route' => 'en-route',
+            ],
+        ]);
+
+        Route::localized(function () {
+            Route::get(Lang::uri('route/my-route'), function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->name('route');
+        });
+
+        $response = $this->call('GET', '/nl/route/nl-route');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/nl/route/nl-route'),
+            'en' => url('/en/route/en-route'),
+            'nl' => url('/nl/route/nl-route'),
         ], $response->original);
     }
 
