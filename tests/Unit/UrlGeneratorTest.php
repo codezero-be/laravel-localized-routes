@@ -124,6 +124,18 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_a_registered_non_localized_url_if_a_localized_version_does_not_exist()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+
+        $this->registerRoute('route', 'route.name');
+        $this->registerRoute('nl/route', 'nl.route.name');
+
+        $this->assertEquals(url('route'), route('route.name', [], true, 'en'));
+    }
+
+    /** @test */
     public function it_throws_if_no_valid_route_can_be_found_for_the_given_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -134,6 +146,19 @@ class UrlGeneratorTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         route('en.route.name', [], true, 'nl');
+    }
+
+    /** @test */
+    public function it_throws_if_you_do_not_specify_a_name_for_a_localized_route()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+
+        $this->registerRoute('en/route', 'en.');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        route('en.', [], true, 'en');
     }
 
     /** @test */
