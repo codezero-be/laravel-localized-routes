@@ -466,6 +466,9 @@ Route::localized(function () {
 });
 ```
 
+Note that in order to find a translated version of a route, you will need to give your routes a name.
+If you don't name your routes, only the parameters (model route keys) will be translated, not the "hard-coded" slugs.
+
 The above will generate:
 
 - /en/about/us
