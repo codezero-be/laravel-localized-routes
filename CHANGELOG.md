@@ -2,6 +2,12 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.3 (2020-01-16)
+
+- Return a URL with query string from `Route::localizedUrl()`
+- Use the `route()` helper for named routes to support translated slugs with the `Lang::uri()` macro
+- Improve unregistered route handling in the `UrlGenerator`
+
 ## 2.2.2 (2020-01-09)
 
 - Generate absolute and non absolute URL's using `Route::localizedUrl($locale, $parameters, $absolute)`
