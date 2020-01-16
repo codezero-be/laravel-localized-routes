@@ -18,6 +18,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_generates_urls_with_localized_route_keys_for_the_current_route_using_route_model_binding()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         $model = (new Model([
@@ -51,6 +52,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function you_can_implement_an_interface_and_let_your_model_return_custom_parameters_with_route_model_binding()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         $model = (new ModelWithCustomRouteParameters([
@@ -85,6 +87,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_cannot_guess_a_localized_route_key_without_route_model_binding()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         $model = (new Model([
@@ -118,6 +121,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function you_can_pass_it_a_model_with_a_localized_route_key_without_route_model_binding()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         $model = (new Model([
@@ -151,6 +155,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function you_can_pass_it_a_closure_that_returns_the_parameters_without_route_model_binding()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         $model = (new Model([
@@ -190,6 +195,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_handles_unnamed_non_localized_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         Route::get('route/one', function () {
@@ -227,6 +233,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_handles_unnamed_localized_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         Route::localized(function () {
@@ -266,6 +273,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_the_current_url_for_existing_non_localized_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         Route::get('non/localized/route', function () {
@@ -407,6 +415,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_localized_url_for_a_localized_fallback_route()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocaleMiddleware(true);
 
@@ -432,6 +441,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_contains_a_supported_locale()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
 
@@ -455,6 +465,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_does_not_contain_a_supported_locale()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('nl');
 
@@ -478,6 +489,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_omitting_the_main_locale()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmitUrlPrefixForLocale('nl');
         $this->setAppLocale('en');
@@ -502,6 +514,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_using_custom_domains()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales([
             'en' => 'en.domain.test',
             'nl' => 'nl.domain.test',
@@ -528,6 +541,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_generates_non_absolute_urls_for_existing_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
 
@@ -568,6 +582,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_url_with_query_string_for_existing_non_localized_unnamed_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         Route::get('route', function () {
@@ -590,6 +605,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_url_with_query_string_for_existing_localized_unnamed_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
@@ -616,6 +632,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_url_with_query_string_for_existing_non_localized_named_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
         Route::get('route', function () {
@@ -638,6 +655,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_url_with_query_string_for_existing_localized_named_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
@@ -664,6 +682,7 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_returns_a_url_with_translated_slugs_for_named_routes()
     {
+        $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
         $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
