@@ -85,18 +85,8 @@ class LocalizedUrlGenerator
             return '';
         }
 
-        $name = $this->route->getName();
-
-        // Localized routes without a name will still have the locale prefix as a name.
-        // Strip the prefix from the name to make sure the route has a base name set.
-        if ($this->stripLocaleFromRouteName($name) === '') {
-            return '';
-        }
-
         try {
-            return route($name, $parameters, $absolute, $locale);
-        } catch (RouteNotFoundException $e) {
-            return '';
+            return route($this->route->getName(), $parameters, $absolute, $locale);
         } catch (InvalidArgumentException $e) {
             return '';
         }
