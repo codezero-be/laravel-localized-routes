@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use InvalidArgumentException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class LocalizedUrlGenerator
@@ -95,6 +96,8 @@ class LocalizedUrlGenerator
         try {
             return route($name, $parameters, $absolute, $locale);
         } catch (RouteNotFoundException $e) {
+            return '';
+        } catch (InvalidArgumentException $e) {
             return '';
         }
     }
