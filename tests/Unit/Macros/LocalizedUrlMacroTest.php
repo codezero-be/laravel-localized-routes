@@ -564,6 +564,28 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertEquals('/en/route/does/not/exist', trim($response->original));
     }
 
+    /** @test */
+    public function it_returns_a_url_with_query_string()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route', function () {
+            return [
+                'current' => Route::localizedUrl(),
+                'en' => Route::localizedUrl('en'),
+                'nl' => Route::localizedUrl('nl'),
+            ];
+        });
+
+        $response = $this->call('GET', '/route?another=one&param=value');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route?another=one&param=value'),
+            'en' => url('/route?another=one&param=value'),
+            'nl' => url('/route?another=one&param=value'),
+        ], $response->original);
+    }
+
     /**
      * Set a custom view path so Laravel will find our custom 440 error view.
      *
