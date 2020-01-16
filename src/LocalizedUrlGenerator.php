@@ -45,23 +45,23 @@ class LocalizedUrlGenerator
      */
     public function generateFromRequest($locale = null, $parameters = null, $absolute = true)
     {
-        $url = UrlBuilder::make(Request::fullUrl());
-        $locale = $locale ?: $this->detectLocale($url);
+        $urlBuilder = UrlBuilder::make(Request::fullUrl());
+        $locale = $locale ?: $this->detectLocale($urlBuilder);
+        $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
 
         if ( ! $this->is404()) {
-            $parameters = $parameters ?: $this->route->parameters();
-            $url->setPath($this->replaceParameters($this->route->uri(), $parameters, $locale));
+            $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $parameters, $locale));
         }
 
         if ( ! $this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
-            $url->setSlugs($this->updateLocaleInSlugs($url->getSlugs(), $locale));
+            $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $locale));
         }
 
         if ($domain = $this->getCustomDomain($locale)) {
-            $url->setHost($domain);
+            $urlBuilder->setHost($domain);
         }
 
-        return $url->build($absolute);
+        return $urlBuilder->build($absolute);
     }
 
     /**
@@ -260,15 +260,13 @@ class LocalizedUrlGenerator
      * Replace parameter placeholders with their value.
      *
      * @param string $uri
-     * @param mixed $parameters
+     * @param array $parameters
      * @param string $locale
      *
      * @return string
      */
     protected function replaceParameters($uri, $parameters, $locale)
     {
-        $parameters = $this->prepareParameters($locale, $parameters);
-
         preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
         $paramKeys = $matches[1] ?? [];
 
@@ -307,6 +305,16 @@ class LocalizedUrlGenerator
         }
 
         return $parameters;
+    }
+
+    /**
+     * Get the current route's parameters.
+     *
+     * @return array
+     */
+    protected function getRouteParameters()
+    {
+        return $this->routeExists() ? $this->route->parameters() : [];
     }
 
     /**
