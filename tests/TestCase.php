@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -91,6 +92,23 @@ abstract class TestCase extends  BaseTestCase
     protected function setUseLocalizer($value)
     {
         Config::set('localized-routes.use_localizer', $value);
+    }
+
+    /**
+     * Fake that we created a routes.php file in 'resources/lang/'
+     * for each language with the given translations.
+     *
+     * @param $translations
+     *
+     * @return void
+     */
+    protected function setTranslations($translations)
+    {
+        Lang::setLoaded([
+            '*' => [
+                'routes' => $translations
+            ]
+        ]);
     }
 
     /**

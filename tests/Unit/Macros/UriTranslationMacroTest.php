@@ -78,21 +78,4 @@ class UriTranslationMacroTest extends TestCase
 
         $this->assertEquals('artikels/{article}', Lang::uri('articles/{article}', 'nl'));
     }
-
-    /**
-     * Fake that we created a routes.php file in 'resources/lang/'
-     * for each language with the given translations.
-     *
-     * @param $translations
-     *
-     * @return void
-     */
-    protected function setTranslations($translations)
-    {
-        Lang::setLoaded([
-            '*' => [
-                'routes' => $translations
-            ]
-        ]);
-    }
 }
