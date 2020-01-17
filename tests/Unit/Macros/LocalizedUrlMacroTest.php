@@ -685,20 +685,20 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        Route::get('route/{slug}', function () {
+        Route::get('route/{slug}/{optional?}', function () {
             return [
-                'current' => Route::localizedUrl(null, ['another-slug', 'new' => 'value']),
-                'en' => Route::localizedUrl('en', ['another-slug', 'new' => 'value']),
-                'nl' => Route::localizedUrl('nl', ['another-slug', 'new' => 'value']),
+                'current' => Route::localizedUrl(null, ['another-slug', 'optional-slug', 'new' => 'value']),
+                'en' => Route::localizedUrl('en', ['another-slug', 'optional-slug', 'new' => 'value']),
+                'nl' => Route::localizedUrl('nl', ['another-slug', 'optional-slug', 'new' => 'value']),
             ];
         })->name('route');
 
         $response = $this->call('GET', '/route/some-slug?param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug?new=value'),
-            'en' => url('/route/another-slug?new=value'),
-            'nl' => url('/route/another-slug?new=value'),
+            'current' => url('/route/another-slug/optional-slug?new=value'),
+            'en' => url('/route/another-slug/optional-slug?new=value'),
+            'nl' => url('/route/another-slug/optional-slug?new=value'),
         ], $response->original);
     }
 
@@ -708,20 +708,66 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        Route::get('route/{slug}', function () {
+        Route::get('route/{slug}/{optional?}', function () {
             return [
-                'current' => Route::localizedUrl(null, ['another-slug', 'new' => 'value']),
-                'en' => Route::localizedUrl('en', ['another-slug', 'new' => 'value']),
-                'nl' => Route::localizedUrl('nl', ['another-slug', 'new' => 'value']),
+                'current' => Route::localizedUrl(null, ['another-slug', 'optional-slug', 'new' => 'value']),
+                'en' => Route::localizedUrl('en', ['another-slug', 'optional-slug', 'new' => 'value']),
+                'nl' => Route::localizedUrl('nl', ['another-slug', 'optional-slug', 'new' => 'value']),
             ];
         });
 
         $response = $this->call('GET', '/route/some-slug?param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug?new=value'),
-            'en' => url('/route/another-slug?new=value'),
-            'nl' => url('/route/another-slug?new=value'),
+            'current' => url('/route/another-slug/optional-slug?new=value'),
+            'en' => url('/route/another-slug/optional-slug?new=value'),
+            'nl' => url('/route/another-slug/optional-slug?new=value'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_allows_optional_parameters_with_named_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slug}/{one?}/{two?}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug']),
+                'en' => Route::localizedUrl('en', ['another-slug']),
+                'nl' => Route::localizedUrl('nl', ['another-slug']),
+            ];
+        })->name('route');
+
+        $response = $this->call('GET', '/route/some-slug');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug'),
+            'en' => url('/route/another-slug'),
+            'nl' => url('/route/another-slug'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_allows_optional_parameters_with_unnamed_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slug}/{one?}/{two?}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug']),
+                'en' => Route::localizedUrl('en', ['another-slug']),
+                'nl' => Route::localizedUrl('nl', ['another-slug']),
+            ];
+        });
+
+        $response = $this->call('GET', '/route/some-slug');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug'),
+            'en' => url('/route/another-slug'),
+            'nl' => url('/route/another-slug'),
         ], $response->original);
     }
 
