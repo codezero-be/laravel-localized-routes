@@ -306,7 +306,7 @@ class LocalizedUrlGenerator
      */
     protected function extractQueryParameters($uri, $parameters)
     {
-        preg_match_all('/{([a-z_.-]+\??)}/', $uri, $matches);
+        preg_match_all('/{([a-zA-Z_.-]+\??)}/', $uri, $matches);
         $paramKeys = $matches[1] ?? [];
 
         $slugs = [];
@@ -347,7 +347,7 @@ class LocalizedUrlGenerator
             $uri = str_replace($placeholder, $value, $uri);
         }
 
-        $uri = preg_replace('/{[a-z_.-]+\?}/', '', $uri);
+        $uri = preg_replace('/{[a-zA-Z_.-]+\?}/', '', $uri);
 
         return $uri;
     }

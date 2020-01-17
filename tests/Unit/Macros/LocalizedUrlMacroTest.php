@@ -772,6 +772,30 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_handles_capitalized_parameter_names()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slugWithCaps}/{optionalSlugWithCaps?}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug']),
+                'en' => Route::localizedUrl('en', ['another-slug']),
+                'nl' => Route::localizedUrl('nl', ['another-slug']),
+            ];
+        });
+
+        $response = $this->call('GET', '/route/some-slug');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug'),
+            'en' => url('/route/another-slug'),
+            'nl' => url('/route/another-slug'),
+        ], $response->original);
+
+    }
+
+    /** @test */
     public function it_returns_a_url_with_translated_slugs_for_named_routes()
     {
         $this->withoutExceptionHandling();
