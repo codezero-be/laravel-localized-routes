@@ -2,6 +2,12 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.4 (2020-01-17)
+
+- Accept query string parameters via `Route::localizedUrl()`
+- Handle optional route parameters with `Route::localizedUrl()`
+- Handle capitalized route parameters with `Route::localizedUrl()`
+
 ## 2.2.3 (2020-01-16)
 
 - Return a URL with query string from `Route::localizedUrl()`
