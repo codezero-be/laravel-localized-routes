@@ -132,6 +132,20 @@ class UrlBuilder
     }
 
     /**
+     * Set the query string parameters.
+     *
+     * @param array $query
+     *
+     * @return \CodeZero\LocalizedRoutes\UrlBuilder
+     */
+    public function setQuery(array $query)
+    {
+        $this->set('query', http_build_query($query));
+
+        return $this;
+    }
+
+    /**
      * Get the value of a URL part.
      *
      * @param string $part

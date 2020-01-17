@@ -680,6 +680,52 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_accepts_query_string_parameters_using_named_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slug}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug', 'new' => 'value']),
+                'en' => Route::localizedUrl('en', ['another-slug', 'new' => 'value']),
+                'nl' => Route::localizedUrl('nl', ['another-slug', 'new' => 'value']),
+            ];
+        })->name('route');
+
+        $response = $this->call('GET', '/route/some-slug?param=value');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug?new=value'),
+            'en' => url('/route/another-slug?new=value'),
+            'nl' => url('/route/another-slug?new=value'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_accepts_query_string_parameters_using_unnamed_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slug}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug', 'new' => 'value']),
+                'en' => Route::localizedUrl('en', ['another-slug', 'new' => 'value']),
+                'nl' => Route::localizedUrl('nl', ['another-slug', 'new' => 'value']),
+            ];
+        });
+
+        $response = $this->call('GET', '/route/some-slug?param=value');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug?new=value'),
+            'en' => url('/route/another-slug?new=value'),
+            'nl' => url('/route/another-slug?new=value'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function it_returns_a_url_with_translated_slugs_for_named_routes()
     {
         $this->withoutExceptionHandling();

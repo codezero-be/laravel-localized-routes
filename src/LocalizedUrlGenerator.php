@@ -48,16 +48,29 @@ class LocalizedUrlGenerator
     {
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
         $locale = $locale ?: $this->detectLocale($urlBuilder);
+
+        // $parameters can be an array, a function or it can contain model instances!
+        // Normalize the parameters so we end up with an array of key => value pairs.
         $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
 
-        if ($url = $this->generateFromNamedRoute($locale, $parameters, $absolute)) {
-            return $url . $urlBuilder->getQueryString();
-        }
-
         if ( ! $this->is404()) {
-            $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $parameters));
+            $urlBuilder->setPath($this->route->uri());
+
+            list($slugs, $query) = $this->extractQueryParameters($urlBuilder->getPath(), $parameters);
+
+            if (count($query)) {
+                $urlBuilder->setQuery($query);
+            }
+
+            if ($url = $this->generateFromNamedRoute($locale, $parameters, $absolute)) {
+                return empty($query) ? $url . $urlBuilder->getQueryString() : $url;
+            }
+
+            $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $slugs));
         }
 
+        // If custom domains are not used and it is not a registered,
+        // non localized route, update the locale slug in the path.
         if ( ! $this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
             $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $locale));
         }
@@ -284,6 +297,43 @@ class LocalizedUrlGenerator
     }
 
     /**
+     * Extract URI parameters and query string parameters.
+     *
+     * @param string $uri
+     * @param array $parameters
+     *
+     * @return array
+     */
+    protected function extractQueryParameters($uri, $parameters)
+    {
+        preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
+        $paramKeys = $matches[1] ?? [];
+
+        $slugs = [];
+        $query = [];
+        $i = 0;
+
+        foreach ($parameters as $key => $value) {
+            // Parameters should be in the same order as the placeholders.
+            // $key can be a name or an index, so grab the matching key name from the URI.
+            $paramKey = $paramKeys[$i] ?? null;
+
+            // If there is a matching $paramKey,
+            // we are dealing with a normal parameter,
+            // else we are dealing with a query string parameter.
+            if ($paramKey) {
+                $slugs["{{$paramKey}}"] = $value;
+            } else {
+                $query[$key] = $value;
+            }
+
+            $i++;
+        }
+
+        return [$slugs, $query];
+    }
+
+    /**
      * Replace parameter placeholders with their value.
      *
      * @param string $uri
@@ -293,12 +343,8 @@ class LocalizedUrlGenerator
      */
     protected function replaceParameters($uri, $parameters)
     {
-        preg_match_all('/{([a-z_.-]+)}/', $uri, $matches);
-        $paramKeys = $matches[1] ?? [];
-
-        foreach ($paramKeys as $index => $key) {
-            $value = $parameters[$key] ?? $parameters[$index];
-            $uri = str_replace("{{$key}}", $value, $uri);
+        foreach ($parameters as $placeholder => $value) {
+            $uri = str_replace($placeholder, $value, $uri);
         }
 
         return $uri;
