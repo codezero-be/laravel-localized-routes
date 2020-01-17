@@ -92,37 +92,6 @@ class LocalizedUrlGenerator
     }
 
     /**
-     * Strip the locale from the beginning of a route name.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    protected function stripLocaleFromRouteName($name)
-    {
-        $parts = explode('.', $name);
-
-        // If there is no dot in the route name,
-        // there is no locale in the route name.
-        if (count($parts) === 1) {
-            return $name;
-        }
-
-        $locales = $this->getLocaleKeys();
-
-        // If the first part of the route name is a valid
-        // locale, then remove it from the array.
-        if (in_array($parts[0], $locales)) {
-            array_shift($parts);
-        }
-
-        // Rebuild the normalized route name.
-        $name = join('.', $parts);
-
-        return $name;
-    }
-
-    /**
      * Check if the current route is localized.
      *
      * @return bool
