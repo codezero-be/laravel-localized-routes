@@ -93,10 +93,6 @@ class LocalizedUrlGenerator
      */
     protected function generateFromNamedRoute($locale, $parameters, $absolute)
     {
-        if ( ! $this->routeExists()) {
-            return '';
-        }
-
         try {
             return route($this->route->getName(), $parameters, $absolute, $locale);
         } catch (InvalidArgumentException $e) {
