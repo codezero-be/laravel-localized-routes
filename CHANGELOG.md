@@ -2,6 +2,10 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.5 (2020-03-03)
+
+- Constrain dependency versions
+
 ## 2.2.4 (2020-01-17)
 
 - Accept query string parameters via `Route::localizedUrl()`
