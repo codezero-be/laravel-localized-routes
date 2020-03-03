@@ -2,6 +2,10 @@
 
 All Notable changes to **Laravel Localized Routes** will be documented in this file.
 
+## 2.2.6 (2020-03-03)
+
+- Add support for Laravel 7
+
 ## 2.2.5 (2020-03-03)
 
 - Constrain dependency versions
