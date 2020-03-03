@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Testing\Assert as PHPUnit;
-use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends  BaseTestCase
@@ -25,13 +23,24 @@ abstract class TestCase extends  BaseTestCase
     {
         parent::setUp();
 
-        TestResponse::macro('assertResponseHasNoView', function () {
-            if (isset($this->original) && $this->original instanceof View) {
-                PHPUnit::fail('The response has a view.');
-            }
+        if ($this->app->version() < 7) {
+            \Illuminate\Foundation\Testing\TestResponse::macro('assertResponseHasNoView', function () {
+                if (isset($this->original) && $this->original instanceof View) {
+                    Illuminate\Foundation\Testing\Assert::fail('The response has a view.');
+                }
 
-            return $this;
-        });
+                return $this;
+            });
+        } else {
+            \Illuminate\Testing\TestResponse::macro('assertResponseHasNoView', function () {
+                if (isset($this->original) && $this->original instanceof View) {
+                    Illuminate\Testing\Assert::fail('The response has a view.');
+                }
+
+                return $this;
+            });
+        }
+
     }
 
     /**
