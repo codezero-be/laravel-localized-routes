@@ -35,10 +35,11 @@ class Model extends BaseModel
      * Fake route model binding.
      *
      * @param string $parameter
+     * @param string|null $field
      *
      * @return mixed
      */
-    public function resolveRouteBinding($parameter)
+    public function resolveRouteBinding($parameter, $field = null)
     {
         // Bypass the database for testing purpose and return
         // the current model as if it was found in the database.

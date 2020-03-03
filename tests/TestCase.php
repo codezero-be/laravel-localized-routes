@@ -5,13 +5,13 @@ namespace CodeZero\LocalizedRoutes\Tests;
 use CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider;
 use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Testing\Assert as PHPUnit;
-use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Testing\Assert as PHPUnit;
+use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends  BaseTestCase
@@ -27,7 +27,7 @@ abstract class TestCase extends  BaseTestCase
 
         TestResponse::macro('assertResponseHasNoView', function () {
             if (isset($this->original) && $this->original instanceof View) {
-                return PHPUnit::fail('The response has a view.');
+                PHPUnit::fail('The response has a view.');
             }
 
             return $this;

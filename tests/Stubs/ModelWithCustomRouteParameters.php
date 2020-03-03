@@ -29,10 +29,11 @@ class ModelWithCustomRouteParameters extends BaseModel implements ProvidesRouteP
      * Fake route model binding (avoid database for test purpose).
      *
      * @param int $id
+     * @param string|null $field
      *
      * @return mixed
      */
-    public function resolveRouteBinding($id)
+    public function resolveRouteBinding($id, $field = null)
     {
         return $this;
     }
