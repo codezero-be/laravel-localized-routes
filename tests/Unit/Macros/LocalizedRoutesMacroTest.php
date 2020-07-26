@@ -83,6 +83,40 @@ class LocalizedRoutesMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setOmitUrlPrefixForLocale('en');
+        $this->setUseLocaleMiddleware(true);
+
+        Route::localized(function () {
+            Route::get('/', function () { return 'Home '.App::getLocale(); });
+            Route::get('{slug}', function () { return 'Dynamic '.App::getLocale(); });
+        });
+
+        $this->assertEquals(
+            ['nl', 'nl/{slug}', '/', '{slug}'],
+            $this->getRoutes()->pluck('uri')->toArray()
+        );
+
+        $response = $this->call('GET', '/');
+        $response->assertOk();
+        $this->assertEquals('Home en', $response->original);
+
+        $response = $this->call('GET', '/nl');
+        $response->assertOk();
+        $this->assertEquals('Home nl', $response->original);
+
+        $response = $this->call('GET', '/dynamic');
+        $response->assertOk();
+        $this->assertEquals('Dynamic en', $response->original);
+
+        $response = $this->call('GET', '/nl/dynamic');
+        $response->assertOk();
+        $this->assertEquals('Dynamic nl', $response->original);
+    }
+
+    /** @test */
     public function it_maps_a_custom_domain_to_each_locale()
     {
         $this->setSupportedLocales([
