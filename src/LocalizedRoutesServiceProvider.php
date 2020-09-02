@@ -100,15 +100,15 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
 
             $url = new UrlGenerator(
                 $routes, $app->rebinding(
-                'request', $this->requestRebinder()
-            ), $app['config']['app.asset_url']
+                    'request', $this->requestRebinder()
+                ), $app['config']['app.asset_url']
             );
 
             // Next we will set a few service resolvers on the URL generator so it can
             // get the information it needs to function. This just provides some of
             // the convenience features to this URL generator like "signed" URLs.
             $url->setSessionResolver(function () {
-                return $this->app['session'];
+                return $this->app['session'] ?? null;
             });
 
             $url->setKeyResolver(function () {
