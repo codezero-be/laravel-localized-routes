@@ -1,11 +1,12 @@
 # Laravel Localized Routes
 
-[![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg)]()
-[![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg)]()
-[![Build Status](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/badges/build.png?b=master)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/build-status/master)
-[![Code Coverage](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/codezero/laravel-localized-routes.svg)](https://packagist.org/packages/codezero/laravel-localized-routes)
+[![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg?style=flat-square)](CHANGELOG.md)
+[![Laravel](https://img.shields.io/badge/laravel-8-red?style=flat-square)](https://laravel.com)
+[![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg?style=flat-square)](LICENSE.md)
+[![Build Status](https://img.shields.io/scrutinizer/build/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/build-status/master)
+[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
+[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
+[![Total Downloads](https://img.shields.io/packagist/dt/codezero/laravel-localized-routes.svg?style=flat-square)](https://packagist.org/packages/codezero/laravel-localized-routes)
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R3UQ8V)
 
