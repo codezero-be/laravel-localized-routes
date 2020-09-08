@@ -1,7 +1,7 @@
 # Laravel Localized Routes
 
 [![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg?style=flat-square)](CHANGELOG.md)
-[![Laravel](https://img.shields.io/badge/laravel-8-red?style=flat-square)](https://laravel.com)
+[![Laravel](https://img.shields.io/badge/laravel-8-red?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 [![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg?style=flat-square)](LICENSE.md)
 [![Build Status](https://img.shields.io/scrutinizer/build/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/build-status/master)
 [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
