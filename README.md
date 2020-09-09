@@ -3,9 +3,9 @@
 [![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg?style=flat-square)](CHANGELOG.md)
 [![Laravel](https://img.shields.io/badge/laravel-8-red?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 [![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg?style=flat-square)](LICENSE.md)
-[![Build Status](https://img.shields.io/scrutinizer/build/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/build-status/master)
-[![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
-[![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/codezero-be/laravel-localized-routes/master?style=flat-square)](https://scrutinizer-ci.com/g/codezero-be/laravel-localized-routes/?branch=master)
+[![Build Status](https://img.shields.io/github/workflow/status/codezero-be/laravel-localized-routes/Tests/master?style=flat-square&logo=github&logoColor=white&label=tests)](https://github.com/codezero-be/laravel-localized-routes/actions)
+[![Code Coverage](https://img.shields.io/codacy/coverage/a5db8a1321664e67900c96eadc575ece/master?style=flat-square)](https://app.codacy.com/gh/codezero-be/laravel-localized-routes)
+[![Code Quality](https://img.shields.io/codacy/grade/a5db8a1321664e67900c96eadc575ece/master?style=flat-square)](https://app.codacy.com/gh/codezero-be/laravel-localized-routes)
 [![Total Downloads](https://img.shields.io/packagist/dt/codezero/laravel-localized-routes.svg?style=flat-square)](https://packagist.org/packages/codezero/laravel-localized-routes)
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R3UQ8V)
