@@ -62,7 +62,8 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
-      - name: Run Codacy Coverage Reporter
+      - if: github.event_name == 'push'
+        name: Run Codacy Coverage Reporter
         uses: codacy/codacy-coverage-reporter-action@master
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
