@@ -3,6 +3,7 @@
 namespace CodeZero\LocalizedRoutes;
 
 use Illuminate\Http\Request;
+use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\RouteCollectionInterface;
 use Illuminate\Routing\UrlGenerator as BaseUrlGenerator;
 use Illuminate\Support\Facades\App;
@@ -18,9 +19,13 @@ class UrlGenerator extends BaseUrlGenerator
      * @param \Illuminate\Http\Request $request
      * @param string $assetRoot
      */
-    public function __construct(RouteCollectionInterface $routes, Request $request, $assetRoot = null)
+    public function __construct($routes, Request $request, $assetRoot = null)
     {
-        parent::__construct($routes, $request, $assetRoot);
+        if ($routes instanceof RouteCollection || (class_exists('Illuminate\Routing\RouteCollectionInterface') && is_subclass_of($routes, 'Illuminate\Routing\RouteCollectionInterface'))) {
+            parent::__construct($routes, $request, $assetRoot);
+        } else {
+            throw new \InvalidArgumentException('The $routes parameter has to be of type RouteCollection or RouteCollectionInterface for L6+.');
+        }        
     }
 
     /**
