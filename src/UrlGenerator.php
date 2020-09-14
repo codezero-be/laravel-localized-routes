@@ -21,11 +21,11 @@ class UrlGenerator extends BaseUrlGenerator
      */
     public function __construct($routes, Request $request, $assetRoot = null)
     {
-        if ($routes instanceof RouteCollection || (class_exists('Illuminate\Routing\RouteCollectionInterface') && is_subclass_of($routes, 'Illuminate\Routing\RouteCollectionInterface'))) {
-            parent::__construct($routes, $request, $assetRoot);
-        } else {
+        if (!$routes instanceof RouteCollection || !(class_exists('Illuminate\Routing\RouteCollectionInterface') && is_subclass_of($routes, 'Illuminate\Routing\RouteCollectionInterface'))) {
             throw new \InvalidArgumentException('The $routes parameter has to be of type RouteCollection or RouteCollectionInterface for L6+.');
-        }        
+        }
+        
+        parent::__construct($routes, $request, $assetRoot);
     }
 
     /**
