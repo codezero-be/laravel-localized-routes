@@ -258,7 +258,7 @@ class UrlGeneratorTest extends TestCase
 
         $isLaravel7orGreater = method_exists($routes, 'compile');
 
-        if ( ! $isLaravel7orGreater) {
+        if ($isLaravel7orGreater) {
             $this->app['router']->setCompiledRoutes(
                 $routes->compile()
             );
