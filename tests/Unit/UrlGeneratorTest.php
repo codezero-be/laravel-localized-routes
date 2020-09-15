@@ -256,11 +256,17 @@ class UrlGeneratorTest extends TestCase
             $route->prepareForSerialization();
         }
 
-        $compiledRoutes = method_exists($routes, 'compile')
-            ? $routes->compile() // Laravel 7+
-            : serialize($routes);
+        $isLaravel7orGreater = method_exists($routes, 'compile');
 
-        $this->app['router']->setCompiledRoutes($compiledRoutes);
+        if ( ! $isLaravel7orGreater) {
+            $this->app['router']->setCompiledRoutes(
+                $routes->compile()
+            );
+
+            return;
+        }
+
+        $this->app['router']->setRoutes($routes);
     }
 
     /**
