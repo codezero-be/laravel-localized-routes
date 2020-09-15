@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit;
 
+use CodeZero\LocalizedRoutes\Tests\Stubs\Controller;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use CodeZero\LocalizedRoutes\UrlGenerator;
@@ -226,6 +227,46 @@ class UrlGeneratorTest extends TestCase
 
         $this->get($validUrl)->assertSee('Valid Signature');
         $this->get($tamperedUrl)->assertSee('Invalid Signature');
+    }
+
+    /** @test */
+    public function it_allows_routes_to_be_cached()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en']);
+        $this->setAppLocale('en');
+
+        Route::get('en/route', Controller::class.'@index');
+
+        $this->cacheRoutes();
+
+        $this->get('en/route')->assertSuccessful();
+    }
+
+    /**
+     * Cache registered routes.
+     *
+     * @return void
+     */
+    protected function cacheRoutes()
+    {
+        $routes = Route::getRoutes();
+
+        foreach ($routes as $route) {
+            $route->prepareForSerialization();
+        }
+
+        $isLaravel7orGreater = method_exists($routes, 'compile');
+
+        if ($isLaravel7orGreater) {
+            $this->app['router']->setCompiledRoutes(
+                $routes->compile()
+            );
+
+            return;
+        }
+
+        $this->app['router']->setRoutes($routes);
     }
 
     /**
