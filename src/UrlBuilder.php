@@ -42,7 +42,7 @@ class UrlBuilder
      */
     public function build($absolute = true)
     {
-        $host = $absolute ? $this->get('scheme') . '://' . $this->get('host') . $this->get('port') : '';
+        $host = $absolute ? $this->get('scheme') . '://' . $this->get('host') . (($port = $this->get('port')) ? ":{$port}": '') : '';
         $path = '/' . trim($this->get('path'), '/');
         $query = $this->get('query') ? '?' . $this->get('query') : '';
 
