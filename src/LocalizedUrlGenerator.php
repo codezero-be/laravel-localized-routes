@@ -370,7 +370,7 @@ class LocalizedUrlGenerator
 
         foreach ($parameters as $key => $parameter) {
             if ($parameter instanceof UrlRoutable) {
-                $parameters[$key] = $this->getLocalizedRouteKey($parameter, $locale);
+                $parameters[$key] = $this->getLocalizedRouteKey($key, $parameter, $locale);
             }
         }
 
@@ -390,22 +390,45 @@ class LocalizedUrlGenerator
     /**
      * Get the localized route key from a model.
      *
+     * @param string $key
      * @param \Illuminate\Contracts\Routing\UrlRoutable $model
      * @param string $locale
      *
      * @return string
      */
-    protected function getLocalizedRouteKey(UrlRoutable $model, $locale)
+    protected function getLocalizedRouteKey($key, UrlRoutable $model, $locale)
     {
         $originalLocale = App::getLocale();
 
         App::setLocale($locale);
 
-        $routeKey = $model->getRouteKey();
+        $bindingField = $this->getBindingFieldFor($key, $model);
+        $routeKey = $model->$bindingField;
 
         App::setLocale($originalLocale);
 
         return $routeKey;
+    }
+
+    /**
+     * Get the binding field for the current route.
+     *
+     * The binding field is the custom route key that you can define in your route:
+     * Route::get('path/{model:key}')
+     * If you did not use a custom key, use the default route key.
+     *
+     * @param string|int $key
+     * @param \Illuminate\Contracts\Routing\UrlRoutable $model
+     *
+     * @return string|null
+     */
+    protected function getBindingFieldFor($key, UrlRoutable $model)
+    {
+        if (App::version() < 7) {
+            return $model->getRouteKeyName();
+        }
+
+        return $this->route->bindingFieldFor($key) ?: $model->getRouteKeyName();
     }
 
     /**

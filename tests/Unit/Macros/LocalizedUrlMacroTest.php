@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\View;
 class LocalizedUrlMacroTest extends TestCase
 {
     /** @test */
-    public function it_generates_urls_with_localized_route_keys_for_the_current_route_using_route_model_binding()
+    public function it_generates_urls_with_default_localized_route_keys_for_the_current_route_using_route_model_binding()
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -46,6 +46,40 @@ class LocalizedUrlMacroTest extends TestCase
             'current' => url('/en/route/en-slug/en-slug'),
             'en' => url('/en/route/en-slug/en-slug'),
             'nl' => url('/nl/route/nl-slug/nl-slug'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_generates_urls_with_custom_localized_route_keys_for_the_current_route_using_route_model_binding()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        $model = (new Model([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('id');
+
+        App::instance(Model::class, $model);
+
+        Route::localized(function () {
+            Route::get('route/{model:slug}', function (Model $model) {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->middleware(['web']);
+        });
+
+        $response = $this->call('GET', '/en/route/en-slug');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/en/route/en-slug'),
+            'en' => url('/en/route/en-slug'),
+            'nl' => url('/nl/route/nl-slug'),
         ], $response->original);
     }
 
