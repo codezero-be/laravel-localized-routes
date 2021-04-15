@@ -188,6 +188,10 @@ class UrlGeneratorTest extends TestCase
     /** @test */
     public function it_generates_a_url_for_a_route_with_a_custom_localized_route_key()
     {
+        if (App::version() < 7) {
+            $this->markTestSkipped('This feature is only available in Laravel 7 and newer.');
+        }
+
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
 
