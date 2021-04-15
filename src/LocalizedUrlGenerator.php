@@ -49,11 +49,11 @@ class LocalizedUrlGenerator
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
         $locale = $locale ?: $this->detectLocale($urlBuilder);
 
-        // $parameters can be an array, a function or it can contain model instances!
-        // Normalize the parameters so we end up with an array of key => value pairs.
-        $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
-
         if ( ! $this->is404()) {
+            // $parameters can be an array, a function or it can contain model instances!
+            // Normalize the parameters so we end up with an array of key => value pairs.
+            $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
+
             $urlBuilder->setPath($this->route->uri());
 
             list($slugs, $query) = $this->extractQueryParameters($urlBuilder->getPath(), $parameters);
