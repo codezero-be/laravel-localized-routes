@@ -163,7 +163,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
-    public function it_temporarily_changes_the_app_locale_when_generating_a_route_url()
+    public function it_generates_a_url_for_a_route_with_a_default_localized_route_key()
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -179,6 +179,29 @@ class UrlGeneratorTest extends TestCase
 
         $this->registerRoute('en/route/{slug}', 'en.route.name');
         $this->registerRoute('nl/route/{slug}', 'nl.route.name');
+
+        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model]));
+        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model], true, 'en'));
+        $this->assertEquals(url('nl/route/nl-slug'), route('route.name', [$model], true, 'nl'));
+    }
+
+    /** @test */
+    public function it_generates_a_url_for_a_route_with_a_custom_localized_route_key()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+
+        $model = (new Model([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('id');
+
+        App::instance(Model::class, $model);
+
+        $this->registerRoute('en/route/{model:slug}', 'en.route.name');
+        $this->registerRoute('nl/route/{model:slug}', 'nl.route.name');
 
         $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model]));
         $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model], true, 'en'));

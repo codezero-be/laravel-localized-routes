@@ -41,15 +41,17 @@ class Model extends BaseModel
      */
     public function resolveRouteBinding($parameter, $field = null)
     {
+        $field = $field ?: $this->getRouteKeyName();
+
         // Bypass the database for testing purpose and return
         // the current model as if it was found in the database.
-        if ($this->getRouteKeyName() === 'id') {
+        if ($this->getRouteKeyName() === 'id' && $field === 'id') {
             return $this;
         }
 
         // If the parameter is a slug, check if it is in the right language
         // and return the current model as if it was found in the database.
-        $validSlug = $this->attributes['slug'][App::getLocale()];
+        $validSlug = $this->attributes[$field][App::getLocale()];
 
         if ($validSlug !== $parameter) {
             abort(404);

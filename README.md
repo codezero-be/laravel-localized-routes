@@ -543,7 +543,24 @@ for alternative ways to enable route model binding.
 public function resolveRouteBinding($value)
 {
     // Perform the logic to find the given slug in the database...
-    return $this->where('slug->'.app()->getLocale(), $value)->firstOrFail();
+    return $this->where($this->getRouteKeyName().'->'.app()->getLocale(), $value)->firstOrFail();
+}
+```
+
+Laravel 7 and newer has an optional `$field` parameter that allows you to override the route key on specific routes:
+
+```php
+// Use the post slug as the route parameter instead of the default ID
+Route::get('posts/{post:slug}', ...);
+```
+
+The new method would then look like this:
+
+```php
+public function resolveRouteBinding($value, $field = null)
+{
+    // Perform the logic to find the given slug in the database...
+    return $this->where($field ?? $this->getRouteKeyName().'->'.app()->getLocale(), $value)->firstOrFail();
 }
 ```
 

@@ -99,32 +99,6 @@ class SetLocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_allows_for_route_model_binding_using_a_localized_route_key()
-    {
-        $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
-
-        $model = (new Model([
-            'slug' => [
-                'en' => 'en-slug',
-                'nl' => 'nl-slug',
-            ],
-        ]))->setKeyName('slug');
-
-        App::instance(Model::class, $model);
-
-        Route::localized(function () {
-            Route::get('route/{model}', function (Model $model) {})
-                ->middleware(['web']);
-        });
-
-        $this->call('GET', '/en/route/en-slug')->assertOk();
-        $this->call('GET', '/nl/route/nl-slug')->assertOk();
-        $this->call('GET', '/en/route/nl-slug')->assertNotFound();
-        $this->call('GET', '/nl/route/en-slug')->assertNotFound();
-    }
-
-    /** @test */
     public function it_detects_the_locale_with_localizer_for_non_localized_routes()
     {
         $this->withoutExceptionHandling();
