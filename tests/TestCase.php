@@ -80,6 +80,18 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
+     * Set the 'redirect_to_localized_urls' config option.
+     *
+     * @param bool $value
+     *
+     * @return void
+     */
+    protected function setRedirectToLocalizedUrls($value)
+    {
+        Config::set('localized-routes.redirect_to_localized_urls', $value);
+    }
+
+    /**
      * Set the use_locale_middleware config option
      *
      * @param boolean $value

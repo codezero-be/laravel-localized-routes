@@ -16,6 +16,28 @@ return [
     'omit_url_prefix_for_locale' => null,
 
     /**
+     * Set this option to true if you want to redirect
+     * unlocalized URL's to their localized version.
+     * You need to register the fallback route for this to work.
+     */
+    'redirect_to_localized_urls' => false,
+
+    /**
+     * The status code when redirecting to localized URL's.
+     * 301 - permanently
+     * 302 - temporary
+     */
+    'redirect_status_code' => 301,
+
+    /**
+     * Set your custom 404 view.
+     * This view is localized.
+     * If the view does not exist, a normal 404 will be thrown.
+     * You need to register the fallback route for this to work.
+     */
+    '404_view' => 'errors.404',
+
+    /**
      * If you want to automatically set the locale
      * for localized routes set this to true.
      */

@@ -254,7 +254,23 @@ If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the
 You can't have a localized `/about` route and also register a non-localized `/about` route in this case.
 The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
 
-### 🔦 Localized `404` Pages
+### 🔦 Localized `404` Pages and Redirecting to Localized URL's
+
+To use these 2 features, you need to register the fallback route **at the end** of your `routes/web.php` file:
+
+```php
+Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class)
+    ->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
+```
+
+##### 404 - Not Found
+
+After registering the fallback route the provided controller will look for a 404 error view at `resources/views/errors/404.blade.php`.
+If this view does not exist, a normal `NotFoundHttpException` will be thrown.
+You can configure which view to use by changing the `404_view` entry in the config file.
+
+<details>
+<summary>**Some background info...**</summary>
 
 By default, Laravel's `404` pages don't go trough the middleware and have no `Route::current()` associated with it.
 Not even when you create your custom `errors.404` view.
@@ -263,12 +279,6 @@ Therefor, the locale can't be set to match the requested URL automatically via m
 To enable localized `404` pages, you need to register a `fallback` route
 and make sure it has the `SetLocale` middleware.
 This is basically a catch all route that will trigger for all non existing URL's.
-
-```php
-Route::fallback(function () {
-    return response()->view('errors.404', [], 404);
-})->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
-```
 
 Another thing to keep in mind is that a `fallback` route returns a `200` status by default.
 So to make it a real `404` you need to return a `404` response yourself.
@@ -282,6 +292,23 @@ Fallback routes will not be triggered when:
 Because those routes are in fact registered, the `404` page will have the correct `App::getLocale()` set.
 
 [Here is a good read about fallback routes](https://themsaid.com/laravel-55-better-404-response-20170921).
+
+</details>
+
+##### Redirecting to Localized URL's
+
+After registering the fallback route, you can update the config option `redirect_to_localized_urls` to `true`.
+The provided `FallbackController` will then try to redirect routes that have not been registered, to their localized version.
+If it does not have a localized version, a `404` will be thrown.
+
+> So the home page `/` would be redirected to `/en` if the active locale is `en` and the `/en` route exists.
+And `/about` would redirect to `/en/about`.
+
+If you configured the app to omit the main locale slug, then the former redirection will obviously not happen, because the unprefixed routes exist.
+Instead, accessing a prefixed route with the main locale will redirect to an unprefixed URL.
+
+> So if the main locale is `en`, visiting `/en` would redirect to the home page `/` (unless `/` is a registered route).
+Also `/en/about` would redirect to `/about`.
 
 ### 🚕 Generate Route URL's
 
