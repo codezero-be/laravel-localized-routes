@@ -3,7 +3,6 @@
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Middleware;
 
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
-use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use CodeZero\Localizer\Localizer;
 use Illuminate\Support\Facades\App;
