@@ -28,13 +28,6 @@
 - Allow routes to be [cached](#-cache-routes).
 - Localize [`404` pages](#-localized-404-pages).
 
-## 🔌 Demo App
-
-To test and demonstrate some of the features this package provides, I have created a basic Laravel 6 demo app.
-Feel free to open any issues there if you want me to test/demonstrate more stuff.
-
-- https://github.com/ivanvermeyen/test-app-laravel-localized-routes
-
 ## ✅ Requirements
 
 - PHP >= 7.1
