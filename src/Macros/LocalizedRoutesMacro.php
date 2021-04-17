@@ -28,7 +28,9 @@ class LocalizedRoutesMacro
             $setMiddleware = $options['use_locale_middleware']
                                 ?? Config::get('localized-routes.use_locale_middleware', false);
 
-            if ($omitPrefix) {
+            $notUsingDomains = is_numeric(array_key_first($locales));
+
+            if ($omitPrefix && $notUsingDomains) {
                 // Move the omitted locale to the end of the array
                 // to avoid root placeholders catching existing slugs.
                 // https://github.com/codezero-be/laravel-localized-routes/issues/28
@@ -42,7 +44,7 @@ class LocalizedRoutesMacro
                 // Allow supported locales to be a
                 // simple array of locales or an
                 // array of ['locale' => 'domain']
-                if (is_numeric($locale)) {
+                if ($notUsingDomains) {
                     $locale = $domain;
                     $domain = null;
                 }

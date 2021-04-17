@@ -143,6 +143,45 @@ class LocalizedRoutesMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_domains()
+    {
+        $this->setSupportedLocales([
+            'en' => 'english-domain.com',
+            'nl' => 'dutch-domain.com',
+        ]);
+        $this->setOmitUrlPrefixForLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () { return 'Home '.App::getLocale(); })->name('home');
+            Route::get('{slug}', function () { return 'Dynamic '.App::getLocale(); })->name('catch-all');
+        });
+
+        $routes = $this->getRoutes();
+
+        $this->assertCount(4, $routes);
+
+        $route = $routes[0];
+        $this->assertEquals('english-domain.com', $route->action['domain']);
+        $this->assertEquals('en.home', $route->action['as']);
+        $this->assertEquals('/', $route->uri);
+
+        $route = $routes[1];
+        $this->assertEquals('english-domain.com', $route->action['domain']);
+        $this->assertEquals('en.catch-all', $route->action['as']);
+        $this->assertEquals('{slug}', $route->uri);
+
+        $route = $routes[2];
+        $this->assertEquals('dutch-domain.com', $route->action['domain']);
+        $this->assertEquals('nl.home', $route->action['as']);
+        $this->assertEquals('/', $route->uri);
+
+        $route = $routes[3];
+        $this->assertEquals('dutch-domain.com', $route->action['domain']);
+        $this->assertEquals('nl.catch-all', $route->action['as']);
+        $this->assertEquals('{slug}', $route->uri);
+    }
+
+    /** @test */
     public function it_temporarily_changes_the_app_locale_when_registering_the_routes()
     {
         $this->setSupportedLocales(['nl']);
