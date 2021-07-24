@@ -1,5 +1,6 @@
 # Laravel Localized Routes
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/49a77457086c4e85b9e1d8bcc57f98c4)](https://app.codacy.com/gh/codezero-be/laravel-localized-routes?utm_source=github.com&utm_medium=referral&utm_content=codezero-be/laravel-localized-routes&utm_campaign=Badge_Grade_Settings)
 [![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg?style=flat-square)](CHANGELOG.md)
 [![Laravel](https://img.shields.io/badge/laravel-8-red?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 [![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg?style=flat-square)](LICENSE.md)
