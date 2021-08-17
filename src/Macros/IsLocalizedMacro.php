@@ -25,7 +25,7 @@ class IsLocalizedMacro
             $names = Collection::make();
 
             Collection::make($patterns)->each(function ($name) use ($locales, $names) {
-                Collection::make($locales)->each(function ($locale) use ($name, $names) {
+                $locales->each(function ($locale) use ($name, $names) {
                     $names->push($locale . '.' . $name);
                 });
             });
