@@ -8,6 +8,7 @@ use CodeZero\LocalizedRoutes\Macros\LocalizedUrlMacro;
 use CodeZero\LocalizedRoutes\Macros\UriTranslationMacro;
 use CodeZero\LocalizedRoutes\Macros\LocalizedRoutesMacro;
 use CodeZero\Localizer\Localizer;
+use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class LocalizedRoutesServiceProvider extends ServiceProvider
@@ -40,6 +41,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         $this->mergeConfig();
         $this->registerUrlGenerator();
         $this->registerLocaleHandler();
+        $this->registerProviders();
     }
 
     /**
@@ -77,6 +79,16 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     protected function mergeConfig()
     {
         $this->mergeConfigFrom(__DIR__."/../config/{$this->name}.php", $this->name);
+    }
+
+    /**
+     * Registers the package dependencies
+     *
+     * @return void
+     */
+    protected function registerProviders()
+    {
+        $this->app->register(LocalizerServiceProvider::class);
     }
 
     /**
