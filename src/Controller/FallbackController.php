@@ -27,7 +27,8 @@ class FallbackController extends Controller
             $route = $this->findRouteByUrl($localizedUrl);
 
             if ( ! $route->isFallback) {
-                return Redirect::to($localizedUrl, Config::get('localized-routes.redirect_status_code', 301));
+                return Redirect::to($localizedUrl, Config::get('localized-routes.redirect_status_code', 301))
+                    ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
             }
         }
 
