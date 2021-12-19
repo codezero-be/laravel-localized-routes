@@ -26,7 +26,7 @@
 - Optionally [detect and set the preferred locale in multiple sources](#%EF%B8%8F-use-localizer-to-detect-and-set-the-locale).
 - Use localized route keys with [route model binding](#-route-model-binding).
 - Allow routes to be [cached](#-cache-routes).
-- Localize [`404` pages](#-localized-404-pages).
+- Localize [`404` pages](#-localized-404-pages-and-redirecting-to-localized-urls).
 
 ## ✅ Requirements
 
@@ -551,7 +551,7 @@ $url = route('posts.show', [$post], true, 'nl'); // /nl/posts/nl-slug
 
 ## 🚴‍ Route Model Binding
 
-If you enable the [middleware](#-use-middleware-to-update-app-locale) included in this package,
+If you enable the [middleware](#%EF%B8%8F-use-middleware-to-update-app-locale) included in this package,
 you can use [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding)
 to automatically inject models with localized route keys in your controllers.
 
