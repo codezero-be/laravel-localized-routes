@@ -455,7 +455,7 @@ Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more
 
 ### 🌎 Translate Routes
 
-If you want to translate the segments of your URI's, create a `routes.php` language file for each locale you [configured](#configure-supported-locales):
+If you want to translate the segments of your URI's, create a `routes.php` language file for each locale you [configured](#%EF%B8%8F-supported-locales):
 
 ```
 resources
