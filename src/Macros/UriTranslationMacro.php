@@ -16,6 +16,12 @@ class UriTranslationMacro
     public static function register()
     {
         Lang::macro('uri', function ($uri, $locale = null) {
+
+            // Attempt to translate full uri.
+            if (!Str::contains($uri, '{') && Lang::has("routes.$uri", $locale)) {
+                return Lang::get("routes.$uri", [], $locale);
+            }
+            
             // Split the URI into a Collection of segments.
             $segments = new Collection(explode('/', trim($uri, '/')));
 
