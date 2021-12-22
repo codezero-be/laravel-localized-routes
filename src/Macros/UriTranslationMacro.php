@@ -16,7 +16,7 @@ class UriTranslationMacro
     public static function register()
     {
         Lang::macro('uri', function ($uri, $locale = null, $namespace = null) {
- 
+
             // Attempt to translate full uri.
             if (!Str::contains($uri, '{') && Lang::has(($namespace ? $namespace.'::' : '')."routes.$uri", $locale)) {
                 return Lang::get(($namespace ? $namespace.'::' : '')."routes.$uri", [], $locale);
