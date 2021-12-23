@@ -27,7 +27,7 @@ class UriTranslationMacro
 
             // Attempt to translate each segment. If there is no translation
             // for a specific segment, then its original value will be used.
-            $translations = $segments->map(function ($segment) use ($locale) {
+            $translations = $segments->map(function ($segment) use ($locale, $namespace) {
                 $translationKey = ($namespace ? $namespace.'::' : '')."routes.{$segment}";
 
                 // If the segment is not a placeholder and the segment
