@@ -56,7 +56,10 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "0.0.0/composer-include-files": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
