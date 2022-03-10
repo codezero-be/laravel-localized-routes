@@ -1,5 +1,20 @@
 # Laravel Localized Routes
 
+## IMPORTANT: March 2022
+
+[![Support Ukraine](https://raw.githubusercontent.com/hampusborgos/country-flags/main/png100px/ua.png)](https://github.com/hampusborgos/country-flags/blob/main/png100px/ua.png)
+
+It's horrible to see what is happening now in Ukraine, as Russian army is
+[bombarding houses, hospitals and kindergartens](https://twitter.com/DavidCornDC/status/1501620037785997316).
+
+Please [check out supportukrainenow.org](https://supportukrainenow.org/) for the ways how you can help people there.
+Spread the word.
+
+And if you are from Russia and you are against this war, please express your protest in some way.
+I know you can get punished for this, but you are one of the hopes of those innocent people.
+
+---
+
 [![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg?style=flat-square)](https://github.com/codezero-be/laravel-localized-routes/releases)
 [![Laravel](https://img.shields.io/badge/laravel-9-red?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 [![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg?style=flat-square)](LICENSE.md)
