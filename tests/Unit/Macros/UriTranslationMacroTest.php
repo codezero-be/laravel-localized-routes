@@ -78,4 +78,18 @@ class UriTranslationMacroTest extends TestCase
 
         $this->assertEquals('artikels/{article}', Lang::uri('articles/{article}', 'nl'));
     }
+
+    /** @test */
+    public function you_can_translate_a_full_uri()
+    {
+        $this->setTranslations([
+            'nl' => [
+                'glass'          => 'glas',
+                'products'       => 'producten',
+                'products/glass' => 'producten/glazen'
+            ]
+        ]);
+
+        $this->assertEquals('producten/glazen', Lang::uri('products/glass', 'nl'));
+    }
 }
