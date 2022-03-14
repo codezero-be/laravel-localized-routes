@@ -518,7 +518,19 @@ The above will generate:
 - /en/materials/glass
 - /nl/materials/glazen
 
-Note that in order to find a translated version of a route, you will need to give your routes a name.
+If you need to get a translation from a package,
+you can pass an optional translation namespace as a third parameter to `Lang::uri()`:
+
+```php
+Route::localized(function () {
+
+    Route::get(Lang::uri('products/glass', null, 'shop'), ProductsController::class.'@index')
+        ->name('products.glass');
+
+});
+```
+
+> Note that in order to find a translated version of a route, you will need to give your routes a name.
 If you don't name your routes, only the parameters (model route keys) will be translated, not the "hard-coded" slugs.
 
 ## 🚏 Route Parameters
