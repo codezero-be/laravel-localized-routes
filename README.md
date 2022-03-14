@@ -493,7 +493,7 @@ return [
     'glass' => 'glas',
     'products' => 'producten',
     'materials' => 'materiaal',
-    'materials/glass' => 'producten/glazen'
+    'materials/glass' => 'materiaal/glazen'
 ];
 ```
 
@@ -516,7 +516,7 @@ The above will generate:
 - /en/products/glass
 - /nl/producten/glass
 - /en/materials/glass
-- /nl/materials/glazen
+- /nl/materiaal/glazen
 
 If you need to get a translation from a package,
 you can pass an optional translation namespace as a third parameter to `Lang::uri()`:
