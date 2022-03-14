@@ -92,4 +92,16 @@ class UriTranslationMacroTest extends TestCase
 
         $this->assertEquals('producten/glazen', Lang::uri('products/glass', 'nl'));
     }
+
+    /** @test */
+    public function you_can_specify_a_namespace()
+    {
+        $this->setTranslations([
+            'nl' => [
+                'articles' => 'artikels',
+            ]
+        ], 'blog');
+
+        $this->assertEquals('artikels/{article}', Lang::uri('articles/{article}', 'nl', 'blog'));
+    }
 }

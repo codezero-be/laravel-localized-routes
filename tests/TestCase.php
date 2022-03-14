@@ -120,13 +120,14 @@ abstract class TestCase extends  BaseTestCase
      * for each language with the given translations.
      *
      * @param $translations
+     * @param string $namespace
      *
      * @return void
      */
-    protected function setTranslations($translations)
+    protected function setTranslations($translations, $namespace = '*')
     {
         Lang::setLoaded([
-            '*' => [
+            $namespace => [
                 'routes' => $translations
             ]
         ]);
