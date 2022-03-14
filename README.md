@@ -481,13 +481,19 @@ resources
            └── routes.php
 ```
 
-In these files, add a translation for each segment.
+In these files, add a translation for each segment, or for the full URI.
+
+If an exact match is found, that will be returned.
+Otherwise, each segment will be translated separately.
+If a translation is not found, the original segment is used.
 
 ```php
 // lang/nl/routes.php
 return [
-    'about' => 'over',
-    'us' => 'ons',
+    'glass' => 'glas',
+    'products' => 'producten',
+    'materials' => 'materiaal',
+    'materials/glass' => 'producten/glazen'
 ];
 ```
 
@@ -496,21 +502,24 @@ Now you can use our `Lang::uri()` macro during route registration:
 ```php
 Route::localized(function () {
 
-    Route::get(Lang::uri('about/us'), AboutController::class.'@index')
-        ->name('about.us');
+    Route::get(Lang::uri('products/glass'), ProductsController::class.'@index')
+        ->name('products.glass');
+
+    Route::get(Lang::uri('materials/glass'), MaterialsController::class.'@index')
+        ->name('materials.glass');
 
 });
 ```
 
-Note that in order to find a translated version of a route, you will need to give your routes a name.
-If you don't name your routes, only the parameters (model route keys) will be translated, not the "hard-coded" slugs.
-
 The above will generate:
 
-- /en/about/us
-- /nl/over/ons
+- /en/products/glass
+- /nl/producten/glass
+- /en/materials/glass
+- /nl/materials/glazen
 
-> If a translation is not found, the original segment is used.
+Note that in order to find a translated version of a route, you will need to give your routes a name.
+If you don't name your routes, only the parameters (model route keys) will be translated, not the "hard-coded" slugs.
 
 ## 🚏 Route Parameters
 
