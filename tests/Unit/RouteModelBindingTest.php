@@ -2,10 +2,10 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit;
 
-use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
-use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
+use CodeZero\LocalizedRoutes\Tests\TestCase;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 
 class RouteModelBindingTest extends TestCase
 {

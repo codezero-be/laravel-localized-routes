@@ -2,16 +2,18 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
-use CodeZero\LocalizedRoutes\Middleware\SetLocale;
-use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
-use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
-use CodeZero\LocalizedRoutes\Tests\TestCase;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Config;
+use CodeZero\LocalizedRoutes\Tests\TestCase;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
+use CodeZero\LocalizedRoutes\Middleware\SetLocale;
+use CodeZero\LocalizedRoutes\Tests\Stubs\ModelBar;
+use CodeZero\LocalizedRoutes\Tests\Stubs\ModelFoo;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
 
 class LocalizedUrlMacroTest extends TestCase
 {
@@ -46,6 +48,48 @@ class LocalizedUrlMacroTest extends TestCase
             'current' => url('/en/route/en-slug/en-slug'),
             'en' => url('/en/route/en-slug/en-slug'),
             'nl' => url('/nl/route/nl-slug/nl-slug'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_generates_urls_for_the_current_route_with_diferent_models_using_route_model_binding()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        $foo = (new ModelFoo([
+            'slug' => [
+                'en' => 'en-slug-foo',
+                'nl' => 'nl-slug-foo',
+            ],
+        ]))->setKeyName('slug');
+
+        $bar = (new ModelBar([
+            'slug' => [
+                'en' => 'en-slug-bar',
+                'nl' => 'nl-slug-bar',
+            ],
+        ]))->setKeyName('slug');
+
+        App::instance(ModelFoo::class, $foo);
+        App::instance(ModelBar::class, $bar);
+
+        Route::localized(function () {
+            Route::get('route/{foo}/{bar}', function (ModelFoo $foo, ModelBar $bar) {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->middleware(['web']);
+        });
+
+        $response = $this->call('GET', '/en/route/en-slug-foo/en-slug-bar');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/en/route/en-slug-foo/en-slug-bar'),
+            'en' => url('/en/route/en-slug-foo/en-slug-bar'),
+            'nl' => url('/nl/route/nl-slug-foo/nl-slug-bar'),
         ], $response->original);
     }
 
@@ -208,7 +252,6 @@ class LocalizedUrlMacroTest extends TestCase
 
         Route::localized(function () use ($model) {
             Route::get('route/{id}/{slug}', function ($id, $slug) use ($model) {
-
                 $closure = function ($locale) use ($model) {
                     return [$model->id, $model->getSlug($locale)];
                 };
@@ -830,7 +873,6 @@ class LocalizedUrlMacroTest extends TestCase
             'en' => url('/route/another-slug'),
             'nl' => url('/route/another-slug'),
         ], $response->original);
-
     }
 
     /** @test */

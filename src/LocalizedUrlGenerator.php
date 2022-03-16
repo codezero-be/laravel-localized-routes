@@ -2,13 +2,13 @@
 
 namespace CodeZero\LocalizedRoutes;
 
-use Illuminate\Contracts\Routing\UrlRoutable;
+use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Route;
-use InvalidArgumentException;
+use Illuminate\Contracts\Routing\UrlRoutable;
 
 class LocalizedUrlGenerator
 {
@@ -49,7 +49,7 @@ class LocalizedUrlGenerator
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
         $locale = $locale ?: $this->detectLocale($urlBuilder);
 
-        if ( ! $this->is404()) {
+        if (!$this->is404()) {
             // $parameters can be an array, a function or it can contain model instances!
             // Normalize the parameters so we end up with an array of key => value pairs.
             $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
@@ -71,7 +71,7 @@ class LocalizedUrlGenerator
 
         // If custom domains are not used and it is not a registered,
         // non localized route, update the locale slug in the path.
-        if ( ! $this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
+        if (!$this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
             $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $locale));
         }
 
@@ -117,7 +117,7 @@ class LocalizedUrlGenerator
      */
     protected function is404()
     {
-        return ! $this->routeExists() || $this->isFallback();
+        return !$this->routeExists() || $this->isFallback();
     }
 
     /**
@@ -358,10 +358,14 @@ class LocalizedUrlGenerator
      */
     protected function prepareParameters($locale, $parameters)
     {
-        $model = Collection::make($parameters)->first();
+        $models = Collection::make($parameters)->filter(function ($model) {
+            return $model instanceof ProvidesRouteParameters;
+        });
 
-        if ($model instanceof ProvidesRouteParameters) {
-            $parameters = $model->getRouteParameters($locale);
+        if ($models->count()) {
+            $parameters = $models->flatMap(function ($model) use ($locale) {
+                return $model->getRouteParameters($locale);
+            })->all();
         }
 
         if (is_callable($parameters)) {
