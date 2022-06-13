@@ -46,7 +46,7 @@ I know you can get punished for this, but you are one of the hopes of those inno
 ## ✅ Requirements
 
 - PHP >= 7.1
-- Laravel >= 6.0
+- Laravel >= 5.6
 
 ## 📦 Install
 
