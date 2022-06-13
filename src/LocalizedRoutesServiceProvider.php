@@ -104,7 +104,9 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      */
     protected function registerUrlGenerator()
     {
-        $this->app->singleton('url', function ($app) {
+        $this->app->singleton('url', function () {
+            $app = Container::getInstance();
+
             $routes = $app['router']->getRoutes();
 
             // The URL generator needs the route collection that exists on the router.
@@ -112,31 +114,13 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
             // and all the registered routes will be available to the generator.
             $app->instance('routes', $routes);
 
-            $url = new UrlGenerator(
-                $routes, $app->rebinding(
+            return $app->make(UrlGenerator::class, [
+                'routes' => $routes,
+                'request' => $app->rebinding(
                     'request', $this->requestRebinder()
-                ), $app['config']['app.asset_url']
-            );
-
-            // Next we will set a few service resolvers on the URL generator so it can
-            // get the information it needs to function. This just provides some of
-            // the convenience features to this URL generator like "signed" URLs.
-            $url->setSessionResolver(function () {
-                return $this->app['session'] ?? null;
-            });
-
-            $url->setKeyResolver(function () {
-                return $this->app->make('config')->get('app.key');
-            });
-
-            // If the route collection is "rebound", for example, when the routes stay
-            // cached for the application, we will need to rebind the routes on the
-            // URL generator instance so it has the latest version of the routes.
-            $app->rebinding('routes', function ($app, $routes) {
-                $app['url']->setRoutes($routes);
-            });
-
-            return $url;
+                ),
+                'assetRoot' => $app['config']['app.asset_url']
+            ]);
         });
     }
 
