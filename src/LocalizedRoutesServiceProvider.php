@@ -10,6 +10,7 @@ use CodeZero\LocalizedRoutes\Macros\LocalizedRoutesMacro;
 use CodeZero\Localizer\Localizer;
 use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Container\Container;
 
 class LocalizedRoutesServiceProvider extends ServiceProvider
 {
