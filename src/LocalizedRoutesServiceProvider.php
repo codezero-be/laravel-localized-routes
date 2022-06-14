@@ -10,6 +10,7 @@ use CodeZero\LocalizedRoutes\Macros\LocalizedRoutesMacro;
 use CodeZero\Localizer\Localizer;
 use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Container\Container;
 
 class LocalizedRoutesServiceProvider extends ServiceProvider
 {
@@ -104,7 +105,9 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      */
     protected function registerUrlGenerator()
     {
-        $this->app->singleton('url', function ($app) {
+        $this->app->singleton('url', function () {
+            $app = Container::getInstance();
+            
             $routes = $app['router']->getRoutes();
 
             // The URL generator needs the route collection that exists on the router.
@@ -112,11 +115,13 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
             // and all the registered routes will be available to the generator.
             $app->instance('routes', $routes);
 
-            $url = new UrlGenerator(
-                $routes, $app->rebinding(
+            $url = $app->make(UrlGenerator::class, [
+                'routes' => $routes,
+                'request' => $app->rebinding(
                     'request', $this->requestRebinder()
-                ), $app['config']['app.asset_url']
-            );
+                ),
+                'assetRoot' => $app['config']['app.asset_url']
+            ]);
 
             // Next we will set a few service resolvers on the URL generator so it can
             // get the information it needs to function. This just provides some of
