@@ -94,6 +94,20 @@ class UriTranslationMacroTest extends TestCase
     }
 
     /** @test */
+    public function you_can_translate_a_full_uri_with_placeholder()
+    {
+        $this->setTranslations([
+            'nl' => [
+                'glass'                => 'glas',
+                'products'             => 'producten',
+                'products/glass/{type}' => 'producten/glazen/{type}'
+            ]
+        ]);
+
+        $this->assertEquals('producten/glazen/{type}', Lang::uri('products/glass/{type}', 'nl'));
+    }
+
+    /** @test */
     public function you_can_specify_a_namespace()
     {
         $this->setTranslations([

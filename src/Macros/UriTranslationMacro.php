@@ -18,10 +18,10 @@ class UriTranslationMacro
         Lang::macro('uri', function ($uri, $locale = null, $namespace = null) {
 
             // Attempt to translate full uri.
-            if (!Str::contains($uri, '{') && Lang::has(($namespace ? $namespace.'::' : '')."routes.$uri", $locale)) {
+            if (Lang::has(($namespace ? $namespace.'::' : '')."routes.$uri", $locale)) {
                 return Lang::get(($namespace ? $namespace.'::' : '')."routes.$uri", [], $locale);
             }
-            
+
             // Split the URI into a Collection of segments.
             $segments = new Collection(explode('/', trim($uri, '/')));
 
