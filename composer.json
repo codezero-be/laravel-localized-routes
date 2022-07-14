@@ -58,7 +58,8 @@
         "sort-packages": true,
         "optimize-autoloader": true,
         "allow-plugins": {
-            "0.0.0/composer-include-files": true
+            "0.0.0/composer-include-files": true,
+            "kylekatarnls/update-helper": true
         }
     },
     "minimum-stability": "dev",
