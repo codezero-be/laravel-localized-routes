@@ -8,6 +8,11 @@ return [
     'supported-locales' => [],
 
     /**
+     * The fallback locale to use when a provided locale is not supported.
+     */
+    'fallback_locale' => null,
+
+    /**
      * If you have a main locale and don't want
      * to prefix it in the URL, specify it here.
      *

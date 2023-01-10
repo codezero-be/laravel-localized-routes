@@ -68,6 +68,18 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
+     * Set the supported locales config option.
+     *
+     * @param string $locale
+     *
+     * @return void
+     */
+    protected function setFallbackLocale($locale): void
+    {
+        Config::set('localized-routes.fallback_locale', $locale);
+    }
+
+    /**
      * Set the 'omit_url_prefix_for_locale' config option.
      *
      * @param string $value
