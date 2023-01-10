@@ -54,14 +54,11 @@ class LocalizedRoutesMacro
                 // to register translated route URI's.
                 App::setLocale($locale);
 
-                // Map the locale string to a prefix.
-                $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
-
                 // Prepend the locale to the route name
                 // and set a custom attribute so the middleware
                 // can find it to set the correct app locale.
                 $attributes = [
-                    'as' => "{$prefix}.",
+                    'as' => "{$locale}.",
                     'localized-routes-locale' => $locale
                 ];
 
@@ -70,6 +67,9 @@ class LocalizedRoutesMacro
                 if ($domain !== null) {
                     $attributes['domain'] = $domain;
                 }
+
+                // Map the locale string to a prefix.
+                $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
 
                 // Prefix the URL unless the locale
                 // is configured to be omitted.
