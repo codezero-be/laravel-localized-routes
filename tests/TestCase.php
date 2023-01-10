@@ -68,7 +68,7 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
-     * Set the supported locales config option.
+     * Set the fallback locale config option.
      *
      * @param string $locale
      *
