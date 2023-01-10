@@ -74,4 +74,33 @@ class RedirectToLocalizedTest extends TestCase
         $this->setAppLocale('en');
         $this->get('missing')->assertNotFound();
     }
+
+    /** @test */
+    public function it_redirects_to_the_localized_url_with_custom_prefixes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setCustomPrefixes(['en' => 'english', 'nl' => 'dutch']);
+        $this->setUseLocaleMiddleware(false);
+        $this->setRedirectToLocalizedUrls(true);
+
+        Route::localized(function () {
+            Route::get('/', function () {});
+            Route::get('about', function () {});
+        });
+
+        Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
+
+        $this->setAppLocale('en');
+        $this->get('/')->assertRedirect('english');
+        $this->get('english')->assertOk();
+        $this->get('about')->assertRedirect('english/about');
+        $this->get('english/about')->assertOk();
+
+        $this->setAppLocale('nl');
+        $this->get('/')->assertRedirect('dutch');
+        $this->get('dutch')->assertOk();
+        $this->get('about')->assertRedirect('dutch/about');
+        $this->get('dutch/about')->assertOk();
+    }
 }

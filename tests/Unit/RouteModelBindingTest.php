@@ -78,4 +78,38 @@ class RouteModelBindingTest extends TestCase
         $this->get('en/test/en-slug')->assertOk();
         $this->get('en/test/nl-slug')->assertNotFound();
     }
+
+    /** @test */
+    public function it_loads_a_route_with_a_localized_route_key_with_custom_prefixes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setCustomPrefixes(['en' => 'english', 'nl' => 'dutch']);
+        $this->setUseLocaleMiddleware(true);
+
+        $model = (new Model([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('slug');
+
+        App::instance(Model::class, $model);
+
+        Route::middleware(['web'])->get('test/{model}', function (Model $model) {});
+
+        Route::localized(function () {
+            Route::middleware(['web'])->get('test/{model}', function (Model $model) {});
+        });
+
+        $this->setAppLocale('nl');
+
+        $this->get('test/nl-slug')->assertOk();
+        $this->get('test/en-slug')->assertNotFound();
+
+        $this->get('dutch/test/nl-slug')->assertOk();
+        $this->get('dutch/test/en-slug')->assertNotFound();
+
+        $this->get('english/test/en-slug')->assertOk();
+        $this->get('english/test/nl-slug')->assertNotFound();
+    }
 }

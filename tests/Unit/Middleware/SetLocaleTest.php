@@ -216,4 +216,26 @@ class SetLocaleTest extends TestCase
 
         $localizer->shouldHaveReceived('setSupportedLocales')->with(['en', 'nl']);
     }
+
+    /** @test */
+    public function it_sets_the_right_locale_with_custom_prefixes()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setCustomPrefixes(['en' => 'english', 'nl' => 'dutch']);
+        $this->setUseLocaleMiddleware(true);
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return App::getLocale();
+            });
+        });
+
+        $response = $this->call('GET', '/english');
+        $response->assertOk();
+        $this->assertEquals('en', $response->original);
+
+        $response = $this->call('GET', '/dutch');
+        $response->assertOk();
+        $this->assertEquals('nl', $response->original);
+    }
 }

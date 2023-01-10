@@ -68,4 +68,14 @@ return [
      */
     'use_localizer' => false,
 
+    /**
+     * Map application locale to a custom route prefix.
+     *
+     * 'custom_prefixes' => [
+     *   'en' => 'english',
+     *   'nl' => 'dutch',
+     * ]
+     */
+    'custom_prefixes' => [],
+
 ];

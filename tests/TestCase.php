@@ -116,6 +116,18 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
+     * Set the custom prefixes config option.
+     *
+     * @param array $prefixes
+     *
+     * @return void
+     */
+    protected function setCustomPrefixes($prefixes)
+    {
+        Config::set('localized-routes.custom_prefixes', $prefixes);
+    }
+
+    /**
      * Fake that we created a routes.php file in 'resources/lang/'
      * for each language with the given translations.
      *

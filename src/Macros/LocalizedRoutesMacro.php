@@ -28,7 +28,7 @@ class LocalizedRoutesMacro
             $setMiddleware = $options['use_locale_middleware']
                                 ?? Config::get('localized-routes.use_locale_middleware', false);
 
-            $notUsingDomains = is_numeric(array_key_first($locales));
+            $notUsingDomains = is_numeric(key($locales));
 
             if ($omitPrefix && $notUsingDomains) {
                 // Move the omitted locale to the end of the array
@@ -68,10 +68,13 @@ class LocalizedRoutesMacro
                     $attributes['domain'] = $domain;
                 }
 
+                // Map the locale string to a prefix.
+                $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
+
                 // Prefix the URL unless the locale
                 // is configured to be omitted.
                 if ($domain === null && $locale !== $omitPrefix) {
-                    $attributes['prefix'] = $locale;
+                    $attributes['prefix'] = $prefix;
                 }
 
                 if ($setMiddleware) {
