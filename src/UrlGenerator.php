@@ -54,6 +54,14 @@ class UrlGenerator extends BaseUrlGenerator
         // as a prefix for the route name.
         $locale = $locale ?: $currentLocale;
 
+        // Check if the locale is supported
+        if (!in_array($locale, config('localized-routes.supported-locales'))) {
+            // Use a fallback locale if provided
+            if (config('localized-routes.fallback_locale')) {
+                $locale = config('localized-routes.fallback_locale');
+            }
+        }
+
         // Normalize the route name by removing any locale prefix.
         // We will prepend the applicable locale manually.
         $baseName = $this->stripLocaleFromRouteName($name);

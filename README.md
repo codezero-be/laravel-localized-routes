@@ -30,7 +30,7 @@ I know you can get punished for this, but you are one of the hopes of those inno
 ## 🧩 Features
 
 - [Automatically register](#-register-routes) a route for each locale.
-- Use [URL slugs or custom domains](#%EF%B8%8F-supported-locales) (or subdomains).
+- Use [URL slugs or custom domains](#-supported-locales) (or subdomains).
 - Optionally [omit the locale slug from the URL for your main locale](#%EF%B8%8F-omit-slug-for-main-locale).
 - Optionally [translate each segment](#-translate-routes) in your URI's.
 - [Generate localized route URL's](#-generate-route-urls) using the `route()` helper.
@@ -88,6 +88,14 @@ Alternatively, you can use a different domain or subdomain for each locale by co
   'nl' => 'nl.example.com',
   'fr' => 'fr.example.com',
 ],
+```
+
+#### ☑️ Fallback Locale
+
+When provided, this will be used as the fallback locale when a locale provided in the `route()` helper is not present in the list of supported locales.
+
+```php
+'fallback_locale' => 'en',
 ```
 
 #### ☑️ Omit Slug for Main Locale
@@ -377,6 +385,18 @@ $url = route('en.about', [], true, 'nl'); // /nl/about
 > **Note:** in a most practical scenario you would register a route either localized **or** non-localized, but not both.
 > If you do, you will always need to specify a locale to get the URL, because non-localized routes always have priority
 > when using the `route()` function.
+
+If the locale parameter for the `route()` helper is not a supported locale, and the route does not exist, a `RouteNotFoundException` will be thrown.
+
+A fallback locale can be provided in the config file. When provided, if the locale parameter for the `route()` helper is not a supported locale, the fallback locale will be used instead.
+
+```php
+// when `fallback_locale` is set to "en"
+// and supported locales are "en" and "nl"
+
+$url = route('about', [], true, 'nl'); // /nl/about
+$url = route('about', [], true, 'wk'); // /en/about
+```
 
 ### 🚌 Redirect to Routes
 
