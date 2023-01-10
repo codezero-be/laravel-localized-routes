@@ -270,6 +270,23 @@ class UrlGeneratorTest extends TestCase
         $this->get('en/route')->assertSuccessful();
     }
 
+    /** @test */
+    public function it_maps_locales_with_custom_prefixes()
+    {
+        $this->setSupportedLocales(['en', 'nl', 'fr']);
+
+        // Set custom prefixes for all locales except "fr"
+        $this->setCustomPrefixes(['en' => 'english', 'nl' => 'dutch']);
+
+        $this->registerRoute('english/route', 'english.route');
+        $this->registerRoute('dutch/route', 'dutch.route');
+        $this->registerRoute('fr/route', 'fr.route');
+
+        $this->assertEquals(url('english/route'), route('english.route'));
+        $this->assertEquals(url('dutch/route'), route('dutch.route'));
+        $this->assertEquals(url('fr/route'), route('fr.route'));
+    }
+
     /**
      * Cache registered routes.
      *

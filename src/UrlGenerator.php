@@ -54,13 +54,16 @@ class UrlGenerator extends BaseUrlGenerator
         // as a prefix for the route name.
         $locale = $locale ?: $currentLocale;
 
+        // Map the locale string to a prefix.
+        $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
+
         // Normalize the route name by removing any locale prefix.
         // We will prepend the applicable locale manually.
         $baseName = $this->stripLocaleFromRouteName($name);
 
         // If the route has a name (not just the locale prefix)
         // add the requested locale prefix.
-        $newName = $baseName ? "{$locale}.{$baseName}" : '';
+        $newName = $baseName ? "{$prefix}.{$baseName}" : '';
 
         // If the new localized name does not exist, but the unprefixed route name does,
         // someone might be calling "route($name, [], true, $locale)" on a non localized route.

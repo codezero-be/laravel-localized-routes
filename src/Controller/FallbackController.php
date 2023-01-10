@@ -32,7 +32,7 @@ class FallbackController extends Controller
             }
         }
 
-        return $this->NotFoundResponse();
+        return $this->notFoundResponse();
     }
 
     /**
@@ -54,7 +54,7 @@ class FallbackController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    protected function NotFoundResponse()
+    protected function notFoundResponse()
     {
         $view = Config::get('localized-routes.404_view');
 

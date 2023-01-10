@@ -69,10 +69,13 @@ class LocalizedUrlGenerator
             $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $slugs));
         }
 
+        // Map the locale string to a prefix.
+        $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
+
         // If custom domains are not used and it is not a registered,
         // non localized route, update the locale slug in the path.
         if (!$this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
-            $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $locale));
+            $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $prefix));
         }
 
         if ($domain = $this->getCustomDomain($locale)) {
