@@ -23,7 +23,7 @@ abstract class TestCase extends  BaseTestCase
     {
         parent::setUp();
 
-        if ($this->app->version() < 7) {
+        if (version_compare($this->app->version(), '7.0.0') === -1) {
             \Illuminate\Foundation\Testing\TestResponse::macro('assertResponseHasNoView', function () {
                 if (isset($this->original) && $this->original instanceof View) {
                     Illuminate\Foundation\Testing\Assert::fail('The response has a view.');

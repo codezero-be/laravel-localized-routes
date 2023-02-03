@@ -33,7 +33,7 @@ class HelpersFileTest extends TestCase
             Route::get('route')->name('route');
         });
 
-        if ($this->app->version() < 6) {
+        if (version_compare($this->app->version(), '6.0.0') === -1) {
             $this->expectExceptionMessage('Route [wk.route] not defined.');
         } else {
             $this->expectException(RouteNotFoundException::class);
