@@ -431,7 +431,7 @@ class LocalizedUrlGenerator
      */
     protected function getBindingFieldFor($key, UrlRoutable $model)
     {
-        if (App::version() < 7) {
+        if (version_compare(App::version(), '7.0.0') === -1) {
             return $model->getRouteKeyName();
         }
 
