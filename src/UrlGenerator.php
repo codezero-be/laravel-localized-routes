@@ -55,11 +55,9 @@ class UrlGenerator extends BaseUrlGenerator
         $locale = $locale ?: $currentLocale;
 
         // Check if the locale is supported
-        if (!in_array($locale, config('localized-routes.supported-locales'))) {
+        if ( ! in_array($locale, $this->getSupportedLocales())) {
             // Use a fallback locale if provided
-            if (config('localized-routes.fallback_locale')) {
-                $locale = config('localized-routes.fallback_locale');
-            }
+            $locale = Config::get('localized-routes.fallback_locale', $locale);
         }
 
         // Normalize the route name by removing any locale prefix.

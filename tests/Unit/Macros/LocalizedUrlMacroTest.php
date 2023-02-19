@@ -375,6 +375,66 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_the_url_for_existing_unnamed_localized_routes_using_domains()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales([
+            'en' => 'domain.test',
+            'nl' => 'nl.domain.test',
+        ]);
+        $this->setAppLocale('en');
+        $this->setFallbackLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            });
+        });
+
+        $response = $this->call('GET', 'http://domain.test');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => 'http://domain.test',
+            'en' => 'http://domain.test',
+            'nl' => 'http://nl.domain.test',
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_returns_the_url_for_existing_named_localized_routes_using_domains()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales([
+            'en' => 'domain.test',
+            'nl' => 'nl.domain.test',
+        ]);
+        $this->setAppLocale('en');
+        $this->setFallbackLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->name('route');
+        });
+
+        $response = $this->call('GET', 'http://domain.test');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => 'http://domain.test',
+            'en' => 'http://domain.test',
+            'nl' => 'http://nl.domain.test',
+        ], $response->original);
+    }
+
+    /** @test */
     public function the_macro_does_not_blow_up_on_a_default_404_error()
     {
         // Although a default 404 has no Route::current() and is no real View, the composer still triggers.
