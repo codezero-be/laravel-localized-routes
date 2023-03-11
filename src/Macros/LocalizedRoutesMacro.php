@@ -2,10 +2,10 @@
 
 namespace CodeZero\LocalizedRoutes\Macros;
 
-use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class LocalizedRoutesMacro
 {
@@ -21,32 +21,40 @@ class LocalizedRoutesMacro
             // change it during route registration.
             $currentLocale = App::getLocale();
 
-            $locales = $options['supported-locales']
-                                ?? Config::get('localized-routes.supported-locales', []);
-            $omitPrefix = $options['omit_url_prefix_for_locale']
-                                ?? Config::get('localized-routes.omit_url_prefix_for_locale');
-            $setMiddleware = $options['use_locale_middleware']
-                                ?? Config::get('localized-routes.use_locale_middleware', false);
+            $locales = $options['supported-locales'] ?? Config::get('localized-routes.supported-locales', []);
+            $omitPrefix = $options['omit_url_prefix_for_locale'] ?? Config::get('localized-routes.omit_url_prefix_for_locale');
 
-            $notUsingDomains = is_numeric(key($locales));
-
-            if ($omitPrefix && $notUsingDomains) {
-                // Move the omitted locale to the end of the array
-                // to avoid root placeholders catching existing slugs.
-                // https://github.com/codezero-be/laravel-localized-routes/issues/28
-                $locales = array_filter($locales, function ($locale) use ($omitPrefix) {
-                    return $locale !== $omitPrefix;
-                });
-                array_push($locales, $omitPrefix);
+            if (count($locales) === 0) {
+                return;
             }
 
-            foreach ($locales as $locale => $domain) {
+            $firstValue = array_values($locales)[0];
+            $usingDomains = Str::contains($firstValue, '.');
+            $usingCustomSlugs = ! $usingDomains && ! is_numeric(key($locales));
+
+            // Move the omitted locale to the end of the array
+            // to avoid root placeholders catching existing slugs.
+            // https://github.com/codezero-be/laravel-localized-routes/issues/28
+            if ($omitPrefix && ! $usingDomains) {
+                if ($usingCustomSlugs) {
+                    $omitSlug = $locales[$omitPrefix];
+                    unset($locales[$omitPrefix]);
+                    $locales[$omitPrefix] = $omitSlug;
+                } else {
+                    $locales = array_filter($locales, function ($locale) use ($omitPrefix) {
+                        return $locale !== $omitPrefix;
+                    });
+                    $locales[] = $omitPrefix;
+                }
+            }
+
+            foreach ($locales as $locale => $domainOrSlug) {
                 // Allow supported locales to be a
                 // simple array of locales or an
                 // array of ['locale' => 'domain']
-                if ($notUsingDomains) {
-                    $locale = $domain;
-                    $domain = null;
+                if ( ! $usingDomains && ! $usingCustomSlugs) {
+                    $locale = $domainOrSlug;
+                    $domainOrSlug = null;
                 }
 
                 // Change the current locale so we can
@@ -64,21 +72,17 @@ class LocalizedRoutesMacro
 
                 // Add a custom domain route group
                 // if a domain is configured.
-                if ($domain !== null) {
-                    $attributes['domain'] = $domain;
+                if ($usingDomains) {
+                    $attributes['domain'] = $domainOrSlug;
                 }
 
                 // Map the locale string to a prefix.
-                $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
+                $prefix = $usingCustomSlugs ? $domainOrSlug : $locale;
 
                 // Prefix the URL unless the locale
                 // is configured to be omitted.
-                if ($domain === null && $locale !== $omitPrefix) {
+                if ( ! $usingDomains && $locale !== $omitPrefix) {
                     $attributes['prefix'] = $prefix;
-                }
-
-                if ($setMiddleware) {
-                    $attributes['middleware'] = [SetLocale::class];
                 }
 
                 // Execute the callback inside route group
