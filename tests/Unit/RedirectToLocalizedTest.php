@@ -12,7 +12,6 @@ class RedirectToLocalizedTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(false);
         $this->setRedirectToLocalizedUrls(true);
 
         Route::localized(function () {
@@ -40,7 +39,6 @@ class RedirectToLocalizedTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(false);
         $this->setOmitUrlPrefixForLocale('en');
         $this->setRedirectToLocalizedUrls(true);
 
@@ -66,7 +64,6 @@ class RedirectToLocalizedTest extends TestCase
     public function it_throws_404_and_does_not_redirect_if_no_localized_route_is_registered()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(false);
         $this->setRedirectToLocalizedUrls(true);
 
         Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
@@ -76,12 +73,13 @@ class RedirectToLocalizedTest extends TestCase
     }
 
     /** @test */
-    public function it_redirects_to_the_localized_url_with_custom_prefixes()
+    public function it_redirects_to_the_localized_url_with_custom_slugs()
     {
         $this->withoutExceptionHandling();
-        $this->setSupportedLocales(['en', 'nl']);
-        $this->setCustomPrefixes(['en' => 'english', 'nl' => 'dutch']);
-        $this->setUseLocaleMiddleware(false);
+        $this->setSupportedLocales([
+            'en' => 'english',
+            'nl' => 'dutch',
+        ]);
         $this->setRedirectToLocalizedUrls(true);
 
         Route::localized(function () {

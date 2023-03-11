@@ -113,6 +113,22 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
+    public function it_gets_the_url_of_a_route_in_the_given_locale_when_using_custom_slugs()
+    {
+        $this->setSupportedLocales([
+            'en' => 'english',
+            'nl' => 'dutch',
+        ]);
+
+        $this->registerRoute('english/route', 'en.route.name');
+        $this->registerRoute('dutch/route', 'nl.route.name');
+
+        $this->assertEquals(url('dutch/route'), route('route.name', [], true, 'nl'));
+        $this->assertEquals(url('dutch/route'), route('en.route.name', [], true, 'nl'));
+        $this->assertEquals(url('dutch/route'), route('nl.route.name', [], true, 'nl'));
+    }
+
+    /** @test */
     public function it_always_gets_the_url_of_a_localized_route_if_a_locale_is_specified()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -268,23 +284,6 @@ class UrlGeneratorTest extends TestCase
         $this->cacheRoutes();
 
         $this->get('en/route')->assertSuccessful();
-    }
-
-    /** @test */
-    public function it_maps_locales_with_custom_prefixes()
-    {
-        $this->setSupportedLocales(['en', 'nl', 'fr']);
-
-        // Set custom prefixes for all locales except "fr"
-        $this->setCustomPrefixes(['en' => 'english', 'nl' => 'dutch']);
-
-        $this->registerRoute('english/route', 'en.route');
-        $this->registerRoute('dutch/route', 'nl.route');
-        $this->registerRoute('fr/route', 'fr.route');
-
-        $this->assertEquals(url('english/route'), route('en.route'));
-        $this->assertEquals(url('dutch/route'), route('nl.route'));
-        $this->assertEquals(url('fr/route'), route('fr.route'));
     }
 
     /**
