@@ -2,8 +2,8 @@
 
 namespace CodeZero\LocalizedRoutes\Tests;
 
+use CodeZero\BrowserLocale\BrowserLocale;
 use CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider;
-use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -22,6 +22,10 @@ abstract class TestCase extends  BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        App::bind(BrowserLocale::class, function () {
+            return new BrowserLocale(null);
+        });
 
         if (version_compare($this->app->version(), '7.0.0') === -1) {
             \Illuminate\Foundation\Testing\TestResponse::macro('assertResponseHasNoView', function () {
@@ -104,42 +108,6 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
-     * Set the use_locale_middleware config option
-     *
-     * @param boolean $value
-     *
-     * @return void
-     */
-    protected function setUseLocaleMiddleware($value)
-    {
-        Config::set('localized-routes.use_locale_middleware', $value);
-    }
-
-    /**
-     * Set the use_localizer config option
-     *
-     * @param boolean $value
-     *
-     * @return void
-     */
-    protected function setUseLocalizer($value)
-    {
-        Config::set('localized-routes.use_localizer', $value);
-    }
-
-    /**
-     * Set the custom prefixes config option.
-     *
-     * @param array $prefixes
-     *
-     * @return void
-     */
-    protected function setCustomPrefixes($prefixes)
-    {
-        Config::set('localized-routes.custom_prefixes', $prefixes);
-    }
-
-    /**
      * Fake that we created a routes.php file in 'resources/lang/'
      * for each language with the given translations.
      *
@@ -198,7 +166,6 @@ abstract class TestCase extends  BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            LocalizerServiceProvider::class,
             LocalizedRoutesServiceProvider::class,
         ];
     }

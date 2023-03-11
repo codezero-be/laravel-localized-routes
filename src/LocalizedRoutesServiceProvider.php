@@ -7,7 +7,6 @@ use CodeZero\LocalizedRoutes\Macros\LocalizedHasMacro;
 use CodeZero\LocalizedRoutes\Macros\LocalizedUrlMacro;
 use CodeZero\LocalizedRoutes\Macros\UriTranslationMacro;
 use CodeZero\LocalizedRoutes\Macros\LocalizedRoutesMacro;
-use CodeZero\Localizer\Localizer;
 use CodeZero\Localizer\LocalizerServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Container\Container;
@@ -41,7 +40,6 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     {
         $this->mergeConfig();
         $this->registerUrlGenerator();
-        $this->registerLocaleHandler();
         $this->registerProviders();
     }
 
@@ -107,7 +105,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     {
         $this->app->singleton('url', function () {
             $app = Container::getInstance();
-            
+
             $routes = $app['router']->getRoutes();
 
             // The URL generator needs the route collection that exists on the router.
@@ -158,41 +156,5 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         return function ($app, $request) {
             $app['url']->setRequest($request);
         };
-    }
-
-    /**
-     * Register the LocaleHandler..
-     *
-     * @return void
-     */
-    protected function registerLocaleHandler()
-    {
-        $this->app->bind(LocaleHandler::class, function ($app) {
-            $supportedLocales = $app['config']->get('localized-routes.supported-locales', []);
-            $useLocalizer = $app['config']->get('localized-routes.use_localizer', false);
-            $localizer = $useLocalizer ? $app->make(Localizer::class) : null;
-
-            return new LocaleHandler($this->formatLocales($supportedLocales), $localizer);
-        });
-    }
-
-    /**
-     * Format the locales to pass them to Localizer.
-     *
-     * @param array $locales
-     *
-     * @return array
-     */
-    protected function formatLocales($locales)
-    {
-        $keys = array_keys($locales);
-
-        // If the locales are in a key => value format (locale => domain)
-        // then only return the keys; else return the original array.
-        if (isset($keys[0]) && is_numeric($keys[0])) {
-            return $locales;
-        }
-
-        return $keys;
     }
 }

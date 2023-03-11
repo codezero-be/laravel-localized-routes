@@ -3,7 +3,6 @@
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 class LocalizedRoutesMacroTest extends TestCase
@@ -87,33 +86,60 @@ class LocalizedRoutesMacroTest extends TestCase
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmitUrlPrefixForLocale('en');
-        $this->setUseLocaleMiddleware(true);
 
         Route::localized(function () {
-            Route::get('/', function () { return 'Home '.App::getLocale(); });
-            Route::get('{slug}', function () { return 'Dynamic '.App::getLocale(); });
+            Route::get('/', function () {});
+            Route::get('{slug}', function () {});
         });
 
         $this->assertEquals(
             ['nl', 'nl/{slug}', '/', '{slug}'],
             $this->getRoutes()->pluck('uri')->toArray()
         );
+    }
 
-        $response = $this->call('GET', '/');
-        $response->assertOk();
-        $this->assertEquals('Home en', $response->original);
+    /** @test */
+    public function it_maps_a_custom_slug_to_each_locale()
+    {
+        $this->setSupportedLocales([
+            'en' => 'english',
+            'nl' => 'dutch',
+        ]);
 
-        $response = $this->call('GET', '/nl');
-        $response->assertOk();
-        $this->assertEquals('Home nl', $response->original);
+        Route::localized(function () {
+            Route::get('/', function () {})
+                ->name('home');
+        });
 
-        $response = $this->call('GET', '/dynamic');
-        $response->assertOk();
-        $this->assertEquals('Dynamic en', $response->original);
+        $routes = $this->getRoutes();
 
-        $response = $this->call('GET', '/nl/dynamic');
-        $response->assertOk();
-        $this->assertEquals('Dynamic nl', $response->original);
+        $route = $routes->first();
+        $this->assertEquals('en.home', $route->action['as']);
+        $this->assertEquals('english', $route->uri);
+
+        $route = $routes->last();
+        $this->assertEquals('nl.home', $route->action['as']);
+        $this->assertEquals('dutch', $route->uri);
+    }
+
+    /** @test */
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_custom_slugs()
+    {
+        $this->setSupportedLocales([
+            'en' => 'english',
+            'nl' => 'dutch',
+        ]);
+        $this->setOmitUrlPrefixForLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () {});
+            Route::get('{slug}', function () {});
+        });
+
+        $this->assertEquals(
+            ['dutch', 'dutch/{slug}', '/', '{slug}'],
+            $this->getRoutes()->pluck('uri')->toArray()
+        );
     }
 
     /** @test */
@@ -152,8 +178,8 @@ class LocalizedRoutesMacroTest extends TestCase
         $this->setOmitUrlPrefixForLocale('en');
 
         Route::localized(function () {
-            Route::get('/', function () { return 'Home '.App::getLocale(); })->name('home');
-            Route::get('{slug}', function () { return 'Dynamic '.App::getLocale(); })->name('catch-all');
+            Route::get('/', function () {})->name('home');
+            Route::get('{slug}', function () {})->name('catch-all');
         });
 
         $routes = $this->getRoutes();
@@ -182,90 +208,37 @@ class LocalizedRoutesMacroTest extends TestCase
     }
 
     /** @test */
-    public function it_temporarily_changes_the_app_locale_when_registering_the_routes()
+    public function it_uses_scoped_config_options()
     {
-        $this->setSupportedLocales(['nl']);
-
-        $this->assertEquals('en', App::getLocale());
-
-        Route::localized(function () {
-            $this->assertEquals('nl', App::getLocale());
-        });
-
-        $this->assertEquals('en', App::getLocale());
-    }
-
-    /** @test */
-    public function it_does_not_permanently_change_the_locale_without_middleware()
-    {
-        $this->setSupportedLocales(['en', 'nl']);
-
-        $originalLocale = App::getLocale();
-
-        Route::localized(function () {
-            Route::get('/', function () {
-                return App::getLocale();
-            });
-        });
-
-        $response = $this->call('GET', '/en');
-        $response->assertOk();
-        $this->assertEquals($originalLocale, $response->original);
-
-        $response = $this->call('GET', '/nl');
-        $response->assertOk();
-        $this->assertEquals($originalLocale, $response->original);
-    }
-
-    /** @test */
-    public function it_correctly_uses_scoped_config_options()
-    {
-        $this->setSupportedLocales(['en', 'nl']);
+        $this->setSupportedLocales(['en']);
         $this->setOmitUrlPrefixForLocale(null);
-        $this->setUseLocaleMiddleware(false);
-
-        $otherLocale = 'none_of_the_above';
-
-        App::setLocale($otherLocale);
 
         Route::localized(function () {
-            Route::get('/without', function () {
-                return App::getLocale();
-            });
-        });
-
-        Route::localized(function () {
-            Route::get('/with', function () {
-                return App::getLocale();
-            });
+            Route::get('with-scoped-config', function () {})
+                ->name('scoped');
         }, [
-            'use_locale_middleware' => true,
             'omit_url_prefix_for_locale' => 'en',
-            'supported-locales' => ['en', 'nl', 'de']
+            'supported-locales' => ['en', 'nl', 'de'],
         ]);
 
-        $response = $this->call('GET', '/without');
-        $response->assertNotFound();
+        $routes = $this->getRoutes();
 
-        $response = $this->call('GET', '/en/without');
-        $response->assertOk();
-        $this->assertEquals($otherLocale, $response->original);
+        $this->assertCount(3, $routes);
 
-        $response = $this->call('GET', '/nl/without');
-        $response->assertOk();
-        $this->assertEquals($otherLocale, $response->original);
+        $route = $routes[0];
+        $this->assertEquals('nl', $route->action['localized-routes-locale']);
+        $this->assertEquals('nl.scoped', $route->action['as']);
+        $this->assertEquals('nl/with-scoped-config', $route->uri);
 
-        $response = $this->call('GET', '/with');
-        $response->assertOk();
-        $this->assertEquals('en', $response->original);
+        $route = $routes[1];
+        $this->assertEquals('de', $route->action['localized-routes-locale']);
+        $this->assertEquals('de.scoped', $route->action['as']);
+        $this->assertEquals('de/with-scoped-config', $route->uri);
 
-        $response = $this->call('GET', '/nl/with');
-        $response->assertOk();
-        $this->assertEquals('nl', $response->original);
-
-        $response = $this->call('GET', '/de/with');
-        $response->assertOk();
-        $this->assertEquals('de', $response->original);
+        $route = $routes[2];
+        $this->assertEquals('en', $route->action['localized-routes-locale']);
+        $this->assertEquals('en.scoped', $route->action['as']);
+        $this->assertEquals('with-scoped-config', $route->uri);
     }
 
     /** @test */

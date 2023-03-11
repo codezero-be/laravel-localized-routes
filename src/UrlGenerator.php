@@ -159,7 +159,7 @@ class UrlGenerator extends BaseUrlGenerator
         $locales = Config::get('localized-routes.supported-locales', []);
         $keys = array_keys($locales);
 
-        if ( ! empty($locales) && is_numeric($keys[0])) {
+        if (is_numeric(key($locales))) {
             return $locales;
         }
 

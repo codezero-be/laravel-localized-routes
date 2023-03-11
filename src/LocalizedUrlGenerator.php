@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -49,7 +50,7 @@ class LocalizedUrlGenerator
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
         $locale = $locale ?: $this->detectLocale($urlBuilder);
 
-        if (!$this->is404()) {
+        if ( ! $this->is404()) {
             // $parameters can be an array, a function or it can contain model instances!
             // Normalize the parameters so we end up with an array of key => value pairs.
             $parameters = $this->prepareParameters($locale, $parameters ?: $this->getRouteParameters());
@@ -69,13 +70,10 @@ class LocalizedUrlGenerator
             $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $slugs));
         }
 
-        // Map the locale string to a prefix.
-        $prefix = data_get(Config::get('localized-routes.custom_prefixes'), $locale, $locale);
-
         // If custom domains are not used and it is not a registered,
         // non localized route, update the locale slug in the path.
-        if (!$this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
-            $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $prefix));
+        if ( ! $this->hasCustomDomains() && ($this->is404() || $this->isLocalized())) {
+            $urlBuilder->setSlugs($this->updateLocaleInSlugs($urlBuilder->getSlugs(), $locale));
         }
 
         if ($domain = $this->getCustomDomain($locale)) {
@@ -120,7 +118,7 @@ class LocalizedUrlGenerator
      */
     protected function is404()
     {
-        return !$this->routeExists() || $this->isFallback();
+        return ! $this->routeExists() || $this->isFallback();
     }
 
     /**
@@ -151,13 +149,24 @@ class LocalizedUrlGenerator
      */
     protected function hasCustomDomains()
     {
-        $keys = array_keys($this->supportedLocales);
-
-        if (empty($this->supportedLocales) || is_numeric($keys[0])) {
+        if (count($this->supportedLocales) === 0) {
             return false;
         }
 
-        return true;
+        $firstValue = array_values($this->supportedLocales)[0];
+        $usingDomains = Str::contains($firstValue, '.');
+
+        return $usingDomains;
+    }
+
+    /**
+     * Check if custom slugs are configured.
+     *
+     * @return bool
+     */
+    protected function hasCustomSlugs()
+    {
+        return ! $this->hasCustomDomains() && ! is_numeric(key($this->supportedLocales));
     }
 
     /**
@@ -169,7 +178,27 @@ class LocalizedUrlGenerator
      */
     protected function getCustomDomain($locale)
     {
+        if ( ! $this->hasCustomDomains()) {
+            return null;
+        }
+
         return $this->supportedLocales[$locale] ?? null;
+    }
+
+    /**
+     * Find a slug for the given locale.
+     *
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    protected function findSlugByLocale($locale)
+    {
+        if ($this->hasCustomDomains()) {
+            return null;
+        }
+
+        return $this->supportedLocales[$locale] ?? $locale;
     }
 
     /**
@@ -205,6 +234,10 @@ class LocalizedUrlGenerator
     {
         $locale = $slugs[0] ?? null;
 
+        if ($this->hasCustomSlugs()) {
+            $locale = array_flip($this->supportedLocales)[$locale] ?? null;
+        }
+
         return ($locale && $this->localeIsSupported($locale)) ? $locale : null;
     }
 
@@ -230,7 +263,9 @@ class LocalizedUrlGenerator
      */
     protected function getLocaleKeys()
     {
-        return $this->hasCustomDomains() ? array_keys($this->supportedLocales) : $this->supportedLocales;
+        return is_numeric(key($this->supportedLocales))
+            ? $this->supportedLocales
+            : array_keys($this->supportedLocales);
     }
 
     /**
@@ -282,10 +317,12 @@ class LocalizedUrlGenerator
      */
     protected function updateLocaleInSlugs(array $slugs, $locale)
     {
+        $slug = $this->findSlugByLocale($locale);
+
         if ($this->getLocaleFromSlugs($slugs)) {
-            $slugs = $this->setLocaleInSlugs($slugs, $locale);
+            $slugs = $this->setLocaleInSlugs($slugs, $slug);
         } else {
-            array_unshift($slugs, $locale);
+            array_unshift($slugs, $slug);
         }
 
         if ($this->localeShouldBeOmitted($locale)) {
