@@ -68,8 +68,6 @@ You will now find a `localized-routes.php` file in the `config` folder.
 
 #### ☑️ Supported Locales
 
-##### Using Slugs
-
 Add any locales you wish to support to your published `config/localized-routes.php` file:
 
 ```php
@@ -78,7 +76,15 @@ Add any locales you wish to support to your published `config/localized-routes.p
 
  This will automatically prepend a slug to your localized routes. [More on this below](#-register-routes).
 
-##### Using Domains
+If you wish to use custom slugs, you can configure them like this:
+
+```php
+'supported-locales' => [
+    'en' => 'english-slug',
+    'nl' => 'dutch-slug',
+    'fr' => 'french-slug',
+];
+```
 
 Alternatively, you can use a different domain or subdomain for each locale by configuring the `supported-locales` like this:
 
@@ -117,38 +123,9 @@ Setting this option to `'en'` will result, for example, in URL's like this:
 #### ☑️ Use Middleware to Update App Locale
 
 By default, the app locale will always be what you configured in `config/app.php`.
-To automatically update the app locale when a localized route is accessed, you need to use a middleware.
+To automatically detect and set the app locale, you need to use a middleware.
 
-**⚠️ Important note for Laravel 6+**
-
-To make route model binding work in Laravel 6+ you always also need to add the middleware
-to the `$middlewarePriority` array in `app/Http/Kernel.php` so it runs before `SubstituteBindings`:
-
-```php
-protected $middlewarePriority = [
-    \Illuminate\Session\Middleware\StartSession::class, // <= after this
-    //...
-    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-    //...
-    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
-];
-```
-
-You can then enable the middleware in a few ways:
-
-**For every localized route, via our config file**
-
-Simply set the option to `true` to add the middleware to every localized route:
-
-```php
-'use_locale_middleware' => true
-```
-
-> This will not add the middleware to non-localized routes!
-
-**OR, for every route using the `web` middleware group**
-
-You can manually add the middleware to the `$middlewareGroups` array in `app/Http/Kernel.php`:
+Add the middleware to the `$middlewareGroups` array in `app/Http/Kernel.php`:
 
 ```php
 protected $middlewareGroups = [
@@ -162,47 +139,29 @@ protected $middlewareGroups = [
 ];
 ```
 
-**OR, for specific routes**
-
-Alternatively, you can add the middleware to a specific route or route group:
+In Laravel 7 and higher, you also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` so it runs after `StartSession` and before `SubstituteBindings`:
 
 ```php
-Route::localized(function () {
-
-    Route::get('about', AboutController::class.'@index')
-        ->name('about')
-        ->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
-
-    Route::group([
-        'as' => 'admin.',
-        'middleware' => [\CodeZero\LocalizedRoutes\Middleware\SetLocale::class],
-    ], function () {
-
-        Route::get('admin/reports', ReportsController::class.'@index')
-            ->name('reports.index');
-
-    });
-
-});
+protected $middlewarePriority = [
+    \Illuminate\Session\Middleware\StartSession::class, // <= after this
+    //...
+    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
+    //...
+    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
+];
 ```
 
-#### ☑️ Use Localizer to Detect and Set the Locale
+Under the hood, this package uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer).
+It will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
+Additionally, it will also store the app locale in the session and in a cookie. You can disable any of these by publishing the Localizer config file:
 
-This package can use [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer) to automatically detect and set the locale.
-
-With this option disabled, the app locale will only be updated when accessing localized routes.
-
-With this option enabled, the app locale can also be updated when accessing non-localized routes.
-For non-localized routes it will look for a preferred locale in the session, in a cookie or in the browser.
-Additionally, it will also store the app locale in the session and in a cookie.
-
-> Enabling this option can be handy if you have, for example, a generic homepage and you want to know the preferred locale.
-
-To enable this option, set it to `true` in the published config file.
-
-```php
-'use_localizer' => true
+```bash
+php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvider" --tag="config"
 ```
+
+The middleware included in this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
+These settings are `supported-locales`, `omit-locale`, `route-action` and `trusted-detectors`.
+These are essential for this package to function properly.
 
 This option only has effect on routes that use our `SetLocale` middleware.
 
@@ -210,7 +169,7 @@ This option only has effect on routes that use our `SetLocale` middleware.
 > publish its config file and tweak it as needed.
 > The only option we will override is  `supported-locales`, to match the option in our own config file.
 
-#### ☑️ Set Options for the Current Localized Route Group
+#### ☑️ Use Scoped Options for the Current Localized Route Group
 
 To set an option for one localized route group only, you can specify it as the second parameter of the localized route macro.
 This will override the config file settings.
@@ -224,7 +183,6 @@ Route::localized(function () {
 }, [
     'supported-locales' => ['en', 'nl', 'fr'],
     'omit_url_prefix_for_locale' => null,
-    'use_locale_middleware' => false,
 ]);
 ```
 
@@ -282,8 +240,7 @@ The same idea applies to the `/` (root) route! Also note that the route names st
 To use these 2 features, you need to register the fallback route **at the end** of your `routes/web.php` file:
 
 ```php
-Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class)
-    ->middleware(\CodeZero\LocalizedRoutes\Middleware\SetLocale::class);
+Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
 ```
 
 ##### 404 - Not Found

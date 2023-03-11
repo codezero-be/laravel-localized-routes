@@ -52,7 +52,7 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
-    public function it_generates_urls_for_the_current_route_with_diferent_models_using_route_model_binding()
+    public function it_generates_urls_for_the_current_route_with_different_models_using_route_model_binding()
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -375,6 +375,64 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_the_url_for_existing_unnamed_localized_routes_using_custom_slugs()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales([
+            'en' => 'english',
+            'nl' => 'dutch',
+        ]);
+        $this->setAppLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            });
+        });
+
+        $response = $this->call('GET', '/english');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/english'),
+            'en' => url('/english'),
+            'nl' => url('/dutch'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_returns_the_url_for_existing_named_localized_routes_using_custom_slugs()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales([
+            'en' => 'english',
+            'nl' => 'dutch',
+        ]);
+        $this->setAppLocale('en');
+
+        Route::localized(function () {
+            Route::get('/', function () {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->name('route');
+        });
+
+        $response = $this->call('GET', '/english');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/english'),
+            'en' => url('/english'),
+            'nl' => url('/dutch'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function it_returns_the_url_for_existing_unnamed_localized_routes_using_domains()
     {
         $this->withoutExceptionHandling();
@@ -469,7 +527,6 @@ class LocalizedUrlMacroTest extends TestCase
     public function a_404_is_not_localized_when_triggered_by_a_non_existing_route()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
         $this->setCustomErrorViewPath();
 
@@ -483,14 +540,13 @@ class LocalizedUrlMacroTest extends TestCase
     public function a_404_is_localized_when_a_registered_route_throws_a_not_found_exception()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
         $this->setCustomErrorViewPath();
 
         Route::localized(function () {
             Route::get('abort', function () {
                 abort(404);
-            });
+            })->middleware(['web', SetLocale::class]);
         });
 
         $response = $this->get('/nl/abort');
@@ -503,14 +559,13 @@ class LocalizedUrlMacroTest extends TestCase
     public function a_404_is_localized_when_a_registered_route_throws_a_model_not_found_exception()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
         $this->setCustomErrorViewPath();
 
         Route::localized(function () {
             Route::get('route/{model}', function ($model) {
                 throw new ModelNotFoundException();
-            });
+            })->middleware(['web', SetLocale::class]);
         });
 
         $response = $this->get('/nl/route/mismatch');
@@ -558,7 +613,7 @@ class LocalizedUrlMacroTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
+        $this->setAppLocale('en');
 
         Route::localized(function () {
             Route::fallback(function () {
@@ -592,7 +647,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ], 404);
-        })->middleware(SetLocale::class);
+        });
 
         $response = $this->call('GET', '/nl/non/existing/route');
         $response->assertNotFound();
@@ -616,7 +671,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ], 404);
-        })->middleware(SetLocale::class);
+        });
 
         $response = $this->call('GET', '/non/existing/route');
         $response->assertNotFound();
@@ -641,7 +696,7 @@ class LocalizedUrlMacroTest extends TestCase
                 'en' => Route::localizedUrl('en'),
                 'nl' => Route::localizedUrl('nl'),
             ], 404);
-        })->middleware(SetLocale::class);
+        })->middleware(['web', SetLocale::class]);
 
         $response = $this->call('GET', '/non/existing/route');
         $response->assertNotFound();
@@ -748,7 +803,6 @@ class LocalizedUrlMacroTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
 
         Route::localized(function () {
@@ -798,7 +852,6 @@ class LocalizedUrlMacroTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
 
         Route::localized(function () {
@@ -1012,7 +1065,6 @@ class LocalizedUrlMacroTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setUseLocaleMiddleware(true);
         $this->setAppLocale('en');
 
         $this->setTranslations([
