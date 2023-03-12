@@ -2,8 +2,8 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use CodeZero\LocalizedRoutes\Macros\HasLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\IsLocalizedMacro;
-use CodeZero\LocalizedRoutes\Macros\LocalizedHasMacro;
 use CodeZero\LocalizedRoutes\Macros\LocalizedUrlMacro;
 use CodeZero\LocalizedRoutes\Macros\UriTranslationMacro;
 use CodeZero\LocalizedRoutes\Macros\LocalizedRoutesMacro;
@@ -50,8 +50,8 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      */
     protected function registerMacros()
     {
+        HasLocalizedMacro::register();
         IsLocalizedMacro::register();
-        LocalizedHasMacro::register();
         LocalizedRoutesMacro::register();
         LocalizedUrlMacro::register();
         UriTranslationMacro::register();
