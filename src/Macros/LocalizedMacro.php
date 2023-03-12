@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-class LocalizedRoutesMacro
+class LocalizedMacro
 {
     /**
      * Register the macro.
