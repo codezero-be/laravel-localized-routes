@@ -2,6 +2,13 @@
 
 ## Upgrading To 3.0 From v2.x
 
+### Minimum Requirements Updated
+
+We dropped support for Laravel 5.6, 5.7, 5.8 and 6.x.
+
+- The minimum PHP version required is now 7.2.5
+- The minimum Laravel version required is now 7.0
+
 ### Middleware Changes
 
 Applying the `CodeZero\LocalizedRoutes\Middleware\SetLocale` middleware is now more straightforward.
