@@ -84,3 +84,11 @@ We also added an option to the config file in case you need to change this name.
 #### Actions Required
 
 If you are using the `laravel-localized-routes` route action in your own code, you can either update your code with the new `locale` route action, or change it back to `laravel-localized-routes` by setting the `route_action` option in the config file.
+
+### Renamed `Route::localizedHas()` Method
+
+The `Route::localizedHas()` method has been renamed to `Route::hasLocalized()` to be consistent with `Route::isLocalized()`.
+
+#### Actions Required
+
+- Replace any occurrence of `Route::localizedHas()` with `Route::hasLocalized()`.

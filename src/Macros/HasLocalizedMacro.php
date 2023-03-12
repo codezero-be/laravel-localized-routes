@@ -5,7 +5,7 @@ namespace CodeZero\LocalizedRoutes\Macros;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
-class LocalizedHasMacro
+class HasLocalizedMacro
 {
     /**
      * Register the macro.
@@ -14,7 +14,7 @@ class LocalizedHasMacro
      */
     public static function register()
     {
-        Route::macro('localizedHas', function ($name, $locale = null) {
+        Route::macro('hasLocalized', function ($name, $locale = null) {
             $locale = $locale ?? App::getLocale();
             if (! $this->routes->hasNamedRoute($locale . ".{$name}")) {
                 return false;
