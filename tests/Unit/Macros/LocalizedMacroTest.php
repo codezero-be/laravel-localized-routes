@@ -6,7 +6,7 @@ use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
-class LocalizedRoutesMacroTest extends TestCase
+class LocalizedMacroTest extends TestCase
 {
     /** @test */
     public function it_registers_a_route_for_each_locale()
