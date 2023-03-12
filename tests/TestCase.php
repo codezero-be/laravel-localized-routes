@@ -68,7 +68,7 @@ abstract class TestCase extends  BaseTestCase
      */
     protected function setSupportedLocales($locales)
     {
-        Config::set('localized-routes.supported-locales', $locales);
+        Config::set('localized-routes.supported_locales', $locales);
     }
 
     /**
@@ -84,15 +84,15 @@ abstract class TestCase extends  BaseTestCase
     }
 
     /**
-     * Set the 'omit_url_prefix_for_locale' config option.
+     * Set the 'omitted_locale' config option.
      *
      * @param string $value
      *
      * @return void
      */
-    protected function setOmitUrlPrefixForLocale($value)
+    protected function setOmittedLocale($value)
     {
-        Config::set('localized-routes.omit_url_prefix_for_locale', $value);
+        Config::set('localized-routes.omitted_locale', $value);
     }
 
     /**

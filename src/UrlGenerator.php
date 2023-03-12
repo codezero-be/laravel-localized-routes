@@ -156,7 +156,7 @@ class UrlGenerator extends BaseUrlGenerator
      */
     protected function getSupportedLocales()
     {
-        $locales = Config::get('localized-routes.supported-locales', []);
+        $locales = Config::get('localized-routes.supported_locales', []);
         $keys = array_keys($locales);
 
         if (is_numeric(key($locales))) {

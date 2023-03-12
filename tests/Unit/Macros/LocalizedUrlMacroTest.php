@@ -687,7 +687,7 @@ class LocalizedUrlMacroTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setOmitUrlPrefixForLocale('nl');
+        $this->setOmittedLocale('nl');
         $this->setAppLocale('en');
 
         Route::fallback(function () {

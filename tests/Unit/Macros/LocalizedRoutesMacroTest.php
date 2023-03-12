@@ -3,6 +3,7 @@
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
 class LocalizedRoutesMacroTest extends TestCase
@@ -61,7 +62,7 @@ class LocalizedRoutesMacroTest extends TestCase
     public function it_registers_a_url_without_prefix_for_a_configured_main_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setOmitUrlPrefixForLocale('en');
+        $this->setOmittedLocale('en');
 
         Route::localized(function () {
             Route::get('about', function () {})
@@ -85,7 +86,7 @@ class LocalizedRoutesMacroTest extends TestCase
     public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setOmitUrlPrefixForLocale('en');
+        $this->setOmittedLocale('en');
 
         Route::localized(function () {
             Route::get('/', function () {});
@@ -129,7 +130,7 @@ class LocalizedRoutesMacroTest extends TestCase
             'en' => 'english',
             'nl' => 'dutch',
         ]);
-        $this->setOmitUrlPrefixForLocale('en');
+        $this->setOmittedLocale('en');
 
         Route::localized(function () {
             Route::get('/', function () {});
@@ -175,7 +176,7 @@ class LocalizedRoutesMacroTest extends TestCase
             'en' => 'english-domain.com',
             'nl' => 'dutch-domain.com',
         ]);
-        $this->setOmitUrlPrefixForLocale('en');
+        $this->setOmittedLocale('en');
 
         Route::localized(function () {
             Route::get('/', function () {})->name('home');
@@ -211,14 +212,16 @@ class LocalizedRoutesMacroTest extends TestCase
     public function it_uses_scoped_config_options()
     {
         $this->setSupportedLocales(['en']);
-        $this->setOmitUrlPrefixForLocale(null);
+        $this->setOmittedLocale(null);
+
+        Config::set('localized-routes.route_action', 'localized-routes-locale');
 
         Route::localized(function () {
             Route::get('with-scoped-config', function () {})
                 ->name('scoped');
         }, [
-            'omit_url_prefix_for_locale' => 'en',
-            'supported-locales' => ['en', 'nl', 'de'],
+            'omitted_locale' => 'en',
+            'supported_locales' => ['en', 'nl', 'de'],
         ]);
 
         $routes = $this->getRoutes();
