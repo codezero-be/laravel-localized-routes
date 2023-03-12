@@ -21,8 +21,8 @@ class LocalizedRoutesMacro
             // change it during route registration.
             $currentLocale = App::getLocale();
 
-            $locales = $options['supported-locales'] ?? Config::get('localized-routes.supported-locales', []);
-            $omitPrefix = $options['omit_url_prefix_for_locale'] ?? Config::get('localized-routes.omit_url_prefix_for_locale');
+            $locales = $options['supported_locales'] ?? Config::get('localized-routes.supported_locales', []);
+            $omitPrefix = $options['omitted_locale'] ?? Config::get('localized-routes.omitted_locale');
 
             if (count($locales) === 0) {
                 return;
@@ -65,9 +65,10 @@ class LocalizedRoutesMacro
                 // Prepend the locale to the route name
                 // and set a custom attribute so the middleware
                 // can find it to set the correct app locale.
+                $localeRouteAction = Config::get('localized-routes.route_action');
                 $attributes = [
                     'as' => "{$locale}.",
-                    'localized-routes-locale' => $locale
+                    $localeRouteAction => $locale
                 ];
 
                 // Add a custom domain route group

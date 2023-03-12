@@ -71,7 +71,7 @@ You will now find a `localized-routes.php` file in the `config` folder.
 Add any locales you wish to support to your published `config/localized-routes.php` file:
 
 ```php
-'supported-locales' => ['en', 'nl', 'fr'],
+'supported_locales' => ['en', 'nl', 'fr'],
 ```
 
  This will automatically prepend a slug to your localized routes. [More on this below](#-register-routes).
@@ -79,17 +79,17 @@ Add any locales you wish to support to your published `config/localized-routes.p
 If you wish to use custom slugs, you can configure them like this:
 
 ```php
-'supported-locales' => [
+'supported_locales' => [
     'en' => 'english-slug',
     'nl' => 'dutch-slug',
     'fr' => 'french-slug',
 ];
 ```
 
-Alternatively, you can use a different domain or subdomain for each locale by configuring the `supported-locales` like this:
+Alternatively, you can use a different domain or subdomain for each locale by configuring the `supported_locales` like this:
 
 ```php
-'supported-locales' => [
+'supported_locales' => [
   'en' => 'example.com',
   'nl' => 'nl.example.com',
   'fr' => 'fr.example.com',
@@ -109,7 +109,7 @@ When provided, this will be used as the fallback locale when a locale provided i
 Specify your main locale if you want to omit its slug from the URL:
 
 ```php
-'omit_url_prefix_for_locale' => null
+'omitted_locale' => null
 ```
 
 Setting this option to `'en'` will result, for example, in URL's like this:
@@ -160,14 +160,10 @@ php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvid
 ```
 
 The middleware included in this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
-These settings are `supported-locales`, `omit-locale`, `route-action` and `trusted-detectors`.
+These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
 These are essential for this package to function properly.
 
 This option only has effect on routes that use our `SetLocale` middleware.
-
-> You can review [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer),
-> publish its config file and tweak it as needed.
-> The only option we will override is  `supported-locales`, to match the option in our own config file.
 
 #### ☑️ Use Scoped Options for the Current Localized Route Group
 
@@ -181,8 +177,8 @@ Route::localized(function () {
         ->name('about');
 
 }, [
-    'supported-locales' => ['en', 'nl', 'fr'],
-    'omit_url_prefix_for_locale' => null,
+    'supported_locales' => ['en', 'nl', 'fr'],
+    'omitted_locale' => null,
 ]);
 ```
 
@@ -221,7 +217,7 @@ This will prepend the locale to the route's URI and name. If you configured cust
 | /en/admin/reports | en.admin.reports.index |
 | /nl/admin/reports | nl.admin.reports.index |
 
-If you set `omit_url_prefix_for_locale` to `'en'` in the configuration file, the resulting routes look like this: 
+If you set `omitted_locale` to `'en'` in the configuration file, the resulting routes look like this: 
 
 | URI               | Name                   |
 | ----------------- | ---------------------- |

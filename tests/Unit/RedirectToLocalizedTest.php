@@ -39,7 +39,7 @@ class RedirectToLocalizedTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
-        $this->setOmitUrlPrefixForLocale('en');
+        $this->setOmittedLocale('en');
         $this->setRedirectToLocalizedUrls(true);
 
         Route::localized(function () {

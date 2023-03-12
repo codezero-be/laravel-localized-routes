@@ -32,14 +32,14 @@ class SetLocale
      */
     protected function configureLocalizer()
     {
-        $supportedLocales = Config::get('localized-routes.supported-locales');
-        $omittedLocale = Config::get('localized-routes.omit_url_prefix_for_locale');
-        $routeAction = 'localized-routes-locale';
+        $supportedLocales = Config::get('localized-routes.supported_locales');
+        $omittedLocale = Config::get('localized-routes.omitted_locale');
+        $routeAction = Config::get('localized-routes.route_action');
 
-        Config::set('localizer.supported-locales', $supportedLocales);
-        Config::set('localizer.omitted-locale', $omittedLocale);
-        Config::set('localizer.route-action', $routeAction);
-        Config::set('localizer.trusted-detectors', [
+        Config::set('localizer.supported_locales', $supportedLocales);
+        Config::set('localizer.omitted_locale', $omittedLocale);
+        Config::set('localizer.route_action', $routeAction);
+        Config::set('localizer.trusted_detectors', [
             \CodeZero\Localizer\Detectors\RouteActionDetector::class
         ]);
     }

@@ -112,7 +112,9 @@ class LocalizedUrlGenerator
      */
     public function isLocalized()
     {
-        return $this->routeExists() && $this->route->getAction('localized-routes-locale') !== null;
+        $routeAction = Config::get('localized-routes.route_action');
+
+        return $this->routeExists() && $this->route->getAction($routeAction) !== null;
     }
 
     /**
@@ -486,7 +488,7 @@ class LocalizedUrlGenerator
      */
     protected function getOmitLocale()
     {
-        return Config::get('localized-routes.omit_url_prefix_for_locale', null);
+        return Config::get('localized-routes.omitted_locale', null);
     }
 
     /**
@@ -496,6 +498,6 @@ class LocalizedUrlGenerator
      */
     protected function getSupportedLocales()
     {
-        return Config::get('localized-routes.supported-locales', []);
+        return Config::get('localized-routes.supported_locales', []);
     }
 }
