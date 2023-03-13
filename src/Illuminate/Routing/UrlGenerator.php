@@ -2,8 +2,6 @@
 
 namespace CodeZero\LocalizedRoutes\Illuminate\Routing;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\RouteCollection;
 use Illuminate\Routing\UrlGenerator as BaseUrlGenerator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
@@ -11,22 +9,6 @@ use Illuminate\Support\Facades\Route;
 
 class UrlGenerator extends BaseUrlGenerator
 {
-    /**
-     * Create a new URL Generator instance.
-     *
-     * @param \Illuminate\Routing\RouteCollection $routes
-     * @param \Illuminate\Http\Request $request
-     * @param string $assetRoot
-     */
-    public function __construct($routes, Request $request, $assetRoot = null)
-    {
-        if (!$routes instanceof RouteCollection && !(interface_exists('\Illuminate\Routing\RouteCollectionInterface') && is_subclass_of($routes, '\Illuminate\Routing\RouteCollectionInterface'))) {
-            throw new \InvalidArgumentException('The $routes parameter has to be of type RouteCollection or RouteCollectionInterface for L6+.');
-        }
-
-        parent::__construct($routes, $request, $assetRoot);
-    }
-
     /**
      * Resolve the URL to a named route or a localized version of it.
      *
