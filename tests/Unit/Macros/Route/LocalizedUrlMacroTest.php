@@ -1,19 +1,19 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
+namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros\Route;
 
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Config;
-use CodeZero\LocalizedRoutes\Tests\TestCase;
-use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\Stubs\ModelBar;
 use CodeZero\LocalizedRoutes\Tests\Stubs\ModelFoo;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
+use CodeZero\LocalizedRoutes\Tests\TestCase;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View;
 
 class LocalizedUrlMacroTest extends TestCase
 {
@@ -1030,6 +1030,6 @@ class LocalizedUrlMacroTest extends TestCase
      */
     protected function setCustomErrorViewPath()
     {
-        Config::set('view.paths', [__DIR__ . '/../../Stubs/views']);
+        Config::set('view.paths', [__DIR__ . '/../../../Stubs/views']);
     }
 }

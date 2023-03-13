@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Macros;
+namespace CodeZero\LocalizedRoutes\Macros\Route;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;

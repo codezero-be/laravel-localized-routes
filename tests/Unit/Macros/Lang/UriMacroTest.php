@@ -1,11 +1,11 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros;
+namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros\Lang;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Lang;
 
-class UriTranslationMacroTest extends TestCase
+class UriMacroTest extends TestCase
 {
     /** @test */
     public function it_translates_every_segment_in_a_uri_to_the_current_locale()
