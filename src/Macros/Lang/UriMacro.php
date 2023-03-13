@@ -1,12 +1,12 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Macros;
+namespace CodeZero\LocalizedRoutes\Macros\Lang;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Str;
 
-class UriTranslationMacro
+class UriMacro
 {
     /**
      * Register the macro.

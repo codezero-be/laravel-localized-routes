@@ -2,14 +2,14 @@
 
 namespace CodeZero\LocalizedRoutes;
 
-use CodeZero\LocalizedRoutes\Macros\HasLocalizedMacro;
-use CodeZero\LocalizedRoutes\Macros\IsLocalizedMacro;
-use CodeZero\LocalizedRoutes\Macros\LocalizedMacro;
-use CodeZero\LocalizedRoutes\Macros\LocalizedUrlMacro;
-use CodeZero\LocalizedRoutes\Macros\UriTranslationMacro;
+use CodeZero\LocalizedRoutes\Macros\Lang\UriMacro;
+use CodeZero\LocalizedRoutes\Macros\Route\HasLocalizedMacro;
+use CodeZero\LocalizedRoutes\Macros\Route\IsLocalizedMacro;
+use CodeZero\LocalizedRoutes\Macros\Route\LocalizedMacro;
+use CodeZero\LocalizedRoutes\Macros\Route\LocalizedUrlMacro;
 use CodeZero\Localizer\LocalizerServiceProvider;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Container\Container;
+use Illuminate\Support\ServiceProvider;
 
 class LocalizedRoutesServiceProvider extends ServiceProvider
 {
@@ -54,7 +54,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         IsLocalizedMacro::register();
         LocalizedMacro::register();
         LocalizedUrlMacro::register();
-        UriTranslationMacro::register();
+        UriMacro::register();
     }
 
     /**
