@@ -236,7 +236,7 @@ The same idea applies to the `/` (root) route! Also note that the route names st
 To use these 2 features, you need to register the fallback route **at the end** of your `routes/web.php` file:
 
 ```php
-Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
+Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 ```
 
 ##### 404 - Not Found

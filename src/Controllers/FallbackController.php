@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Controller;
+namespace CodeZero\LocalizedRoutes\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
