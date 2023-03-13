@@ -1,13 +1,13 @@
 <?php
 
-if (! function_exists('route')) {
+if ( ! function_exists('route')) {
     /**
      * Generate the URL to a named route.
      *
      * @param string $name
      * @param array $parameters
      * @param bool $absolute
-     * @param null|string $locale
+     * @param string|null $locale
      *
      * @return string
      */
