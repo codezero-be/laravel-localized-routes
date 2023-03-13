@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use CodeZero\LocalizedRoutes\Illuminate\Routing\UrlGenerator;
 use CodeZero\LocalizedRoutes\Macros\Lang\UriMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\HasLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\IsLocalizedMacro;
