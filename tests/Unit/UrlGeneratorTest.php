@@ -5,7 +5,7 @@ namespace CodeZero\LocalizedRoutes\Tests\Unit;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Controller;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use CodeZero\LocalizedRoutes\UrlGenerator;
+use CodeZero\LocalizedRoutes\Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
