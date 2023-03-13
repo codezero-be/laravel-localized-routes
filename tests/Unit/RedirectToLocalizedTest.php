@@ -19,7 +19,7 @@ class RedirectToLocalizedTest extends TestCase
             Route::get('about', function () {});
         });
 
-        Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
+        Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 
         $this->setAppLocale('en');
         $this->get('/')->assertRedirect('en');
@@ -47,7 +47,7 @@ class RedirectToLocalizedTest extends TestCase
             Route::get('about', function () {});
         });
 
-        Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
+        Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 
         $this->setAppLocale('en');
         $this->get('en')->assertRedirect('/');
@@ -66,7 +66,7 @@ class RedirectToLocalizedTest extends TestCase
         $this->setSupportedLocales(['en', 'nl']);
         $this->setRedirectToLocalizedUrls(true);
 
-        Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
+        Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 
         $this->setAppLocale('en');
         $this->get('missing')->assertNotFound();
@@ -87,7 +87,7 @@ class RedirectToLocalizedTest extends TestCase
             Route::get('about', function () {});
         });
 
-        Route::fallback(\CodeZero\LocalizedRoutes\Controller\FallbackController::class);
+        Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 
         $this->setAppLocale('en');
         $this->get('/')->assertRedirect('english');
