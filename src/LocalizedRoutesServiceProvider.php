@@ -3,12 +3,12 @@
 namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\LocalizedRoutes\Illuminate\Routing\UrlGenerator;
-use CodeZero\LocalizedRoutes\Macros\Lang\UriMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\HasLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\IsLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\LocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\LocalizedUrlMacro;
 use CodeZero\Localizer\LocalizerServiceProvider;
+use CodeZero\UriTranslator\UriTranslatorServiceProvider;
 use Illuminate\Contracts\Routing\UrlGenerator as UrlGeneratorContract;
 use Illuminate\Support\ServiceProvider;
 
@@ -55,7 +55,6 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         IsLocalizedMacro::register();
         LocalizedMacro::register();
         LocalizedUrlMacro::register();
-        UriMacro::register();
     }
 
     /**
@@ -89,6 +88,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     protected function registerProviders()
     {
         $this->app->register(LocalizerServiceProvider::class);
+        $this->app->register(UriTranslatorServiceProvider::class);
     }
 
     /**

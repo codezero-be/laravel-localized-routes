@@ -32,7 +32,7 @@ I know you can get punished for this, but you are one of the hopes of those inno
 - [Automatically register](#-register-routes) a route for each locale.
 - Use [URL slugs or custom domains](#-supported-locales) (or subdomains).
 - Optionally [omit the locale slug from the URL for your main locale](#%EF%B8%8F-omit-slug-for-main-locale).
-- Optionally [translate each segment](#-translate-routes) in your URI's.
+- Optionally [translate each segment](#-uri-translations) in your URI's.
 - [Generate localized route URL's](#-generate-route-urls) using the `route()` helper.
 - [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
 - [Generate localized signed route URL's](#-generate-signed-route-urls).
@@ -441,75 +441,17 @@ $signedUrl = URL::signedRoute($name, $parameters, $expiration, true, 'nl');
 
 Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more info on signed routes.
 
-### 🌎 Translate Routes
+### 🌎 URI Translations
 
-If you want to translate the segments of your URI's, create a `routes.php` language file for each locale you [configured](#%EF%B8%8F-supported-locales):
+This package includes [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator), which registers a `Lang::uri()` macro that enables you to translate individual, hard-coded URI slugs.
+Route parameters will not be translated by this macro. 
 
-```
-resources
- └── lang
-      ├── en
-      │    └── routes.php
-      └── nl
-           └── routes.php
-```
+Routes with translated URIs need to have a name in order to generate localized versions of it using the `route()` helper or the `Route::localizedUrl()` macro.
+Because these routes have different slugs depending on the locale, the route name is the only thing that links them together.
 
-In these files, add a translation for each segment, or for the full URI.
-
-If an exact match is found, that will be returned.
-Otherwise, each segment will be translated separately.
-If a translation is not found, the original segment is used.
-
-```php
-// lang/nl/routes.php
-return [
-    'glass' => 'glas',
-    'products' => 'producten',
-    'materials' => 'materiaal',
-    'materials/glass' => 'materiaal/glazen'
-];
-```
-
-Now you can use our `Lang::uri()` macro during route registration:
-
-```php
-Route::localized(function () {
-
-    Route::get(Lang::uri('products/glass'), ProductsController::class.'@index')
-        ->name('products.glass');
-
-    Route::get(Lang::uri('materials/glass'), MaterialsController::class.'@index')
-        ->name('materials.glass');
-
-});
-```
-
-The above will generate:
-
-- /en/products/glass
-- /nl/producten/glass
-- /en/materials/glass
-- /nl/materiaal/glazen
-
-If you need to get a translation from a package,
-you can pass an optional translation namespace as a third parameter to `Lang::uri()`:
-
-```php
-Route::localized(function () {
-
-    Route::get(Lang::uri('products/glass', null, 'shop'), ProductsController::class.'@index')
-        ->name('products.glass');
-
-});
-```
-
-> Note that in order to find a translated version of a route, you will need to give your routes a name.
-If you don't name your routes, only the parameters (model route keys) will be translated, not the "hard-coded" slugs.
+Refer to [the GitHub page](https://github.com/codezero-be/laravel-uri-translator) to learn how to use the `Lang::uri()` macro.
 
 ## 🚏 Route Parameters
-
-Parameter placeholders are not translated via language files. These are values you would provide via the `route()` function.
-The `Lang::uri()` macro will skip any parameter placeholder segment.
 
 If you have a model that uses a route key that is translated in the current locale,
 then you can still simply pass the model to the `route()` function to get translated URL's.
