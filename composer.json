@@ -23,6 +23,7 @@
         "php": "^7.2.5|^8.0",
         "0.0.0/composer-include-files": "^1.5",
         "codezero/laravel-localizer": "dev-master",
+        "codezero/laravel-uri-translator": "^1.0",
         "illuminate/support": "^7.0|^8.0|^9.0|^10.0"
     },
     "require-dev": {
