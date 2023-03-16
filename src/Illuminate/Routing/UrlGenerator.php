@@ -2,9 +2,9 @@
 
 namespace CodeZero\LocalizedRoutes\Illuminate\Routing;
 
+use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use Illuminate\Routing\UrlGenerator as BaseUrlGenerator;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
 class UrlGenerator extends BaseUrlGenerator
@@ -99,8 +99,8 @@ class UrlGenerator extends BaseUrlGenerator
 
         // If the locale is not supported, use a fallback
         // locale if one is configured.
-        if ( ! $this->isSupportedLocale($locale)) {
-            $locale = $this->getFallbackLocale() ?: $locale;
+        if ( ! LocaleConfig::isSupportedLocale($locale)) {
+            $locale = LocaleConfig::getFallbackLocale() ?: $locale;
         }
 
         // Normalize the route name by removing any locale prefix.
@@ -140,7 +140,7 @@ class UrlGenerator extends BaseUrlGenerator
 
         // If the first part of the route name is a valid
         // locale, then remove it from the array.
-        if ($this->isSupportedLocale($parts[0])) {
+        if (LocaleConfig::isSupportedLocale($parts[0])) {
             array_shift($parts);
         }
 
@@ -148,43 +148,5 @@ class UrlGenerator extends BaseUrlGenerator
         $name = join('.', $parts);
 
         return $name;
-    }
-
-    /**
-     * Check if the given locale is supported.
-     *
-     * @param string $locale
-     *
-     * @return bool
-     */
-    protected function isSupportedLocale($locale)
-    {
-        return in_array($locale, $this->getSupportedLocales());
-    }
-
-    /**
-     * Get the supported locales and not the custom slugs or domains.
-     *
-     * @return array
-     */
-    protected function getSupportedLocales()
-    {
-        $locales = Config::get('localized-routes.supported_locales', []);
-
-        if (is_numeric(key($locales))) {
-            return $locales;
-        }
-
-        return array_keys($locales);
-    }
-
-    /**
-     * Get the fallback locale.
-     *
-     * @return string|null
-     */
-    protected function getFallbackLocale()
-    {
-        return Config::get('localized-routes.fallback_locale');
     }
 }
