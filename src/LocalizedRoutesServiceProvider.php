@@ -40,6 +40,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfig();
+        $this->registerLocaleConfig();
         $this->registerUrlGenerator();
         $this->registerProviders();
     }
@@ -89,6 +90,20 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     {
         $this->app->register(LocalizerServiceProvider::class);
         $this->app->register(UriTranslatorServiceProvider::class);
+    }
+
+    /**
+     * Register the LocaleConfig binding.
+     *
+     * @return void
+     */
+    protected function registerLocaleConfig()
+    {
+        $this->app->bind(LocaleConfig::class, function ($app) {
+            return new LocaleConfig($app['config'][$this->name]);
+        });
+
+        $this->app->bind('locale-config', LocaleConfig::class);
     }
 
     /**
