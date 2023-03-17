@@ -44,7 +44,7 @@ class LocalizedUrlGenerator
      *
      * @return string
      */
-    public function generateFromRequest($locale = null, $parameters = null, $absolute = true)
+    public function generateFromRequest($locale = null, $parameters = null, $absolute = true, $keepQuery = true)
     {
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
         $locale = $locale ?: $this->detectLocale($urlBuilder);
@@ -63,7 +63,7 @@ class LocalizedUrlGenerator
             }
 
             if ($url = $this->generateFromNamedRoute($locale, $parameters, $absolute)) {
-                return empty($query) ? $url . $urlBuilder->getQueryString() : $url;
+                return empty($query) && $keepQuery ? $url . $urlBuilder->getQueryString() : $url;
             }
 
             $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $slugs));
@@ -80,6 +80,10 @@ class LocalizedUrlGenerator
 
         if ($domain = $this->getCustomDomain($locale)) {
             $urlBuilder->setHost($domain);
+        }
+
+        if ($keepQuery === false) {
+            $urlBuilder->setQuery([]);
         }
 
         return $urlBuilder->build($absolute);
