@@ -150,6 +150,74 @@ class LocaleConfig
     }
 
     /**
+     * Find the slug that belongs to the given locale.
+     *
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    public function findSlugByLocale($locale)
+    {
+        if ( ! $this->isSupportedLocale($locale) || $this->hasCustomDomains()) {
+            return null;
+        }
+
+        return $this->getSupportedLocales()[$locale] ?? $locale;
+    }
+
+    /**
+     * Find the domain that belongs to the given locale.
+     *
+     * @param string $locale
+     *
+     * @return string|null
+     */
+    public function findDomainByLocale($locale)
+    {
+        if ( ! $this->isSupportedLocale($locale) || ! $this->hasCustomDomains()) {
+            return null;
+        }
+
+        return $this->getSupportedLocales()[$locale];
+    }
+
+    /**
+     * Find the locale that belongs to the given slug.
+     *
+     * @param string $slug
+     *
+     * @return string|null
+     */
+    public function findLocaleBySlug($slug)
+    {
+        if ($this->hasCustomDomains()) {
+            return null;
+        }
+
+        if ($this->hasSimpleLocales() && $this->isSupportedLocale($slug)) {
+            return $slug;
+        }
+
+        return array_search($slug, $this->getSupportedLocales()) ?: null;
+    }
+
+    /**
+     * Find the locale that belongs to the given domain.
+     *
+     * @param string $domain
+     *
+     * @return string|null
+     */
+    public function findLocaleByDomain($domain)
+    {
+        if ( ! $this->hasCustomDomains()) {
+            return null;
+        }
+
+        return array_search($domain, $this->getSupportedLocales()) ?: null;
+    }
+
+    /**
      * Check if there are any locales configured.
      *
      * @return bool
