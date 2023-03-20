@@ -821,6 +821,32 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_a_url_without_query_string_for_existing_localized_named_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+
+        Route::localized(function () {
+            Route::get('route', function () {
+                return [
+                    'current' => Route::localizedUrl(null, null, true, $keepQuery = false),
+                    'en' => Route::localizedUrl('en', null, true, $keepQuery = false),
+                    'nl' => Route::localizedUrl('nl', null, true, $keepQuery = false),
+                ];
+            })->name('route');
+        });
+
+        $response = $this->call('GET', '/nl/route?another=one&param=value');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/nl/route'),
+            'en' => url('/en/route'),
+            'nl' => url('/nl/route'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function it_accepts_query_string_parameters_using_named_routes()
     {
         $this->withoutExceptionHandling();
@@ -844,6 +870,29 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_ignores_query_string_parameters_using_named_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slug}/{optional?}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug', 'optional-slug', 'new' => 'value'], true, $keepQuery = false),
+                'en' => Route::localizedUrl('en', ['another-slug', 'optional-slug', 'new' => 'value'], true, $keepQuery = false),
+                'nl' => Route::localizedUrl('nl', ['another-slug', 'optional-slug', 'new' => 'value'], true, $keepQuery = false),
+            ];
+        })->name('route');
+
+        $response = $this->call('GET', '/route/some-slug?param=value');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug/optional-slug'),
+            'en' => url('/route/another-slug/optional-slug'),
+            'nl' => url('/route/another-slug/optional-slug'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function it_accepts_query_string_parameters_using_unnamed_routes()
     {
         $this->withoutExceptionHandling();
@@ -863,6 +912,29 @@ class LocalizedUrlMacroTest extends TestCase
             'current' => url('/route/another-slug/optional-slug?new=value'),
             'en' => url('/route/another-slug/optional-slug?new=value'),
             'nl' => url('/route/another-slug/optional-slug?new=value'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_ignores_query_string_parameters_using_unnamed_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        Route::get('route/{slug}/{optional?}', function () {
+            return [
+                'current' => Route::localizedUrl(null, ['another-slug', 'optional-slug', 'new' => 'value'], true, $keepQuery = false),
+                'en' => Route::localizedUrl('en', ['another-slug', 'optional-slug', 'new' => 'value'], true, $keepQuery = false),
+                'nl' => Route::localizedUrl('nl', ['another-slug', 'optional-slug', 'new' => 'value'], true, $keepQuery = false),
+            ];
+        });
+
+        $response = $this->call('GET', '/route/some-slug?param=value');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => url('/route/another-slug/optional-slug'),
+            'en' => url('/route/another-slug/optional-slug'),
+            'nl' => url('/route/another-slug/optional-slug'),
         ], $response->original);
     }
 

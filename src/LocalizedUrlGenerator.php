@@ -63,7 +63,12 @@ class LocalizedUrlGenerator
             }
 
             if ($url = $this->generateFromNamedRoute($locale, $parameters, $absolute)) {
-                return empty($query) && $keepQuery ? $url . $urlBuilder->getQueryString() : $url;
+                $url = empty($query) ? $url . $urlBuilder->getQueryString() : $url;
+                $startQueryString = strpos($url, '?');
+
+                return ($keepQuery === false && $startQueryString !== false)
+                    ? substr($url, 0, $startQueryString)
+                    : $url;
             }
 
             $urlBuilder->setPath($this->replaceParameters($this->route->uri(), $slugs));
