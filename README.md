@@ -1,20 +1,5 @@
 # Laravel Localized Routes
 
-## IMPORTANT: March 2022
-
-[![Support Ukraine](https://raw.githubusercontent.com/hampusborgos/country-flags/main/png100px/ua.png)](https://github.com/hampusborgos/country-flags/blob/main/png100px/ua.png)
-
-It's horrible to see what is happening now in Ukraine, as Russian army is
-[bombarding houses, hospitals and kindergartens](https://twitter.com/DavidCornDC/status/1501620037785997316).
-
-Please [check out supportukrainenow.org](https://supportukrainenow.org/) for the ways how you can help people there.
-Spread the word.
-
-And if you are from Russia and you are against this war, please express your protest in some way.
-I know you can get punished for this, but you are one of the hopes of those innocent people.
-
----
-
 [![GitHub release](https://img.shields.io/github/release/codezero-be/laravel-localized-routes.svg?style=flat-square)](https://github.com/codezero-be/laravel-localized-routes/releases)
 [![Laravel](https://img.shields.io/badge/laravel-10-red?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com)
 [![License](https://img.shields.io/packagist/l/codezero/laravel-localized-routes.svg?style=flat-square)](LICENSE.md)
@@ -25,135 +10,95 @@ I know you can get punished for this, but you are one of the hopes of those inno
 
 [![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R3UQ8V)
 
-#### A convenient way to set up and use localized routes in a Laravel app.
+A convenient way to set up and use localized routes in a Laravel app.
 
-## 🧩 Features
+## ⭐️ Features
 
-- [Automatically register](#-register-routes) a route for each locale.
-- Use [URL slugs or custom domains](#-supported-locales) (or subdomains).
-- Optionally [omit the locale slug from the URL for your main locale](#%EF%B8%8F-omit-slug-for-main-locale).
-- Optionally [translate each segment](#-uri-translations) in your URI's.
-- [Generate localized route URL's](#-generate-route-urls) using the `route()` helper.
-- [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
-- [Generate localized signed route URL's](#-generate-signed-route-urls).
-- [Generate localized versions of the current URL](#%EF%B8%8F-generate-localized-versions-of-the-current-url) with our `Route::localizedUrl()` macro.
-- [Automatically set the appropriate app locale](#%EF%B8%8F-use-middleware-to-update-app-locale) using the middleware.
-- Optionally [detect and set the preferred locale in multiple sources](#%EF%B8%8F-use-localizer-to-detect-and-set-the-locale).
-- Use localized route keys with [route model binding](#-route-model-binding).
+Middleware
+
+- Automatically detect the visitor's preferred locale using the [middleware](#-add-middleware).
+- Automatically set the appropriate app locale.
+- Automatically store the locale in the session and a cookie (configurable).
+
+Register Routes
+
+- Automatically [register a route](#-register-routes) for each locale.
+- Use localized [URL slugs or domains](#configure-supported-locales).
+- Optionally [omit the slug of your main locale](#omit-slug-for-main-locale) from the URL.
+- Localize [`404` pages](#-localize-404-pages).
 - Allow routes to be [cached](#-cache-routes).
-- Localize [`404` pages](#-localized-404-pages-and-redirecting-to-localized-urls).
+
+Translate Route URLs
+
+- Optionally [translate hard-coded slugs](#-uri-translations) in your URIs.
+- Localize route parameters using [route model binding](#-parameter-translations-with-route-model-binding).
+
+Generate Route URLs
+
+- [Generate localized route URLs](#-generate-route-urls) using the `route()` helper.
+- [Generate localized signed route URLs](#-generate-signed-route-urls).
+- [Generate localized versions of the current URL](#-generate-localized-versions-of-the-current-url) with our `Route::localizedUrl()` macro.
+
+Redirect to Routes
+
+- [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
+- Automatically [redirect non localized URLs to the localized version](#-automatically-redirect-to-localized-urls).
 
 ## ✅ Requirements
 
 - PHP >= 7.2.5
 - Laravel >= 7.0
 
+## ⬆️ Upgrade
+
+Upgrading to a new major version?
+Check our [upgrade guide](UPGRADE.md) for instructions.
+
 ## 📦 Install
+
+Install this package with Composer:
 
 ```bash
 composer require codezero/laravel-localized-routes
 ```
 
-> Laravel will automatically register the ServiceProvider.
+Laravel will automatically register the ServiceProvider.
 
-## ⚙️ Configure
-
-#### ☑️ Publish Configuration File
-
-```bash
-php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
-```
-
-You will now find a `localized-routes.php` file in the `config` folder.
-
-#### ☑️ Supported Locales
-
-Add any locales you wish to support to your published `config/localized-routes.php` file:
-
-```php
-'supported_locales' => ['en', 'nl', 'fr'],
-```
-
- This will automatically prepend a slug to your localized routes. [More on this below](#-register-routes).
-
-If you wish to use custom slugs, you can configure them like this:
-
-```php
-'supported_locales' => [
-    'en' => 'english-slug',
-    'nl' => 'dutch-slug',
-    'fr' => 'french-slug',
-];
-```
-
-Alternatively, you can use a different domain or subdomain for each locale by configuring the `supported_locales` like this:
-
-```php
-'supported_locales' => [
-  'en' => 'example.com',
-  'nl' => 'nl.example.com',
-  'fr' => 'fr.example.com',
-],
-```
-
-#### ☑️ Fallback Locale
-
-When provided, this will be used as the fallback locale when a locale provided in the `route()` helper is not present in the list of supported locales.
-
-```php
-'fallback_locale' => 'en',
-```
-
-#### ☑️ Omit Slug for Main Locale
-
-Specify your main locale if you want to omit its slug from the URL:
-
-```php
-'omitted_locale' => null
-```
-
-Setting this option to `'en'` will result, for example, in URL's like this:
-
-- English: `/some-url` instead of the default `/en/some-url`
-- Dutch: `/nl/some-url` as usual
-- French: `/fr/some-url` as usual
-
-> This option has no effect if you use domains instead of slugs.
-
-#### ☑️ Use Middleware to Update App Locale
+## 🧩 Add Middleware
 
 By default, the app locale will always be what you configured in `config/app.php`.
-To automatically detect and set the app locale, you need to use a middleware.
+To automatically detect and update the app locale, you need to use a middleware.
 
-Add the middleware to the `$middlewareGroups` array in `app/Http/Kernel.php`:
+Add the middleware to the `web` middleware group in `app/Http/Kernel.php`:
 
 ```php
 protected $middlewareGroups = [
     'web' => [
-        \Illuminate\Session\Middleware\StartSession::class, // <= after this
         //...
         \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-        //...
-        \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
     ],
 ];
 ```
 
-In Laravel 7 and higher, you also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` so it runs after `StartSession` and before `SubstituteBindings`:
+You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
+Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
 
 ```php
 protected $middlewarePriority = [
     \Illuminate\Session\Middleware\StartSession::class, // <= after this
     //...
     \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-    //...
     \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
 ];
 ```
 
+If you don't see the `$middlewarePriority` array in your kernel file,
+then you can copy it over from the parent class `Illuminate\Foundation\Http\Kernel`.
+
 Under the hood, this package uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer).
 It will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
-Additionally, it will also store the app locale in the session and in a cookie. You can disable any of these by publishing the Localizer config file:
+Additionally, it will also store the app locale in the session and in a cookie.
+You can disable any of these by publishing the Localizer config file:
 
 ```bash
 php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvider" --tag="config"
@@ -161,229 +106,322 @@ php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvid
 
 The middleware included in this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
 These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
-These are essential for this package to function properly.
+These are required for this package to function properly.
 
-This option only has effect on routes that use our `SetLocale` middleware.
+## ⚙️ Configure
 
-#### ☑️ Use Scoped Options for the Current Localized Route Group
+### Publish Configuration File
+
+```bash
+php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
+```
+
+You will now find a `localized-routes.php` file in the `config` folder.
+
+### Configure Supported Locales
+
+Add any locales you wish to support to your published `config/localized-routes.php` file:
+
+```php
+'supported_locales' => ['en', 'nl'];
+```
+
+These locales will be used as a slug, prepended to the URL of your localized routes.
+
+You can also use a custom slug for a locale:
+
+```php
+'supported_locales' => [
+    'en' => 'english-slug',
+    'nl' => 'dutch-slug',
+];
+```
+
+Or you can use a custom domain for a locale:
+
+```php
+'supported_locales' => [
+    'en' => 'english-domain.test',
+    'nl' => 'dutch-domain.test',
+];
+```
+
+### Fallback Locale
+
+When using the `route()` helper to generate a URL for a locale that is not supported, a `Symfony\Component\Routing\Exception\RouteNotFoundException` is thrown by Laravel.
+However, you can configure a fallback locale to attempt to resolve a fallback URL instead.
+If that fails too, the exception is thrown.
+
+```php
+'fallback_locale' => 'en',
+```
+
+### Omit Slug for Main Locale
+
+Specify your main locale if you want to omit its slug from the URL:
+
+```php
+'omitted_locale' => 'en',
+```
+
+This option has no effect if you use domains instead of slugs.
+
+### Scoped Options
 
 To set an option for one localized route group only, you can specify it as the second parameter of the localized route macro.
-This will override the config file settings.
+This will override the config file settings. Currently, only 2 options can be overridden.
 
 ```php
 Route::localized(function () {
-
-    Route::get('about', AboutController::class.'@index')
-        ->name('about');
-
+    Route::get('about', [AboutController::class, 'index']);
 }, [
     'supported_locales' => ['en', 'nl', 'fr'],
-    'omitted_locale' => null,
+    'omitted_locale' => 'en',
 ]);
 ```
 
-## 🚗 Register Routes
+## 🚘 Register Routes
 
-Example:
+Define your routes inside the `Route::localized()` closure, to automatically register them for each configured locale.
+This will prepend the locale to the route's URI and name.
+If you configured custom domains, it will use those instead of the URI slugs.
+You can also use route groups inside the closure.
 
 ```php
-// Not localized
-Route::get('home', HomeController::class.'@index')
-    ->name('home');
-
-// Localized
 Route::localized(function () {
-
-    Route::get('about', AboutController::class.'@index')
-        ->name('about');
-
-    Route::name('admin.')->group(function () {
-        Route::get('admin/reports', ReportsController::class.'@index')
-            ->name('reports.index');
-    });
-
+    Route::get('about', [AboutController::class, 'index'])->name('about');
 });
 ```
 
-In the above example there are 5 routes being registered.
-The routes defined in the `Route::localized` closure are automatically registered for each configured locale.
-This will prepend the locale to the route's URI and name. If you configured custom domains, it will use those instead of the slugs.
+With supported locales `['en', 'nl']`, the above would register:
 
-| URI               | Name                   |
-| ----------------- | ---------------------- |
-| /home             | home                   |
-| /en/about         | en.about               |
-| /nl/about         | nl.about               |
-| /en/admin/reports | en.admin.reports.index |
-| /nl/admin/reports | nl.admin.reports.index |
+- `/en/about` with the name `en.about`
+- `/nl/about` with the name `nl.about`
 
-If you set `omitted_locale` to `'en'` in the configuration file, the resulting routes look like this: 
+And with the omitted locale set to `en`, the result would be:
 
-| URI               | Name                   |
-| ----------------- | ---------------------- |
-| /home             | home                   |
-| /about            | en.about               |
-| /nl/about         | nl.about               |
-| /admin/reports    | en.admin.reports.index |
-| /nl/admin/reports | nl.admin.reports.index |
+- `/about` with the name `en.about`
+- `/nl/about` with the name `nl.about`
 
-**⚠️ Beware that you don't register the same URL twice when omitting the locale.**
-You can't have a localized `/about` route and also register a non-localized `/about` route in this case.
-The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix.
+> In a most practical scenario, you would register a route either localized or non-localized, but not both.
+> If you do, you will always need to specify a locale to generate the URL with the `route()` helper, because existing route names always have priority.
+> Especially when omitting a main locale from the URL, this would be problematic, because you can't have, for example, a localized `/about` route and a non-localized `/about` route in this case.
+> The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix even if the slug is omitted.
 
-### 🔦 Localized `404` Pages and Redirecting to Localized URL's
+### 🔦 Localize 404 Pages
 
-To use these 2 features, you need to register the fallback route **at the end** of your `routes/web.php` file:
+A standard `404` response has no actual `Route` and does not go through the middleware.
+Thus, it can not be localized by default.
+
+However, to localize a `404` page, you need to register the fallback route with the `FallbackController` at the end of your `routes/web.php` file:
 
 ```php
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 ```
 
-##### 404 - Not Found
+Because the fallback route is an actual `Route`, it will pass through the middleware, thus it can be localized.
 
-After registering the fallback route the provided controller will look for a 404 error view at `resources/views/errors/404.blade.php`.
-If this view does not exist, a normal `NotFoundHttpException` will be thrown.
+The controller will attempt to respond with a 404 error view, located at `resources/views/errors/404.blade.php`.
+If this view does not exist, the normal `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` will be thrown.
 You can configure which view to use by changing the `404_view` entry in the config file.
 
-<details>
-<summary>**Some background info...**</summary>
+Fallback routes will not apply when:
 
-By default, Laravel's `404` pages don't go trough the middleware and have no `Route::current()` associated with it.
-Not even when you create your custom `errors.404` view.
-Therefor, the locale can't be set to match the requested URL automatically via middleware.
-
-To enable localized `404` pages, you need to register a `fallback` route
-and make sure it has the `SetLocale` middleware.
-This is basically a catch all route that will trigger for all non existing URL's.
-
-Another thing to keep in mind is that a `fallback` route returns a `200` status by default.
-So to make it a real `404` you need to return a `404` response yourself.
-
-Fallback routes will not be triggered when:
-
-- your existing routes throw a `404` error (as in `abort(404)`)
+- your existing routes throw a `404` exception (as in `abort(404)`)
 - your existing routes throw a `ModelNotFoundException` (like with route model binding)
 - your existing routes throw any other exception
 
-Because those routes are in fact registered, the `404` page will have the correct `App::getLocale()` set.
+## 🗄️ Cache Routes
 
-[Here is a good read about fallback routes](https://themsaid.com/laravel-55-better-404-response-20170921).
+In production, you can safely cache your routes per usual.
 
-</details>
+```bash
+php artisan route:cache
+```
 
-##### Redirecting to Localized URL's
+## 📗 URI Translations
 
-After registering the fallback route, you can update the config option `redirect_to_localized_urls` to `true`.
-The provided `FallbackController` will then try to redirect routes that have not been registered, to their localized version.
-If it does not have a localized version, a `404` will be thrown.
+This package includes [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator).
+This registers a `Lang::uri()` macro that enables you to translate individual, hard-coded URI slugs.
+Route parameters will not be translated by this macro.
 
-> So the home page `/` would be redirected to `/en` if the active locale is `en` and the `/en` route exists.
-And `/about` would redirect to `/en/about`.
+First, you create a `routes.php` file in your app's `lang` folder for each locale, for example:
 
-If you configured the app to omit the main locale slug, then the former redirection will obviously not happen, because the unprefixed routes exist.
-Instead, accessing a prefixed route with the main locale will redirect to an unprefixed URL.
+```php
+lang/nl/routes.php
+```
 
-> So if the main locale is `en`, visiting `/en` would redirect to the home page `/` (unless `/` is a registered route).
-Also `/en/about` would redirect to `/about`.
+Then you add your translations to it:
 
-### 🚕 Generate Route URL's
+```php
+return [
+    'about' => 'over',
+    'us' => 'ons',
+];
+```
+
+And finally, you use the macro when registering routes:
+
+```php
+Route::localized(function () {
+    Route::get(Lang::uri('about/us'), [AboutController::class, 'index'])->name('about');
+});
+```
+
+Routes with translated URIs need to have a name in order to generate localized versions of it using the `route()` helper or the `Route::localizedUrl()` macro.
+Because these routes have different slugs depending on the locale, the route name is the only thing that links them together.
+
+Refer to [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator) to learn how to use the `Lang::uri()` macro in more detail.
+
+## 📘 Parameter Translations with Route Model Binding
+
+When resolving incoming route parameters from a request, you probably rely on [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding).
+You typehint a model in the controller, and it will look for a `{model}` by its ID, or by a specific attribute like `{model:slug}`.
+If it finds one that matches the parameter value in the URL, it is injected in the controller.
+
+```php
+// Example: use the post slug as the route parameter
+Route::get('posts/{post:slug}', [PostsController::class, 'index']);
+
+// PostsController.php
+public function index(Post $post)
+{
+    return $post;
+}
+```
+
+However, to resolve a localized parameter you need to add a `resolveRouteBinding()` method to your model.
+In this method you need to write the logic required to find a match, using the parameter value from the URL.
+
+For example, you might have a JSON column in your database containing translated slugs:
+
+```php
+public function resolveRouteBinding($value, $field = null)
+{
+    // Default field to query if no parameter field is specified
+    $field = $field ?: $this->getRouteKeyName();
+    
+    // If the parameter field is 'slug',
+    // lets query a JSON field with translations
+    if ($field === 'slug') {
+        $field .= '->' . App::getLocale(); 
+    }
+    
+    // Perform the query to find the parameter value in the database
+    return $this->where($field, $value)->firstOrFail();
+}
+```
+
+If you are looking for a good solution to implement translated attributes on your models, be sure to check out [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable).
+
+## 🚕 Generate Route URLs
+
+### Generate URLs for the Active Locale
 
 You can get the URL of your named routes as usual, using the `route()` helper.
 
-##### 👎 The ugly way...
-
-Normally you would have to include the locale whenever you want to generate a URL:
-
 ```php
-$url = route(app()->getLocale().'.admin.reports.index');
+$url = route('about'); 
 ```
 
-##### 👍 A much nicer way...
+If you registered an `about` route that is not localized, then `about` is an existing route name and its URL will be returned.
+Otherwise, this will try to generate the `about` URL for the active locale, e.g. `en.about`.
 
-Because the former is rather ugly, this package overwrites the `route()` function
-and the underlying `UrlGenerator` class with an additional, optional `$locale` argument
-and takes care of the locale prefix for you. If you don't specify a locale, either a normal,
-non-localized route or a route in the current locale is returned.
+### Generate URLs for a Specific Locale
 
-```php
-$url = route('admin.reports.index'); // current locale
-$url = route('admin.reports.index', [], true, 'nl'); // dutch URL
-```
-
-This is the new route helper signature:
+In some cases, you might need to generate a URL for a specific locale.
+For this purpose, an additional locale parameter was added to Laravel's `route()` helper.
 
 ```php
-route($name, $parameters = [], $absolute = true, $locale = null)
+$url = route('about', [], true, 'nl'); // this will load 'nl.about'
 ```
 
-A few examples (given the example routes we registered above):
+### Generate URLs with Localized Parameters
+
+There are a number of ways to generate route URLs with localized parameters.
+
+First of all, you can pass the value manually.
+
+Let's say we have a `Post` model with a `getSlug()` method:
 
 ```php
-app()->setLocale('en');
-app()->getLocale(); // 'en'
+public function getSlug($locale = null)
+{
+    $locale = $locale ?: App::getLocale();
+    
+    $slugs = [
+        'en' => 'en-slug',
+        'nl' => 'nl-slug',
+    ];
 
-$url = route('home'); // /home (normal routes have priority)
-$url = route('about'); // /en/about (current locale)
-
-// Get specific locales...
-// This is most useful if you want to generate a URL to switch language.
-$url = route('about', [], true, 'en'); // /en/about
-$url = route('about', [], true, 'nl'); // /nl/about
-
-// You could also do this, but it kinda defeats the purpose...
-$url = route('en.about'); // /en/about
-$url = route('en.about', [], true, 'nl'); // /nl/about
+    return $slugs[$locale] ?? '';
+}
 ```
 
-> **Note:** in a most practical scenario you would register a route either localized **or** non-localized, but not both.
-> If you do, you will always need to specify a locale to get the URL, because non-localized routes always have priority
-> when using the `route()` function.
+> Of course, in a real project the slugs wouldn't be hard-coded.
+> If you are looking for a good solution to implement translated attributes on your models, be sure to check out [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable).
 
-If the locale parameter for the `route()` helper is not a supported locale, and the route does not exist, a `RouteNotFoundException` will be thrown.
-
-A fallback locale can be provided in the config file. When provided, if the locale parameter for the `route()` helper is not a supported locale, the fallback locale will be used instead.
+Now you can pass a localized slug to the `route()` function:
 
 ```php
-// when `fallback_locale` is set to "en"
-// and supported locales are "en" and "nl"
-
-$url = route('about', [], true, 'nl'); // /nl/about
-$url = route('about', [], true, 'wk'); // /en/about
+route('posts.show', [$post->getSlug()]);
+route('posts.show', [$post->getSlug('nl')], true, 'nl');
 ```
 
-### 🚌 Redirect to Routes
-
-Laravel's `Redirector` uses the same `UrlGenerator` as the `route()` function behind the scenes.
-Because we are overriding this class, you can easily redirect to your routes.
+But you can automate this further, by adding one more method to your model:
 
 ```php
-return redirect()->route('home'); // non-localized route, redirects to /home
-return redirect()->route('about'); // localized route, redirects to /en/about (current locale)
+public function getRouteKey()
+{
+    return $this->getSlug();
+}
 ```
 
-You can't redirect to URL's in a specific locale this way, but if you need to, you can of course just use the `route()` function.
+Now you can just pass the model:
 
 ```php
-return redirect(route('about', [], true, 'nl')); // localized route, redirects to /nl/about
+route('posts.show', [$post]);
+route('posts.show', [$post], true, 'nl');
 ```
 
-### ⚓️ Generate Localized Versions of the Current URL
+### Fallback URLs
 
-To generate a URL for the current route in any locale, you can use this `Route` macro:
-
-##### With Route Model Binding
-
-If your route uses a localized key (like a slug) and you are using [route model binding](#-route-model-binding),
-then the key will automatically be localized.
+A fallback locale can be provided in the config file.
+If the locale parameter for the `route()` helper is not a supported locale, the fallback locale will be used instead.
 
 ```php
-$current = \Route::localizedUrl(); // /en/posts/en-slug
-$en = \Route::localizedUrl('en'); // /en/posts/en-slug
-$nl = \Route::localizedUrl('nl'); // /nl/posts/nl-slug
+// When the fallback locale is set to 'en'
+// and the supported locales are 'en' and 'nl'
+
+$url = route('about', [], true, 'nl'); // this will load 'nl.about'
+$url = route('about', [], true, 'wk'); // this will load 'en.about'
 ```
 
-If you have a route **with multiple keys**, like `/en/posts/{id}/{slug}`, then you can pass the parameters yourself
-(like in the example without route model binding below) or you can implement this interface in your model:
+If neither a regular nor a localized route can be resolved, a `Symfony\Component\Routing\Exception\RouteNotFoundException` will be thrown.
+
+## ⚓️ Generate Localized Versions of the Current URL
+
+To generate a URL for the current route in any locale, you can use the `Route::localizedUrl()` macro.
+
+Just like with the `route()` helper, you can pass parameters as a second argument.
+
+```php
+$current = Route::localizedUrl(null, [$post->getSlug()]);
+$en = Route::localizedUrl('en', [$post->getSlug('en')]);
+$nl = Route::localizedUrl('nl', [$post->getSlug('nl')]);
+```
+
+However, if you add the model's `getRouteKey()` method, you don't need to pass the parameter at all.
+The macro will figure it out automatically.
+
+```php
+$current = Route::localizedUrl();
+$en = Route::localizedUrl('en');
+$nl = Route::localizedUrl('nl');
+```
+
+If you have a route with multiple keys, like `/en/posts/{id}/{slug}`, then you can implement the `ProvidesRouteParameters` interface in your model.
+From the `getRouteParameters()` method, you then return the required parameter values.
 
 ```php
 use CodeZero\LocalizedRoutes\ProvidesRouteParameters;
@@ -401,149 +439,67 @@ class Post extends Model implements ProvidesRouteParameters
 }
 ```
 
-Now, as long as you use route model binding, you can still just do:
+Now, the parameters will still be resolved automatically:
 
 ```php
-$current = \Route::localizedUrl(); // /en/posts/en-slug
-$en = \Route::localizedUrl('en'); // /en/posts/en-slug
-$nl = \Route::localizedUrl('nl'); // /nl/posts/nl-slug
+$current = Route::localizedUrl();
+$en = Route::localizedUrl('en');
+$nl = Route::localizedUrl('nl');
 ```
 
-##### Without Route Model Binding
+## 🖋️ Generate Signed Route URLs
 
-If you don't use [route model binding](#-route-model-binding) and you need a localized slug in the URL,
-then you will have to pass it manually.
-
-For example:
-
-```php
-$nl = \Route::localizedUrl('nl'); // Wrong: /nl/posts/en-slug
-$nl = \Route::localizedUrl('nl', [$post->getSlug('nl')]); // Right: /nl/posts/nl-slug
-```
-
-The `getSlug()` method is just for illustration, so you will need to implement that yourself of course.
-
-### ✍🏻 Generate Signed Route URL's
-
-Generating a [signed route URL](https://laravel.com/docs/urls#signed-urls) is just as easy.
-
-Pass it the route name, the necessary parameters and you will get the URL for the current locale.
+Generating a localized signed route URL is just as easy as generating normal route URLs.
+Pass it the route name, the necessary parameters, and you will get the URL for the current locale.
 
 ```php
 $signedUrl = URL::signedRoute('reset.password', ['user' => $id], now()->addMinutes(30));
 ```
 
-You can also generate a signed URL for a specific locale:
+You can also generate a signed route URL for a specific locale:
 
 ```php
-$signedUrl = URL::signedRoute($name, $parameters, $expiration, true, 'nl');
+$signedUrl = URL::signedRoute('reset.password', ['user' => $id], now()->addMinutes(30), true, 'nl');
 ```
 
 Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more info on signed routes.
 
-### 🌎 URI Translations
+## 🚌 Redirect to Routes
 
-This package includes [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator), which registers a `Lang::uri()` macro that enables you to translate individual, hard-coded URI slugs.
-Route parameters will not be translated by this macro. 
+You can redirect to routes, just like you would in a normal Laravel app.
 
-Routes with translated URIs need to have a name in order to generate localized versions of it using the `route()` helper or the `Route::localizedUrl()` macro.
-Because these routes have different slugs depending on the locale, the route name is the only thing that links them together.
-
-Refer to [the GitHub page](https://github.com/codezero-be/laravel-uri-translator) to learn how to use the `Lang::uri()` macro.
-
-## 🚏 Route Parameters
-
-If you have a model that uses a route key that is translated in the current locale,
-then you can still simply pass the model to the `route()` function to get translated URL's.
-
-An example...
-
-**Given we have a model like this:**
+If you register an `about` route that is not localized, then `about` is an existing route name and its URL will be redirected to.
+Otherwise, this will try to generate the `about` URL for the active locale, e.g. `en.about` and redirect there.
 
 ```php
-class Post extends \Illuminate\Database\Eloquent\Model
-{
-    public function getRouteKey()
-    {
-        $slugs = [
-            'en' => 'en-slug',
-            'nl' => 'nl-slug',
-        ];
-
-        return $slugs[app()->getLocale()];
-    }
-}
+return redirect()->route('about');
 ```
 
-> **TIP:** checkout [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable) for translatable models.
-
-**If we have a localized route like this:**
+You can't redirect to URL's in a specific locale this way, but if you need to, you can of course just use the `route()` function.
 
 ```php
-Route::localized(function () {
-
-    Route::get('posts/{post}', PostsController::class.'@show')
-        ->name('posts.show');
-
-});
+return redirect(route('about', [], true, 'nl')); // this redirects to nl.about
 ```
 
-**We can now get the URL with the appropriate slug:**
+## 🪧 Automatically Redirect to Localized URLs
+
+To redirect any non-localized URL to its localized version, you can set the config option `redirect_to_localized_urls` to `true`, and register the following fallback route with the `FallbackController` at the end of your `routes/web.php` file.
 
 ```php
-app()->setLocale('en');
-app()->getLocale(); // 'en'
-
-$post = new Post;
-
-$url = route('posts.show', [$post]); // /en/posts/en-slug
-$url = route('posts.show', [$post], true, 'nl'); // /nl/posts/nl-slug
+Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 ```
 
-## 🚴‍ Route Model Binding
+For example:
 
-If you enable the [middleware](#%EF%B8%8F-use-middleware-to-update-app-locale) included in this package,
-you can use [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding)
-to automatically inject models with localized route keys in your controllers.
+- `/` would redirect to `/en`
+- `/about` would redirect to `/en/about`
 
-All you need to do is add a `resolveRouteBinding()` method to your model.
-Check [Laravel's documentation](https://laravel.com/docs/routing#route-model-binding)
-for alternative ways to enable route model binding.
+If the omitted locale is set to `en`:
 
-```php
-public function resolveRouteBinding($value)
-{
-    // Perform the logic to find the given slug in the database...
-    return $this->where($this->getRouteKeyName().'->'.app()->getLocale(), $value)->firstOrFail();
-}
-```
+- `/en` would redirect to `/`
+- `/en/about` would redirect to `/about`
 
-Laravel 7 and newer has an optional `$field` parameter that allows you to override the route key on specific routes:
-
-```php
-// Use the post slug as the route parameter instead of the default ID
-Route::get('posts/{post:slug}', ...);
-```
-
-The new method would then look like this:
-
-```php
-public function resolveRouteBinding($value, $field = null)
-{
-    // Perform the logic to find the given slug in the database...
-    return $this->where($field ?? $this->getRouteKeyName().'->'.app()->getLocale(), $value)->firstOrFail();
-}
-```
-
-> **TIP:** checkout [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable) for translatable models.
-
-## 🗃 Cache Routes
-
-In production you can safely cache your routes per usual.
-
-```bash
-php artisan route:cache
-```
+If a route doesn't exist, a `404` response will be returned.
 
 ## 🚧 Testing
 
@@ -553,10 +509,10 @@ composer test
 
 ## ☕️ Credits
 
-- [Ivan Vermeyen](https://byterider.io)
-- [All contributors](../../contributors)
+- [Ivan Vermeyen](https://github.com/ivanvermeyen)
+- [All contributors](https://github.com/codezero-be/laravel-localized-routes/contributors)
 
-## 🔓 Security
+## 🔒 Security
 
 If you discover any security related issues, please [e-mail me](mailto:ivan@codezero.be) instead of using the issue tracker.
 
