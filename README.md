@@ -115,7 +115,7 @@ The middleware included in this package will overwrite the essential settings in
 These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
 These are required for this package to function properly.
 
-## ⚙️ Configure
+## ⚙ Configure
 
 ### ☑️ Publish Configuration File
 
