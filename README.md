@@ -42,6 +42,7 @@ A convenient way to set up and use localized routes in a Laravel app.
 - [Generate Signed Route URLs](#-generate-signed-route-urls)
 - [Redirect to Routes](#-redirect-to-routes)
 - [Automatically Redirect to Localized URLs](#-automatically-redirect-to-localized-urls)
+- [Helpers](#-helpers)
 - [Testing](#-testing)
 - [Credits](#-credits)
 - [Security](#-security)
@@ -543,6 +544,39 @@ If the omitted locale is set to `en`:
 - `/en/about` would redirect to `/about`
 
 If a route doesn't exist, a `404` response will be returned.
+
+## 🏗️ Helpers
+
+### `Route::hasLocalized()`
+
+```php
+// Check if a named route exists in the active locale:
+$exists = Route::hasLocalized('about');
+// Check if a named route exists in a specific locale:
+$exists = Route::hasLocalized('about', 'nl');
+```
+
+### `Route::isLocalized()`
+
+```php
+// Check if the current route is localized:
+$isLocalized = Route::isLocalized();
+// Check if the current route is localized and has a specific name:
+$isLocalized = Route::isLocalized('about');
+// Check if the current route has a specific locale and has a specific name:
+$isLocalized = Route::isLocalized('about', 'nl');
+// Check if the current route is localized and its name matches a pattern:
+$isLocalized = Route::isLocalized(['admin.*', 'dashboard.*']);
+// Check if the current route has one of the specified locales and has a specific name:
+$isLocalized = Route::isLocalized('about', ['en', 'nl']);
+```
+
+### `Route::isFallback()`
+
+```php
+// Check if the current route is a fallback route:
+$isFallback = Route::isFallback();
+```
 
 ## 🚧 Testing
 
