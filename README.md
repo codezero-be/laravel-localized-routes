@@ -317,7 +317,7 @@ In production, you can safely cache your routes per usual.
 php artisan route:cache
 ```
 
-## 🚕 Generate Route URLs
+## ⚓️ Generate Route URLs
 
 ### ☑️ Generate URLs for the Active Locale
 
@@ -402,7 +402,7 @@ $url = route('about', [], true, 'wk'); // this will load 'en.about'
 
 If neither a regular nor a localized route can be resolved, a `Symfony\Component\Routing\Exception\RouteNotFoundException` will be thrown.
 
-## ⚓️ Generate Localized Versions of the Current URL
+### ☑️ Generate Localized Versions of the Current URL
 
 To generate a URL for the current route in any locale, you can use the `Route::localizedUrl()` macro.
 
@@ -450,7 +450,15 @@ $en = Route::localizedUrl('en');
 $nl = Route::localizedUrl('nl');
 ```
 
-### Example Locale Switcher
+By default, the query string will be included in the generated URL.
+If you don't want this, you can pass an extra parameter to the macro:
+
+```php
+$keepQuery = false;
+$current = Route::localizedUrl(null, [], true, $keepQuery);
+```
+
+### ☑️ Example Locale Switcher
 
 The following Blade snippet will add a link to the current page in every alternate locale.
 
