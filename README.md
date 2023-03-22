@@ -584,7 +584,7 @@ $isFallback = Route::isFallback();
 composer test
 ```
 
-## ☕️ Credits
+## ☕ Credits
 
 - [Ivan Vermeyen](https://github.com/ivanvermeyen)
 - [All contributors](https://github.com/codezero-be/laravel-localized-routes/contributors)
