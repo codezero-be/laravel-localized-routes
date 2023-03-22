@@ -17,7 +17,6 @@ A convenient way to set up and use localized routes in a Laravel app.
 - [Requirements](#-requirements)
 - [Upgrade](#-upgrade)
 - [Install](#-install)
-- [Add Middleware](#-add-middleware)
 - [Configure](#-configure)
   - [Publish Configuration File](#-publish-configuration-file)
   - [Configure Supported Locales](#-configure-supported-locales)
@@ -27,6 +26,7 @@ A convenient way to set up and use localized routes in a Laravel app.
   - [Use Fallback Locale](#-use-fallback-locale)
   - [Omit Slug for Main Locale](#-omit-slug-for-main-locale)
   - [Scoped Options](#-scoped-options)
+- [Add Middleware to Update App Locale](#-add-middleware-to-update-app-locale)
 - [Register Routes](#-register-routes)
   - [Translate Parameters with Route Model Binding](#-translate-parameters-with-route-model-binding)
   - [Translate Hard-Coded URI Slugs](#-translate-hard-coded-uri-slugs)
@@ -68,52 +68,6 @@ composer require codezero/laravel-localized-routes
 ```
 
 Laravel will automatically register the ServiceProvider.
-
-## 🧩 Add Middleware
-
-By default, the app locale will always be what you configured in `config/app.php`.
-
-To automatically detect and update the app locale, you need to use a middleware.
-
-Add the middleware to the `web` middleware group in `app/Http/Kernel.php`:
-
-```php
-protected $middlewareGroups = [
-    'web' => [
-        //...
-        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-    ],
-];
-```
-
-You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
-
-Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
-
-```php
-protected $middlewarePriority = [
-    \Illuminate\Session\Middleware\StartSession::class, // <= after this
-    //...
-    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
-];
-```
-
-If you don't see the `$middlewarePriority` array in your kernel file,
-then you can copy it over from the parent class `Illuminate\Foundation\Http\Kernel`.
-
-Under the hood, this package uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer).
-It will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
-Additionally, it will also store the app locale in the session and in a cookie.
-You can disable any of these by publishing the Localizer config file:
-
-```bash
-php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvider" --tag="config"
-```
-
-The middleware included in this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
-These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
-These are required for this package to function properly.
 
 ## ⚙ Configure
 
@@ -192,6 +146,52 @@ Route::localized(function () {
     'omitted_locale' => 'en',
 ]);
 ```
+
+## 🧩 Add Middleware to Update App Locale
+
+By default, the app locale will always be what you configured in `config/app.php`.
+
+To automatically detect and update the app locale, you need to use a middleware.
+
+Add the middleware to the `web` middleware group in `app/Http/Kernel.php`:
+
+```php
+protected $middlewareGroups = [
+    'web' => [
+        //...
+        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
+    ],
+];
+```
+
+You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
+
+Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
+
+```php
+protected $middlewarePriority = [
+    \Illuminate\Session\Middleware\StartSession::class, // <= after this
+    //...
+    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
+    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
+];
+```
+
+If you don't see the `$middlewarePriority` array in your kernel file,
+then you can copy it over from the parent class `Illuminate\Foundation\Http\Kernel`.
+
+Under the hood, this package uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer).
+It will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
+Additionally, it will also store the app locale in the session and in a cookie.
+You can disable any of these by publishing the Localizer config file:
+
+```bash
+php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvider" --tag="config"
+```
+
+The middleware included in this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
+These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
+These are required for this package to function properly.
 
 ## 🚘 Register Routes
 
