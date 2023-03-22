@@ -450,6 +450,28 @@ $en = Route::localizedUrl('en');
 $nl = Route::localizedUrl('nl');
 ```
 
+### Example Locale Switcher
+
+The following Blade snippet will add a link to the current page in every alternate locale.
+
+It will only run if the current route is localized or a fallback route.
+
+```blade
+@if (Route::isLocalized() || Route::isFallback())
+    <ul>
+        @foreach(LocaleConfig::getLocales() as $locale)
+            @if ( ! App::isLocale($locale))
+                <li>
+                    <a href="{{ Route::localizedUrl($locale) }}">
+                        {{ strtoupper($locale) }}
+                    </a>
+                </li>
+            @endif
+        @endforeach
+    </ul>
+@endif
+```
+
 ## 🖋️ Generate Signed Route URLs
 
 Generating a localized signed route URL is just as easy as generating normal route URLs.
