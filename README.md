@@ -54,7 +54,7 @@ A convenient way to set up and use localized routes in a Laravel app.
 - PHP >= 7.2.5
 - Laravel >= 7.0
 
-## ⬆️ Upgrade
+## ⬆ Upgrade
 
 Upgrading to a new major version?
 Check our [upgrade guide](UPGRADE.md) for instructions.
@@ -117,7 +117,7 @@ These are required for this package to function properly.
 
 ## ⚙ Configure
 
-### ☑️ Publish Configuration File
+### ☑ Publish Configuration File
 
 ```bash
 php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesServiceProvider" --tag="config"
@@ -125,7 +125,7 @@ php artisan vendor:publish --provider="CodeZero\LocalizedRoutes\LocalizedRoutesS
 
 You will now find a `localized-routes.php` file in the `config` folder.
 
-### ☑️ Configure Supported Locales
+### ☑ Configure Supported Locales
 
 #### Simple Locales
 
@@ -159,7 +159,7 @@ Or you can use a custom domain for a locale:
 ];
 ```
 
-### ☑️ Use Fallback Locale
+### ☑ Use Fallback Locale
 
 When using the `route()` helper to generate a URL for a locale that is not supported, a `Symfony\Component\Routing\Exception\RouteNotFoundException` is thrown by Laravel.
 However, you can configure a fallback locale to attempt to resolve a fallback URL instead.
@@ -169,7 +169,7 @@ If that fails too, the exception is thrown.
 'fallback_locale' => 'en',
 ```
 
-### ☑️ Omit Slug for Main Locale
+### ☑ Omit Slug for Main Locale
 
 Specify your main locale if you want to omit its slug from the URL:
 
@@ -179,7 +179,7 @@ Specify your main locale if you want to omit its slug from the URL:
 
 This option has no effect if you use domains instead of slugs.
 
-### ☑️ Scoped Options
+### ☑ Scoped Options
 
 To set an option for one localized route group only, you can specify it as the second parameter of the localized route macro.
 This will override the config file settings. Currently, only 2 options can be overridden.
@@ -222,7 +222,7 @@ And with the omitted locale set to `en`, the result would be:
 > Especially when omitting a main locale from the URL, this would be problematic, because you can't have, for example, a localized `/about` route and a non-localized `/about` route in this case.
 > The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix even if the slug is omitted.
 
-### ☑️ Translate parameters with Route Model Binding
+### ☑ Translate parameters with Route Model Binding
 
 When resolving incoming route parameters from a request, you probably rely on [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding).
 You typehint a model in the controller, and it will look for a `{model}` by its ID, or by a specific attribute like `{model:slug}`.
@@ -263,7 +263,7 @@ public function resolveRouteBinding($value, $field = null)
 
 > If you are looking for a good solution to implement translated attributes on your models, be sure to check out [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable).
 
-### ☑️ Translate Hard-Coded URI Slugs
+### ☑ Translate Hard-Coded URI Slugs
 
 This package includes [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator).
 This registers a `Lang::uri()` macro that enables you to translate individual, hard-coded URI slugs.
@@ -320,7 +320,7 @@ Fallback routes will not apply when:
 - your existing routes throw a `ModelNotFoundException` (like with route model binding)
 - your existing routes throw any other exception
 
-## 🗄️ Cache Routes
+## 🗄 Cache Routes
 
 In production, you can safely cache your routes per usual.
 
@@ -328,9 +328,9 @@ In production, you can safely cache your routes per usual.
 php artisan route:cache
 ```
 
-## ⚓️ Generate Route URLs
+## ⚓ Generate Route URLs
 
-### ☑️ Generate URLs for the Active Locale
+### ☑ Generate URLs for the Active Locale
 
 You can get the URL of your named routes as usual, using the `route()` helper.
 
@@ -341,7 +341,7 @@ $url = route('about');
 If you registered an `about` route that is not localized, then `about` is an existing route name and its URL will be returned.
 Otherwise, this will try to generate the `about` URL for the active locale, e.g. `en.about`.
 
-### ☑️ Generate URLs for a Specific Locale
+### ☑ Generate URLs for a Specific Locale
 
 In some cases, you might need to generate a URL for a specific locale.
 For this purpose, an additional locale parameter was added to Laravel's `route()` helper.
@@ -350,7 +350,7 @@ For this purpose, an additional locale parameter was added to Laravel's `route()
 $url = route('about', [], true, 'nl'); // this will load 'nl.about'
 ```
 
-### ☑️ Generate URLs with Localized Parameters
+### ☑ Generate URLs with Localized Parameters
 
 There are a number of ways to generate route URLs with localized parameters.
 
@@ -398,7 +398,7 @@ route('posts.show', [$post]);
 route('posts.show', [$post], true, 'nl');
 ```
 
-### ☑️ Fallback URLs
+### ☑ Fallback URLs
 
 A fallback locale can be provided in the config file.
 If the locale parameter for the `route()` helper is not a supported locale, the fallback locale will be used instead.
@@ -413,7 +413,7 @@ $url = route('about', [], true, 'wk'); // this will load 'en.about'
 
 If neither a regular nor a localized route can be resolved, a `Symfony\Component\Routing\Exception\RouteNotFoundException` will be thrown.
 
-### ☑️ Generate Localized Versions of the Current URL
+### ☑ Generate Localized Versions of the Current URL
 
 To generate a URL for the current route in any locale, you can use the `Route::localizedUrl()` macro.
 
@@ -469,7 +469,7 @@ $keepQuery = false;
 $current = Route::localizedUrl(null, [], true, $keepQuery);
 ```
 
-### ☑️ Example Locale Switcher
+### ☑ Example Locale Switcher
 
 The following Blade snippet will add a link to the current page in every alternative locale.
 
@@ -491,7 +491,7 @@ It will only run if the current route is localized or a fallback route.
 @endif
 ```
 
-## 🖋️ Generate Signed Route URLs
+## 🖋 Generate Signed Route URLs
 
 Generating a localized signed route URL is just as easy as generating normal route URLs.
 Pass it the route name, the necessary parameters, and you will get the URL for the current locale.
