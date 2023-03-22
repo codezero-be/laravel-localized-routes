@@ -545,7 +545,7 @@ If the omitted locale is set to `en`:
 
 If a route doesn't exist, a `404` response will be returned.
 
-## 🏗️ Helpers
+## 🪜 Helpers
 
 ### `Route::hasLocalized()`
 
