@@ -260,7 +260,7 @@ public function resolveRouteBinding($value, $field = null)
 }
 ```
 
-If you are looking for a good solution to implement translated attributes on your models, be sure to check out [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable).
+> If you are looking for a good solution to implement translated attributes on your models, be sure to check out [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable).
 
 ### ☑️ Translate Hard-Coded URI Slugs
 
