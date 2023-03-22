@@ -12,37 +12,41 @@
 
 A convenient way to set up and use localized routes in a Laravel app.
 
-## ⭐️ Features
+## 📖 Table of Contents
 
-Middleware
-
-- Automatically detect the visitor's preferred locale using the [middleware](#-add-middleware).
-- Automatically set the appropriate app locale.
-- Automatically store the locale in the session and a cookie (configurable).
-
-Register Routes
-
-- Automatically [register a route](#-register-routes) for each locale.
-- Use localized [URL slugs or domains](#-configure-supported-locales).
-- Optionally [omit the slug of your main locale](#-omit-slug-for-main-locale--optional-) from the URL.
-- Localize [`404` pages](#-localize-404-pages).
-- Allow routes to be [cached](#-cache-routes).
-
-Translate Route URLs
-
-- Localize route parameters using [route model binding](#-parameter-translations-with-route-model-binding).
-- Optionally [translate hard-coded slugs](#-uri-translations) in your URIs.
-
-Generate Route URLs
-
-- [Generate localized route URLs](#-generate-route-urls) using the `route()` helper.
-- [Generate localized signed route URLs](#-generate-signed-route-urls).
-- [Generate localized versions of the current URL](#-generate-localized-versions-of-the-current-url) with our `Route::localizedUrl()` macro.
-
-Redirect to Routes
-
-- [Redirect to localized routes](#-redirect-to-routes) using the `redirect()->route()` helper.
-- Automatically [redirect non localized URLs to the localized version](#-automatically-redirect-to-localized-urls).
+- [Requirements](#-requirements)
+- [Upgrade](#-upgrade)
+- [Install](#-install)
+- [Add Middleware](#-add-middleware)
+- [Configure](#-configure)
+  - [Publish Configuration File](#-publish-configuration-file)
+  - [Configure Supported Locales](#-configure-supported-locales)
+    - [Simple Locales](#simple-locales)
+    - [Custom Slugs](#custom-slugs)
+    - [Custom Domains](#custom-domains)
+  - [Use Fallback Locale](#-use-fallback-locale)
+  - [Omit Slug for Main Locale](#-omit-slug-for-main-locale)
+  - [Scoped Options](#-scoped-options)
+- [Register Routes](#-register-routes)
+  - [Translate parameters with Route Model Binding](#-translate-parameters-with-route-model-binding)
+  - [Translate Hard-Coded URI Slugs](#-translate-hard-coded-uri-slugs)
+- [Localize 404 Pages](#-localize-404-pages)
+- [Cache Routes](#-cache-routes)
+- [Generate Route URLs](#-generate-route-urls)
+  - [Generate URLs for the Active Locale](#-generate-urls-for-the-active-locale)
+  - [Generate URLs for a Specific Locale](#-generate-urls-for-a-specific-locale)
+  - [Generate URLs with Localized Parameters](#-generate-urls-with-localized-parameters)
+  - [Fallback URLs](#-fallback-urls)
+  - [Generate Localized Versions of the Current URL](#-generate-localized-versions-of-the-current-url)
+  - [Example Locale Switcher](#-example-locale-switcher)
+- [Generate Signed Route URLs](#-generate-signed-route-urls)
+- [Redirect to Routes](#-redirect-to-routes)
+- [Automatically Redirect to Localized URLs](#-automatically-redirect-to-localized-urls)
+- [Testing](#-testing)
+- [Credits](#-credits)
+- [Security](#-security)
+- [Changelog](#-changelog)
+- [License](#-license)
 
 ## ✅ Requirements
 
@@ -122,6 +126,8 @@ You will now find a `localized-routes.php` file in the `config` folder.
 
 ### ☑️ Configure Supported Locales
 
+#### Simple Locales
+
 Add any locales you wish to support to your published `config/localized-routes.php` file:
 
 ```php
@@ -129,6 +135,8 @@ Add any locales you wish to support to your published `config/localized-routes.p
 ```
 
 These locales will be used as a slug, prepended to the URL of your localized routes.
+
+#### Custom Slugs
 
 You can also use a custom slug for a locale:
 
@@ -139,6 +147,8 @@ You can also use a custom slug for a locale:
 ];
 ```
 
+#### Custom Domains
+
 Or you can use a custom domain for a locale:
 
 ```php
@@ -148,7 +158,7 @@ Or you can use a custom domain for a locale:
 ];
 ```
 
-### ☑️ Use Fallback Locale (optional)
+### ☑️ Use Fallback Locale
 
 When using the `route()` helper to generate a URL for a locale that is not supported, a `Symfony\Component\Routing\Exception\RouteNotFoundException` is thrown by Laravel.
 However, you can configure a fallback locale to attempt to resolve a fallback URL instead.
@@ -158,7 +168,7 @@ If that fails too, the exception is thrown.
 'fallback_locale' => 'en',
 ```
 
-### ☑️ Omit Slug for Main Locale (optional)
+### ☑️ Omit Slug for Main Locale
 
 Specify your main locale if you want to omit its slug from the URL:
 
@@ -211,30 +221,7 @@ And with the omitted locale set to `en`, the result would be:
 > Especially when omitting a main locale from the URL, this would be problematic, because you can't have, for example, a localized `/about` route and a non-localized `/about` route in this case.
 > The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix even if the slug is omitted.
 
-### 🔦 Localize 404 Pages
-
-A standard `404` response has no actual `Route` and does not go through the middleware.
-Thus, it can not be localized by default.
-
-However, to localize a `404` page, you need to register the fallback route with the `FallbackController` at the end of your `routes/web.php` file:
-
-```php
-Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
-```
-
-Because the fallback route is an actual `Route`, it will pass through the middleware, thus it can be localized.
-
-The controller will attempt to respond with a 404 error view, located at `resources/views/errors/404.blade.php`.
-If this view does not exist, the normal `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` will be thrown.
-You can configure which view to use by changing the `404_view` entry in the config file.
-
-Fallback routes will not apply when:
-
-- your existing routes throw a `404` exception (as in `abort(404)`)
-- your existing routes throw a `ModelNotFoundException` (like with route model binding)
-- your existing routes throw any other exception
-
-## 📘 Parameter Translations with Route Model Binding
+### ☑️ Translate parameters with Route Model Binding
 
 When resolving incoming route parameters from a request, you probably rely on [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding).
 You typehint a model in the controller, and it will look for a `{model}` by its ID, or by a specific attribute like `{model:slug}`.
@@ -275,7 +262,7 @@ public function resolveRouteBinding($value, $field = null)
 
 If you are looking for a good solution to implement translated attributes on your models, be sure to check out [spatie/laravel-translatable](https://github.com/spatie/laravel-translatable).
 
-## 📗 URI Translations
+### ☑️ Translate Hard-Coded URI Slugs
 
 This package includes [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator).
 This registers a `Lang::uri()` macro that enables you to translate individual, hard-coded URI slugs.
@@ -308,6 +295,29 @@ Routes with translated URIs need to have a name in order to generate localized v
 Because these routes have different slugs depending on the locale, the route name is the only thing that links them together.
 
 Refer to [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator) to learn how to use the `Lang::uri()` macro in more detail.
+
+### 🔦 Localize 404 Pages
+
+A standard `404` response has no actual `Route` and does not go through the middleware.
+Thus, it can not be localized by default.
+
+However, to localize a `404` page, you need to register the fallback route with the `FallbackController` at the end of your `routes/web.php` file:
+
+```php
+Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
+```
+
+Because the fallback route is an actual `Route`, it will pass through the middleware, thus it can be localized.
+
+The controller will attempt to respond with a 404 error view, located at `resources/views/errors/404.blade.php`.
+If this view does not exist, the normal `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` will be thrown.
+You can configure which view to use by changing the `404_view` entry in the config file.
+
+Fallback routes will not apply when:
+
+- your existing routes throw a `404` exception (as in `abort(404)`)
+- your existing routes throw a `ModelNotFoundException` (like with route model binding)
+- your existing routes throw any other exception
 
 ## 🗄️ Cache Routes
 
@@ -460,7 +470,7 @@ $current = Route::localizedUrl(null, [], true, $keepQuery);
 
 ### ☑️ Example Locale Switcher
 
-The following Blade snippet will add a link to the current page in every alternate locale.
+The following Blade snippet will add a link to the current page in every alternative locale.
 
 It will only run if the current route is localized or a fallback route.
 
