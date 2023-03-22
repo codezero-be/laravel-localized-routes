@@ -28,7 +28,7 @@ A convenient way to set up and use localized routes in a Laravel app.
   - [Omit Slug for Main Locale](#-omit-slug-for-main-locale)
   - [Scoped Options](#-scoped-options)
 - [Register Routes](#-register-routes)
-  - [Translate parameters with Route Model Binding](#-translate-parameters-with-route-model-binding)
+  - [Translate Parameters with Route Model Binding](#-translate-parameters-with-route-model-binding)
   - [Translate Hard-Coded URI Slugs](#-translate-hard-coded-uri-slugs)
 - [Localize 404 Pages](#-localize-404-pages)
 - [Cache Routes](#-cache-routes)
@@ -222,7 +222,7 @@ And with the omitted locale set to `en`, the result would be:
 > Especially when omitting a main locale from the URL, this would be problematic, because you can't have, for example, a localized `/about` route and a non-localized `/about` route in this case.
 > The same idea applies to the `/` (root) route! Also note that the route names still have the locale prefix even if the slug is omitted.
 
-### ☑ Translate parameters with Route Model Binding
+### ☑ Translate Parameters with Route Model Binding
 
 When resolving incoming route parameters from a request, you probably rely on [Laravel's route model binding](https://laravel.com/docs/routing#route-model-binding).
 You typehint a model in the controller, and it will look for a `{model}` by its ID, or by a specific attribute like `{model:slug}`.
