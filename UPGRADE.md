@@ -26,7 +26,7 @@ protected $middlewarePriority = [
 ];
 ```
 
-⚠ Actions Required
+🔸 **Actions Required**
 
 - Remove the `use_locale_middleware` option from your published `config/localized-routes.php` config file.
 - Remove the `use_localizer` option from your published `config/localized-routes.php` config file.
@@ -61,7 +61,7 @@ You can now configure your supported locales in 3 formats.
 ];
 ```
 
-⚠ Actions Required
+🔸 **Actions Required**
 
 - Remove the `custom_prefixes` option from your published `config/localized-routes.php` config file.
 - Rename the `supported-locales` option to `supported_locales`
@@ -75,7 +75,7 @@ During route registration, we set the locale on the route using a custom route a
 We changed this route action from `laravel-localized-routes` to simply `locale`.
 We also added an option to the config file in case you need to change this name.
 
-⚠ Actions Required
+🔸 **Actions Required**
 
 - If you are using the `laravel-localized-routes` route action in your own code, you can either update your code with the new `locale` route action, or change it back to `laravel-localized-routes` by setting the `route_action` option in the config file.
 
@@ -83,7 +83,7 @@ We also added an option to the config file in case you need to change this name.
 
 The namespace of the `FallbackController` has been pluralized to `CodeZero\LocalizedRoutes\Controllers`.
 
-⚠ Actions Required
+🔸 **Actions Required**
 
 - If you use the `FallbackController`, update the namespace from `CodeZero\LocalizedRoutes\Controller\FallbackController` to `CodeZero\LocalizedRoutes\Controllers\FallbackController`.
 
@@ -91,6 +91,6 @@ The namespace of the `FallbackController` has been pluralized to `CodeZero\Local
 
 The `Route::localizedHas()` method has been renamed to `Route::hasLocalized()` to be consistent with `Route::isLocalized()`.
 
-⚠ Actions Required
+🔸 **Actions Required**
 
 - Replace any occurrence of `Route::localizedHas()` with `Route::hasLocalized()`.
