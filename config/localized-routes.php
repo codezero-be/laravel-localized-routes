@@ -76,14 +76,14 @@ return [
      * These will be executed in the order that they are added to the array!
      */
     'detectors' => [
-        CodeZero\LocalizedRoutes\Middleware\Detectors\RouteActionDetector::class,
-        CodeZero\LocalizedRoutes\Middleware\Detectors\UrlDetector::class,
-        CodeZero\LocalizedRoutes\Middleware\Detectors\OmittedLocaleDetector::class,
+        CodeZero\LocalizedRoutes\Middleware\Detectors\RouteActionDetector::class, //=> required for scoped config
+        CodeZero\LocalizedRoutes\Middleware\Detectors\UrlDetector::class, //=> required
+        CodeZero\LocalizedRoutes\Middleware\Detectors\OmittedLocaleDetector::class, //=> required for omitted locale
         CodeZero\LocalizedRoutes\Middleware\Detectors\UserDetector::class,
         CodeZero\LocalizedRoutes\Middleware\Detectors\SessionDetector::class,
         CodeZero\LocalizedRoutes\Middleware\Detectors\CookieDetector::class,
         CodeZero\LocalizedRoutes\Middleware\Detectors\BrowserDetector::class,
-        CodeZero\LocalizedRoutes\Middleware\Detectors\AppDetector::class,
+        CodeZero\LocalizedRoutes\Middleware\Detectors\AppDetector::class, //=> required
     ],
 
     /**
@@ -101,7 +101,7 @@ return [
     'stores' => [
         CodeZero\LocalizedRoutes\Middleware\Stores\SessionStore::class,
         CodeZero\LocalizedRoutes\Middleware\Stores\CookieStore::class,
-        CodeZero\LocalizedRoutes\Middleware\Stores\AppStore::class,
+        CodeZero\LocalizedRoutes\Middleware\Stores\AppStore::class, //=> required
     ],
 
 ];
