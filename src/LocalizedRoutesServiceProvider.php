@@ -2,13 +2,14 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use CodeZero\BrowserLocale\Laravel\BrowserLocaleServiceProvider;
 use CodeZero\LocalizedRoutes\Illuminate\Routing\UrlGenerator;
 use CodeZero\LocalizedRoutes\Macros\Route\HasLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\isFallbackMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\IsLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\LocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\LocalizedUrlMacro;
-use CodeZero\Localizer\LocalizerServiceProvider;
+use CodeZero\LocalizedRoutes\Middleware\LocaleHandler;
 use CodeZero\UriTranslator\UriTranslatorServiceProvider;
 use Illuminate\Contracts\Routing\UrlGenerator as UrlGeneratorContract;
 use Illuminate\Support\ServiceProvider;
@@ -42,6 +43,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     {
         $this->mergeConfig();
         $this->registerLocaleConfig();
+        $this->registerLocaleHandler();
         $this->registerUrlGenerator();
         $this->registerProviders();
     }
@@ -90,7 +92,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
      */
     protected function registerProviders()
     {
-        $this->app->register(LocalizerServiceProvider::class);
+        $this->app->register(BrowserLocaleServiceProvider::class);
         $this->app->register(UriTranslatorServiceProvider::class);
     }
 
@@ -106,6 +108,23 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         });
 
         $this->app->bind('locale-config', LocaleConfig::class);
+    }
+
+    /**
+     * Register LocaleHandler.
+     *
+     * @return void
+     */
+    protected function registerLocaleHandler()
+    {
+        $this->app->bind(LocaleHandler::class, function ($app) {
+            $locales = $app['locale-config']->getLocales();
+            $detectors = $app['config']->get("{$this->name}.detectors");
+            $stores = $app['config']->get("{$this->name}.stores");
+            $trustedDetectors = $app['config']->get("{$this->name}.trusted_detectors");
+
+            return new LocaleHandler($locales, $detectors, $stores, $trustedDetectors);
+        });
     }
 
     /**
