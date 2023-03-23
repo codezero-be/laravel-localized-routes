@@ -181,16 +181,18 @@ protected $middlewarePriority = [
 
 ### Detectors
 
-By default, the middleware will use the following detectors to check for a supported locale in:
+The middleware runs the following detectors in sequence, until one returns a supported locale:
 
-1. A custom route action
-2. The URL (domain or slug)
-3. A main omitted locale
-4. The authenticated user model
-5. The session
-6. A cookie
-7. The browser
-8. The app's default locale
+|  #  | Detector                | Description                                                                                    |
+|:---:|-------------------------|------------------------------------------------------------------------------------------------|
+| 1.  | `RouteActionDetector`   | Required for scoped config. The locale of a localized route is saved in a custom route action. |
+| 2.  | `UrlDetector`           | Required. Tries to find a locale based on the URL slugs or domain.                             |
+| 3.  | `OmittedLocaleDetector` | Required if a omitted locale is configured. An omitted locale will always be used.             |
+| 4.  | `UserDetector`          | Checks a configurable `locale` attribute on the authenticated user.                            |
+| 5.  | `SessionDetector`       | Checks the session for a previously stored locale.                                             |
+| 6.  | `CookieDetector`        | Checks a cookie for a previously stored locale.                                                |
+| 7.  | `BrowserDetector`       | Checks the preferred language settings of the visitor's browser.                               |
+| 8.  | `AppDetector`           | Required. Checks the default app locale as a last resort.                                      |
 
 Update the `detectors` array to choose which detectors to run and in what order.
 
@@ -202,9 +204,11 @@ Update the `detectors` array to choose which detectors to run and in what order.
 
 The first supported locale that is returned by a detector will automatically be stored in:
 
-- The session
-- A cookie
-- The app locale
+|  #  | Detector       | Description                                         |
+|:---:|----------------|-----------------------------------------------------|
+| 5.  | `SessionStore` | Stores the locale in the session.                   |
+| 6.  | `CookieStore`  | Stores the locale in a cookie.                      |
+| 7.  | `AppStore`     | Required. Sets the locale as the active app locale. |
 
 Update the `stores` array to choose which stores to use.
 
