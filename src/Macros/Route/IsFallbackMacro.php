@@ -4,7 +4,7 @@ namespace CodeZero\LocalizedRoutes\Macros\Route;
 
 use Illuminate\Support\Facades\Route;
 
-class isFallbackMacro
+class IsFallbackMacro
 {
     /**
      * Register the macro.

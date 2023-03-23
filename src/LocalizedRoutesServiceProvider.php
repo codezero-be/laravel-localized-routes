@@ -5,7 +5,7 @@ namespace CodeZero\LocalizedRoutes;
 use CodeZero\BrowserLocale\Laravel\BrowserLocaleServiceProvider;
 use CodeZero\LocalizedRoutes\Illuminate\Routing\UrlGenerator;
 use CodeZero\LocalizedRoutes\Macros\Route\HasLocalizedMacro;
-use CodeZero\LocalizedRoutes\Macros\Route\isFallbackMacro;
+use CodeZero\LocalizedRoutes\Macros\Route\IsFallbackMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\IsLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\LocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\LocalizedUrlMacro;
@@ -56,7 +56,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
     protected function registerMacros()
     {
         HasLocalizedMacro::register();
-        isFallbackMacro::register();
+        IsFallbackMacro::register();
         IsLocalizedMacro::register();
         LocalizedMacro::register();
         LocalizedUrlMacro::register();
