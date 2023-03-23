@@ -2,26 +2,20 @@
 
 ## Upgrading To 3.0 From 2.x
 
-### 📢 Minimum Requirements Updated
+### ➡ Minimum Requirements Updated
 
 We dropped support for Laravel 5.6, 5.7, 5.8 and 6.x.
 
 - The minimum PHP version required is now 7.2.5
 - The minimum Laravel version required is now 7.0
 
-### 📢 Middleware Changes
+### ➡ Middleware Changes
 
 Applying the `CodeZero\LocalizedRoutes\Middleware\SetLocale` middleware is now more straightforward.
 
 The middleware is no longer automatically applied to localized routes if the `use_locale_middleware` option is set to `true`.
+
 If you choose to use the middleware, you need to apply it manually to your routes.
-
-#### ⚠ Actions Required
-
-- Remove the `use_locale_middleware` option from your published `config/localized-routes.php` config file.
-- Remove the `use_localizer` option from your published `config/localized-routes.php` config file.
-- Make sure you apply the middleware to your routes manually, either on specific routes or route groups, or by adding it to the `web` middleware group in `app/Http/Kernel.php`.
-- Make sure you also add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` in the correct spot:
 
 ```php
 protected $middlewarePriority = [
@@ -31,9 +25,18 @@ protected $middlewarePriority = [
     \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
 ];
 ```
-### 📢 Supported Locales, Slugs and Domains
+
+⚠ Actions Required
+
+- Remove the `use_locale_middleware` option from your published `config/localized-routes.php` config file.
+- Remove the `use_localizer` option from your published `config/localized-routes.php` config file.
+- Make sure you apply the middleware to your routes manually, either on specific routes or route groups, or by adding it to the `web` middleware group in `app/Http/Kernel.php`.
+- Make sure you also add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` in the correct spot:
+
+### ➡ Supported Locales, Slugs and Domains
 
 The `supported-locales` config option has been renamed to `supported_locales`, using an underscore for consistency.
+
 The `omit_url_prefix_for_locale` config option has been renamed to `omitted_locale`.
 
 You can now configure your supported locales in 3 formats.
@@ -58,7 +61,7 @@ You can now configure your supported locales in 3 formats.
 ];
 ```
 
-#### ⚠ Actions Required
+⚠ Actions Required
 
 - Remove the `custom_prefixes` option from your published `config/localized-routes.php` config file.
 - Rename the `supported-locales` option to `supported_locales`
@@ -66,28 +69,28 @@ You can now configure your supported locales in 3 formats.
 - Slugs can not contain dots, because then it is considered a domain.
 - Rename the `omit_url_prefix_for_locale` option to `omitted_locale`
 
-### 📢 Custom Route Action Changed
+### ➡ Custom Route Action Changed
 
 During route registration, we set the locale on the route using a custom route action.
 We changed this route action from `laravel-localized-routes` to simply `locale`.
 We also added an option to the config file in case you need to change this name.
 
-#### ⚠ Actions Required
+⚠ Actions Required
 
 - If you are using the `laravel-localized-routes` route action in your own code, you can either update your code with the new `locale` route action, or change it back to `laravel-localized-routes` by setting the `route_action` option in the config file.
 
-### 📢 Changed `FallbackController` Namespace
+### ➡ Changed `FallbackController` Namespace
 
 The namespace of the `FallbackController` has been pluralized to `CodeZero\LocalizedRoutes\Controllers`.
 
-#### ⚠ Actions Required
+⚠ Actions Required
 
 - If you use the `FallbackController`, update the namespace from `CodeZero\LocalizedRoutes\Controller\FallbackController` to `CodeZero\LocalizedRoutes\Controllers\FallbackController`.
 
-### 📢 Renamed `Route::localizedHas()` Method
+### ➡ Renamed `Route::localizedHas()` Method
 
 The `Route::localizedHas()` method has been renamed to `Route::hasLocalized()` to be consistent with `Route::isLocalized()`.
 
-#### ⚠ Actions Required
+⚠ Actions Required
 
 - Replace any occurrence of `Route::localizedHas()` with `Route::hasLocalized()`.
