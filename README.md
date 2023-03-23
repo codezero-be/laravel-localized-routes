@@ -166,7 +166,7 @@ protected $middlewareGroups = [
 ```
 
 You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
-If you don't see the `$middlewarePriority` array in your kernel file, then you can copy it over from the parent class `Illuminate\Foundation\Http\Kernel`.
+If you don't see the `$middlewarePriority` array, you can copy it from the parent class `Illuminate\Foundation\Http\Kernel`.
 
 Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
 
@@ -183,38 +183,34 @@ protected $middlewarePriority = [
 
 The middleware runs the following detectors in sequence, until one returns a supported locale:
 
-|  #  | Detector                | Description                                                                                    |
-|:---:|-------------------------|------------------------------------------------------------------------------------------------|
-| 1.  | `RouteActionDetector`   | Required for scoped config. The locale of a localized route is saved in a custom route action. |
-| 2.  | `UrlDetector`           | Required. Tries to find a locale based on the URL slugs or domain.                             |
-| 3.  | `OmittedLocaleDetector` | Required if a omitted locale is configured. An omitted locale will always be used.             |
-| 4.  | `UserDetector`          | Checks a configurable `locale` attribute on the authenticated user.                            |
-| 5.  | `SessionDetector`       | Checks the session for a previously stored locale.                                             |
-| 6.  | `CookieDetector`        | Checks a cookie for a previously stored locale.                                                |
-| 7.  | `BrowserDetector`       | Checks the preferred language settings of the visitor's browser.                               |
-| 8.  | `AppDetector`           | Required. Checks the default app locale as a last resort.                                      |
+|  #  | Detector                | Description                                                            |
+|:---:|-------------------------|------------------------------------------------------------------------|
+| 1.  | `RouteActionDetector`   | Required. The locales of a localized route is saved in a route action. |
+| 2.  | `UrlDetector`           | Required. Tries to find a locale based on the URL slugs or domain.     |
+| 3.  | `OmittedLocaleDetector` | Required if an omitted locale is configured. This will always be used. |
+| 4.  | `UserDetector`          | Checks a configurable `locale` attribute on the authenticated user.    |
+| 5.  | `SessionDetector`       | Checks the session for a previously stored locale.                     |
+| 6.  | `CookieDetector`        | Checks a cookie for a previously stored locale.                        |
+| 7.  | `BrowserDetector`       | Checks the preferred language settings of the visitor's browser.       |
+| 8.  | `AppDetector`           | Required. Checks the default app locale as a last resort.              |
 
 Update the `detectors` array to choose which detectors to run and in what order.
 
-> You can create your own detector by implementing the `CodeZero\LocalizedRoutes\Middleware\Detectors\Detector` interface
-> and add a reference to it in the config file. The detectors are resolved from Laravel's IOC container,
-> so you can add any dependencies to your constructor.
+You can create your own detector by implementing the `CodeZero\LocalizedRoutes\Middleware\Detectors\Detector` interface and add a reference to it in the config file. The detectors are resolved from Laravel's IOC container, so you can add any dependencies to your constructor.
 
 ### Stores
 
-The first supported locale that is returned by a detector will automatically be stored in:
+If a supported locale is detected, it will automatically be stored in:
 
 |  #  | Detector       | Description                                         |
 |:---:|----------------|-----------------------------------------------------|
-| 5.  | `SessionStore` | Stores the locale in the session.                   |
-| 6.  | `CookieStore`  | Stores the locale in a cookie.                      |
-| 7.  | `AppStore`     | Required. Sets the locale as the active app locale. |
+| 1.  | `SessionStore` | Stores the locale in the session.                   |
+| 2.  | `CookieStore`  | Stores the locale in a cookie.                      |
+| 3.  | `AppStore`     | Required. Sets the locale as the active app locale. |
 
 Update the `stores` array to choose which stores to use.
 
-> You can create your own store by implementing the `CodeZero\LocalizedRoutes\Middleware\Stores\Store` interface
-> and add a reference to it in the config file. The stores are resolved from Laravel's IOC container,
-> so you can add any dependencies to your constructor.
+You can create your own store by implementing the `CodeZero\LocalizedRoutes\Middleware\Stores\Store` interface and add a reference to it in the config file. The stores are resolved from Laravel's IOC container, so you can add any dependencies to your constructor.
 
 Although no further configuration is needed, you can change advanced settings in the config file.
 
@@ -234,13 +230,17 @@ Route::localized(function () {
 
 With supported locales `['en', 'nl']`, the above would register:
 
-- `/en/about` with the name `en.about`
-- `/nl/about` with the name `nl.about`
+| URI         | Name       |
+|-------------|------------|
+| `/en/about` | `en.about` |
+| `/nl/about` | `nl.about` |
 
 And with the omitted locale set to `en`, the result would be:
 
-- `/about` with the name `en.about`
-- `/nl/about` with the name `nl.about`
+| URI         | Name       |
+|-------------|------------|
+| `/about`    | `en.about` |
+| `/nl/about` | `nl.about` |
 
 > In a most practical scenario, you would register a route either localized or non-localized, but not both.
 > If you do, you will always need to specify a locale to generate the URL with the `route()` helper, because existing route names always have priority.
@@ -325,17 +325,17 @@ Refer to [codezero/laravel-uri-translator](https://github.com/codezero-be/larave
 ### 🔦 Localize 404 Pages
 
 A standard `404` response has no actual `Route` and does not go through the middleware.
-Thus, it can not be localized by default.
+This means our middleware will not be able to update the locale and the request can not be localized.
 
-However, to localize a `404` page, you need to register the fallback route with the `FallbackController` at the end of your `routes/web.php` file:
+To fix this, you can register this fallback route at the end of your `routes/web.php` file:
 
 ```php
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 ```
 
-Because the fallback route is an actual `Route`, it will pass through the middleware, thus it can be localized.
+Because the fallback route is an actual `Route`, the middleware will run and update the locale.
 
-The controller will attempt to respond with a 404 error view, located at `resources/views/errors/404.blade.php`.
+The `FallbackController` will attempt to respond with a 404 error view, located at `resources/views/errors/404.blade.php`.
 If this view does not exist, the normal `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` will be thrown.
 You can configure which view to use by changing the `404_view` entry in the config file.
 
@@ -379,6 +379,8 @@ $url = route('about', [], true, 'nl'); // this will load 'nl.about'
 
 There are a number of ways to generate route URLs with localized parameters.
 
+#### Pass Localized Parameters Manually
+
 First of all, you can pass the value manually.
 
 Let's say we have a `Post` model with a `getSlug()` method:
@@ -407,12 +409,26 @@ route('posts.show', [$post->getSlug()]);
 route('posts.show', [$post->getSlug('nl')], true, 'nl');
 ```
 
-But you can automate this further, by adding one more method to your model:
+#### Use a Custom Localized Route Key
+
+You can let Laravel find the value of localized parameters automatically by adding one more method to your model:
 
 ```php
 public function getRouteKey()
 {
     return $this->getSlug();
+}
+
+public function getSlug($locale = null)
+{
+    $locale = $locale ?: App::getLocale();
+    
+    $slugs = [
+        'en' => 'en-slug',
+        'nl' => 'nl-slug',
+    ];
+
+    return $slugs[$locale] ?? '';
 }
 ```
 
@@ -442,7 +458,27 @@ If neither a regular nor a localized route can be resolved, a `Symfony\Component
 
 To generate a URL for the current route in any locale, you can use the `Route::localizedUrl()` macro.
 
+#### Pass Parameters Manually
+
 Just like with the `route()` helper, you can pass parameters as a second argument.
+
+Let's say we have a `Post` model with a `getSlug()` method:
+
+```php
+public function getSlug($locale = null)
+{
+    $locale = $locale ?: App::getLocale();
+    
+    $slugs = [
+        'en' => 'en-slug',
+        'nl' => 'nl-slug',
+    ];
+
+    return $slugs[$locale] ?? '';
+}
+```
+
+Now you can pass a localized slug to the macro:
 
 ```php
 $current = Route::localizedUrl(null, [$post->getSlug()]);
@@ -450,14 +486,33 @@ $en = Route::localizedUrl('en', [$post->getSlug('en')]);
 $nl = Route::localizedUrl('nl', [$post->getSlug('nl')]);
 ```
 
-However, if you add the model's `getRouteKey()` method, you don't need to pass the parameter at all.
-The macro will figure it out automatically.
+#### Use a Custom Route Key
+
+If you add the model's `getRouteKey()` method, you don't need to pass the parameter at all.
+
+```php
+public function getRouteKey()
+{
+    $locale = App::getLocale();
+    
+    $slugs = [
+        'en' => 'en-slug',
+        'nl' => 'nl-slug',
+    ];
+
+    return $slugs[$locale] ?? '';
+}
+```
+
+The macro will now automatically figure out what parameters the current route has and fetch the values.
 
 ```php
 $current = Route::localizedUrl();
 $en = Route::localizedUrl('en');
 $nl = Route::localizedUrl('nl');
 ```
+
+#### Multiple Route Keys
 
 If you have a route with multiple keys, like `/en/posts/{id}/{slug}`, then you can implement the `ProvidesRouteParameters` interface in your model.
 From the `getRouteParameters()` method, you then return the required parameter values.
@@ -485,6 +540,8 @@ $current = Route::localizedUrl();
 $en = Route::localizedUrl('en');
 $nl = Route::localizedUrl('nl');
 ```
+
+#### Keep or Remove Query String
 
 By default, the query string will be included in the generated URL.
 If you don't want this, you can pass an extra parameter to the macro:
@@ -538,13 +595,13 @@ Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more
 You can redirect to routes, just like you would in a normal Laravel app.
 
 If you register an `about` route that is not localized, then `about` is an existing route name and its URL will be redirected to.
-Otherwise, this will try to generate the `about` URL for the active locale, e.g. `en.about` and redirect there.
+Otherwise, this will try to redirect to the `about` route for the active locale, e.g. `en.about`.
 
 ```php
 return redirect()->route('about');
 ```
 
-You can't redirect to URL's in a specific locale this way, but if you need to, you can of course just use the `route()` function.
+You can't redirect to URL's in a specific locale this way, but you can of course just use the `route()` function.
 
 ```php
 return redirect(route('about', [], true, 'nl')); // this redirects to nl.about
@@ -560,13 +617,17 @@ Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class)
 
 For example:
 
-- `/` would redirect to `/en`
-- `/about` would redirect to `/en/about`
+| URI      | Redirects To |
+|----------|--------------|
+| `/`      | `/en`        |
+| `/about` | `/en/about`  |
 
 If the omitted locale is set to `en`:
 
-- `/en` would redirect to `/`
-- `/en/about` would redirect to `/about`
+| URI         | Redirects To |
+|-------------|--------------|
+| `/en`       | `/`          |
+| `/en/about` | `/about`     |
 
 If a route doesn't exist, a `404` response will be returned.
 
