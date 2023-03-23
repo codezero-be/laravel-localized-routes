@@ -33,7 +33,7 @@ protected $middlewarePriority = [
 - Remove the `use_locale_middleware` option from your published `config/localized-routes.php` config file.
 - Remove the `use_localizer` option from your published `config/localized-routes.php` config file.
 - Make sure you apply the middleware to your routes manually, either on specific routes or route groups, or by adding it to the `web` middleware group in `app/Http/Kernel.php`.
-- Make sure you also add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` in the correct spot:
+- Make sure you also add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php` in the correct spot.
 
 ---
 

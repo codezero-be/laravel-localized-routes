@@ -294,15 +294,20 @@ This package includes [codezero/laravel-uri-translator](https://github.com/codez
 This registers a `Lang::uri()` macro that enables you to translate individual, hard-coded URI slugs.
 Route parameters will not be translated by this macro.
 
-First, you create a `routes.php` file in your app's `lang` folder for each locale, for example:
+Routes with translated URIs need to have a name in order to generate localized versions of it using the `route()` helper or the `Route::localizedUrl()` macro.
+Because these routes have different slugs depending on the locale, the route name is the only thing that links them together.
+
+First, you create a `routes.php` translation file in your app's `lang` folder for each locale, for example:
 
 ```php
 lang/nl/routes.php
+lang/fr/routes.php
 ```
 
-Then you add your translations to it:
+Then you add the appropriate translations to each file:
 
 ```php
+// lang/nl/routes.php
 return [
     'about' => 'over',
     'us' => 'ons',
@@ -317,10 +322,54 @@ Route::localized(function () {
 });
 ```
 
-Routes with translated URIs need to have a name in order to generate localized versions of it using the `route()` helper or the `Route::localizedUrl()` macro.
-Because these routes have different slugs depending on the locale, the route name is the only thing that links them together.
+The URI macro accepts 2 additional parameters:
 
-Refer to [codezero/laravel-uri-translator](https://github.com/codezero-be/laravel-uri-translator) to learn how to use the `Lang::uri()` macro in more detail.
+1. A locale, in case you need translations to a locale other than the current app locale.
+2. A namespace, in case your translation files reside in a package.
+
+```php
+Lang::uri('hello/world', 'fr', 'my-package');
+```
+
+You can also use `trans()->uri('hello/world')` instead of `Lang::uri('hello/world')`.
+
+### Example
+
+Using these example translations:
+
+```php
+// lang/nl/routes.php
+return [
+    'hello' => 'hallo',
+    'world' => 'wereld',
+    'override/hello/world' => 'something/very/different',
+    'hello/world/{parameter}' => 'uri/with/{parameter}',
+];
+```
+
+These are possible translation results:
+
+```php
+// Translate every slug individually
+// Translates to: 'hallo/wereld'
+Lang::uri('hello/world');
+
+// Keep original slug when missing translation
+// Translates to: 'hallo/big/wereld'
+Lang::uri('hello/big/world');
+
+// Translate slugs, but not parameter placeholders
+// Translates to: 'hallo/{world}'
+Lang::uri('hello/{world}');
+
+// Translate full URIs if an exact translation exists
+// Translates to: 'something/very/different'
+Lang::uri('override/hello/world');
+
+// Translate full URIs if an exact translation exists (with placeholder)
+// Translates to: 'uri/with/{parameter}'
+Lang::uri('hello/world/{parameter}');
+```
 
 ### 🔦 Localize 404 Pages
 
