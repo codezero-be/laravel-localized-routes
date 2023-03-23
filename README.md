@@ -150,8 +150,7 @@ Route::localized(function () {
 ## 🧩 Add Middleware to Update App Locale
 
 By default, the app locale will always be what you configured in `config/app.php`.
-
-To automatically detect and update the app locale, you need to use a middleware.
+To automatically update the app locale, you need to register the middleware.
 
 Add the middleware to the `web` middleware group in `app/Http/Kernel.php`:
 
@@ -165,6 +164,7 @@ protected $middlewareGroups = [
 ```
 
 You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
+If you don't see the `$middlewarePriority` array in your kernel file, then you can copy it over from the parent class `Illuminate\Foundation\Http\Kernel`.
 
 Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
 
@@ -177,19 +177,16 @@ protected $middlewarePriority = [
 ];
 ```
 
-If you don't see the `$middlewarePriority` array in your kernel file,
-then you can copy it over from the parent class `Illuminate\Foundation\Http\Kernel`.
+Under the hood, this uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer), that will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
+When it finds the preferred locale, it will set it as the app locale and save it in the session and in a cookie.
 
-Under the hood, this package uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer).
-It will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
-Additionally, it will also store the app locale in the session and in a cookie.
-You can disable any of these by publishing the Localizer config file:
+Although no further configuration is needed, you can change advanced settings by publishing the Localizer config file if you want:
 
 ```bash
 php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvider" --tag="config"
 ```
 
-The middleware included in this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
+Be aware though that this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
 These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
 These are required for this package to function properly.
 
