@@ -11,10 +11,15 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 abstract class TestCase extends  BaseTestCase
 {
+    protected $sessionKey;
+    protected $cookieName;
+
     /**
      * Setup the test environment.
      *
@@ -24,9 +29,13 @@ abstract class TestCase extends  BaseTestCase
     {
         parent::setUp();
 
-        App::bind(BrowserLocale::class, function () {
-            return new BrowserLocale(null);
-        });
+        Config::set('app.key', Str::random(32));
+
+        // Remove any default browser locales
+        $this->setBrowserLocales(null);
+
+        $this->sessionKey = Config::get('localized-routes.session_key');
+        $this->cookieName = Config::get('localized-routes.cookie_name');
 
         if (version_compare($this->app->version(), '7.0.0') === -1) {
             \Illuminate\Foundation\Testing\TestResponse::macro('assertResponseHasNoView', function () {
@@ -96,6 +105,31 @@ abstract class TestCase extends  BaseTestCase
         Config::set('localized-routes.omitted_locale', $value);
     }
 
+    /**
+     * Set the locale in the session.
+     *
+     * @param string $locale
+     *
+     * @return $this
+     */
+    protected function setSessionLocale($locale)
+    {
+        Session::put($this->sessionKey, $locale);
+    }
+
+    /**
+     * Set the locales used by the browser detector.
+     *
+     * @param string $locales
+     *
+     * @return $this
+     */
+    protected function setBrowserLocales($locales)
+    {
+        App::bind(BrowserLocale::class, function () use ($locales) {
+            return new BrowserLocale($locales);
+        });
+    }
     /**
      * Set the 'redirect_to_localized_urls' config option.
      *
