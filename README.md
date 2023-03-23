@@ -194,9 +194,9 @@ The middleware runs the following detectors in sequence, until one returns a sup
 | 7.  | `BrowserDetector`       | Checks the preferred language settings of the visitor's browser.       |
 | 8.  | `AppDetector`           | Required. Checks the default app locale as a last resort.              |
 
-Update the `detectors` array to choose which detectors to run and in what order.
+Update the `detectors` array in the config file to choose which detectors to run and in what order.
 
-You can create your own detector by implementing the `CodeZero\LocalizedRoutes\Middleware\Detectors\Detector` interface and add a reference to it in the config file. The detectors are resolved from Laravel's IOC container, so you can add any dependencies to your constructor.
+> You can create your own detector by implementing the `CodeZero\LocalizedRoutes\Middleware\Detectors\Detector` interface and add a reference to it in the config file. The detectors are resolved from Laravel's IOC container, so you can add any dependencies to your constructor.
 
 ### Stores
 
@@ -208,9 +208,9 @@ If a supported locale is detected, it will automatically be stored in:
 | 2.  | `CookieStore`  | Stores the locale in a cookie.                      |
 | 3.  | `AppStore`     | Required. Sets the locale as the active app locale. |
 
-Update the `stores` array to choose which stores to use.
+Update the `stores` array in the config to choose which stores to use.
 
-You can create your own store by implementing the `CodeZero\LocalizedRoutes\Middleware\Stores\Store` interface and add a reference to it in the config file. The stores are resolved from Laravel's IOC container, so you can add any dependencies to your constructor.
+> You can create your own store by implementing the `CodeZero\LocalizedRoutes\Middleware\Stores\Store` interface and add a reference to it in the config file. The stores are resolved from Laravel's IOC container, so you can add any dependencies to your constructor.
 
 Although no further configuration is needed, you can change advanced settings in the config file.
 
@@ -381,8 +381,6 @@ There are a number of ways to generate route URLs with localized parameters.
 
 #### Pass Localized Parameters Manually
 
-First of all, you can pass the value manually.
-
 Let's say we have a `Post` model with a `getSlug()` method:
 
 ```php
@@ -411,17 +409,12 @@ route('posts.show', [$post->getSlug('nl')], true, 'nl');
 
 #### Use a Custom Localized Route Key
 
-You can let Laravel find the value of localized parameters automatically by adding one more method to your model:
+You can let Laravel resolve localized parameters automatically by adding the `getRouteKey()` method to your model:
 
 ```php
 public function getRouteKey()
 {
-    return $this->getSlug();
-}
-
-public function getSlug($locale = null)
-{
-    $locale = $locale ?: App::getLocale();
+    $locale = App::getLocale();
     
     $slugs = [
         'en' => 'en-slug',
