@@ -27,6 +27,8 @@ A convenient way to set up and use localized routes in a Laravel app.
   - [Omit Slug for Main Locale](#-omit-slug-for-main-locale)
   - [Scoped Options](#-scoped-options)
 - [Add Middleware to Update App Locale](#-add-middleware-to-update-app-locale)
+  - [Detectors](#detectors)
+  - [Stores](#stores)
 - [Register Routes](#-register-routes)
   - [Translate Parameters with Route Model Binding](#-translate-parameters-with-route-model-binding)
   - [Translate Hard-Coded URI Slugs](#-translate-hard-coded-uri-slugs)
@@ -177,18 +179,40 @@ protected $middlewarePriority = [
 ];
 ```
 
-Under the hood, this uses [codezero/laravel-localizer](https://github.com/codezero-be/laravel-localizer), that will look for a preferred locale in a number of places, including the URL, the session, a cookie and the browser.
-When it finds the preferred locale, it will set it as the app locale and save it in the session and in a cookie.
+### Detectors
 
-Although no further configuration is needed, you can change advanced settings by publishing the Localizer config file if you want:
+By default, the middleware will use the following detectors to check for a supported locale in:
 
-```bash
-php artisan vendor:publish --provider="CodeZero\Localizer\LocalizerServiceProvider" --tag="config"
-```
+1. A custom route action
+2. The URL (domain or slug)
+3. A main omitted locale
+4. The authenticated user model
+5. The session
+6. A cookie
+7. The browser
+8. The app's default locale
 
-Be aware though that this package will overwrite the essential settings in the Localizer config, so you don't have to keep them in sync.
-These settings are `supported_locales`, `omitted_locale`, `route_action` and `trusted_detectors`.
-These are required for this package to function properly.
+Update the `detectors` array to choose which detectors to run and in what order.
+
+> You can create your own detector by implementing the `CodeZero\LocalizedRoutes\Middleware\Detectors\Detector` interface
+> and add a reference to it in the config file. The detectors are resolved from Laravel's IOC container,
+> so you can add any dependencies to your constructor.
+
+### Stores
+
+The first supported locale that is returned by a detector will automatically be stored in:
+
+- The session
+- A cookie
+- The app locale
+
+Update the `stores` array to choose which stores to use.
+
+> You can create your own store by implementing the `CodeZero\LocalizedRoutes\Middleware\Stores\Store` interface
+> and add a reference to it in the config file. The stores are resolved from Laravel's IOC container,
+> so you can add any dependencies to your constructor.
+
+Although no further configuration is needed, you can change advanced settings in the config file.
 
 ## 🚘 Register Routes
 
