@@ -202,7 +202,7 @@ Update the `detectors` array in the config file to choose which detectors to run
 
 If a supported locale is detected, it will automatically be stored in:
 
-|  #  | Detector       | Description                                         |
+|  #  | Store          | Description                                         |
 |:---:|----------------|-----------------------------------------------------|
 | 1.  | `SessionStore` | Stores the locale in the session.                   |
 | 2.  | `CookieStore`  | Stores the locale in a cookie.                      |
