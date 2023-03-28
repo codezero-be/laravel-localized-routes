@@ -204,10 +204,6 @@ class UrlGeneratorTest extends TestCase
     /** @test */
     public function it_generates_a_url_for_a_route_with_a_custom_localized_route_key()
     {
-        if (version_compare($this->app->version(), '7.0.0') === -1) {
-            $this->markTestSkipped('This feature is only available in Laravel 7 and newer.');
-        }
-
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
 
@@ -299,17 +295,9 @@ class UrlGeneratorTest extends TestCase
             $route->prepareForSerialization();
         }
 
-        $isLaravel7orGreater = method_exists($routes, 'compile');
-
-        if ($isLaravel7orGreater) {
-            $this->app['router']->setCompiledRoutes(
-                $routes->compile()
-            );
-
-            return;
-        }
-
-        $this->app['router']->setRoutes($routes);
+        $this->app['router']->setCompiledRoutes(
+            $routes->compile()
+        );
     }
 
     /**

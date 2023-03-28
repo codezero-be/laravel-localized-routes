@@ -135,9 +135,7 @@ class SetLocaleTest extends TestCase
     /** @test */
     public function it_will_bypass_missing_attribute_exception_if_the_locale_attribute_is_missing_on_the_user_model()
     {
-        if (version_compare(App::version(), '9.35.0') === -1) {
-            $this->markTestSkipped('This test only applies to Laravel 9.35.0 and higher.');
-        }
+        $this->skipTestIfLaravelVersionIsLowerThan('9.35.0');
 
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
