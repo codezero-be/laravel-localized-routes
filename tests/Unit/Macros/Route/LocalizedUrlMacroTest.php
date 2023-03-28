@@ -96,10 +96,6 @@ class LocalizedUrlMacroTest extends TestCase
     /** @test */
     public function it_generates_urls_with_custom_localized_route_keys_for_the_current_route_using_route_model_binding()
     {
-        if (version_compare($this->app->version(), '7.0.0') === -1) {
-            $this->markTestSkipped('This feature is only available in Laravel 7 and newer.');
-        }
-
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 

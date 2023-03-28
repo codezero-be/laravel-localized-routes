@@ -47,10 +47,6 @@ class RouteModelBindingTest extends TestCase
     /** @test */
     public function it_loads_a_route_with_a_custom_localized_route_key_based_on_the_active_locale()
     {
-        if (version_compare($this->app->version(), '7.0.0') === -1) {
-            $this->markTestSkipped('This feature is only available in Laravel 7 and newer.');
-        }
-
         $this->setSupportedLocales(['en', 'nl']);
 
         $model = (new Model([

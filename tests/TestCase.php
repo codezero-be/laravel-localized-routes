@@ -13,7 +13,9 @@ use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
+use Illuminate\Testing\TestResponse;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use PHPUnit\Framework\Assert;
 
 abstract class TestCase extends  BaseTestCase
 {
@@ -37,24 +39,27 @@ abstract class TestCase extends  BaseTestCase
         $this->sessionKey = Config::get('localized-routes.session_key');
         $this->cookieName = Config::get('localized-routes.cookie_name');
 
-        if (version_compare($this->app->version(), '7.0.0') === -1) {
-            \Illuminate\Foundation\Testing\TestResponse::macro('assertResponseHasNoView', function () {
-                if (isset($this->original) && $this->original instanceof View) {
-                    Illuminate\Foundation\Testing\Assert::fail('The response has a view.');
-                }
+        TestResponse::macro('assertResponseHasNoView', function () {
+            if (isset($this->original) && $this->original instanceof View) {
+                Assert::fail('The response has a view.');
+            }
 
-                return $this;
-            });
-        } else {
-            \Illuminate\Testing\TestResponse::macro('assertResponseHasNoView', function () {
-                if (isset($this->original) && $this->original instanceof View) {
-                    Illuminate\Testing\Assert::fail('The response has a view.');
-                }
+            return $this;
+        });
+    }
 
-                return $this;
-            });
+    /**
+     * Skip test if laravel version is lower than the given version.
+     *
+     * @param string $version
+     *
+     * @return void
+     */
+    protected function skipTestIfLaravelVersionIsLowerThan($version)
+    {
+        if (version_compare(App::version(), $version) === -1) {
+            $this->markTestSkipped("This test only applies to Laravel {$version} and higher.");
         }
-
     }
 
     /**
