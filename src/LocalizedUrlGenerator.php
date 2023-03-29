@@ -48,21 +48,16 @@ class LocalizedUrlGenerator
         $currentDomain = $urlBuilder->getHost();
         $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? null;
 
-        $locale = $locale
-            ?? LocaleConfig::findLocaleBySlug($currentLocaleSlug)
-            ?? LocaleConfig::findLocaleByDomain($currentDomain)
-            ?? App::getLocale();
+        // Determine in which locale the URL needs to be localized.
+        $locale = $this->determineLocale($locale, $currentLocaleSlug, $currentDomain);
 
         if ( ! $this->is404()) {
-            // Use the provided parameters or get them from the current route.
-            // These contain the parameter values.
-            // Parameters passed to this method may contain query string parameters.
+            // Use the provided parameter values or get them from the current route.
+            // Parameters passed to this method may also contain query string parameters.
             // Parameters fetched from the current route will never contain query string parameters.
-            // The original query string from the current request is already stored in the UrlBuilder.
-            $parameters = $parameters ?: $this->getRouteParameters();
             // $parameters can be an array, a function, or it can contain model instances!
             // Normalize the parameters, so we end up with an array of key => value pairs.
-            $normalizedParameters = $this->normalizeParameters($locale, $parameters);
+            $normalizedParameters = $this->normalizeParameters($locale, $parameters ?: $this->getRouteParameters());
 
             // Get the current route's URI, which has the parameter placeholders.
             $routeUri = $this->route->uri();
@@ -87,7 +82,8 @@ class LocalizedUrlGenerator
                 return $url;
             }
 
-            // Fill the parameter placeholders in the URI with their values, manually.
+            // If a named route could not be resolved, fill the parameter
+            // placeholders in the URI with their values manually.
             $uriWithParameterValues = $this->replaceParameterPlaceholders($routeUri, $routePlaceholders);
             $urlBuilder->setPath($uriWithParameterValues);
         }
@@ -168,6 +164,23 @@ class LocalizedUrlGenerator
     protected function routeExists(): bool
     {
         return $this->route !== null;
+    }
+
+    /**
+     * Determine in which locale the URL needs to be localized.
+     *
+     * @param string|null $locale
+     * @param string|null $currentLocaleSlug
+     * @param string $currentDomain
+     *
+     * @return string
+     */
+    protected function determineLocale(?string $locale, ?string $currentLocaleSlug, string $currentDomain): string
+    {
+        return $locale
+            ?? LocaleConfig::findLocaleBySlug($currentLocaleSlug)
+            ?? LocaleConfig::findLocaleByDomain($currentDomain)
+            ?? App::getLocale();
     }
 
     /**
