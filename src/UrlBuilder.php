@@ -48,7 +48,11 @@ class UrlBuilder
             $url .= $this->getScheme() . $this->getHost() . $this->getPort();
         }
 
-        $url .= $this->getPath() . $this->getQueryString();
+        if ($this->getPath() !== '/') {
+            $url .= $this->getPath();
+        }
+
+        $url .= $this->getQueryString();
 
         return $url;
     }

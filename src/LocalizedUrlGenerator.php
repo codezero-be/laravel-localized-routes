@@ -72,8 +72,13 @@ class LocalizedUrlGenerator
             }
 
             // Generate the URL using the route's name, if possible.
-            if ($url = $this->generateFromNamedRoute($locale, $routeParameters, $queryStringParameters, $keepQuery, $absolute)) {
-                return $url;
+            if ($url = $this->generateNamedRouteURL($locale, $normalizedParameters, $absolute)) {
+                $url = empty($queryStringParameters) ? $url . $urlBuilder->getQueryString() : $url;
+                $startQueryString = strpos($url, '?');
+
+                return ($keepQuery === false && $startQueryString !== false)
+                    ? substr($url, 0, $startQueryString)
+                    : $url;
             }
 
             // Fill the parameter placeholders in the URI with their values, manually.
@@ -107,21 +112,15 @@ class LocalizedUrlGenerator
      * Generate a URL for a named route.
      *
      * @param string $locale
-     * @param array $routeParameters
-     * @param array $queryStringParameters
-     * @param bool $keepQuery
+     * @param array $parameters
      * @param bool $absolute
      *
      * @return string
      */
-    protected function generateFromNamedRoute($locale, $routeParameters = [], $queryStringParameters = [], $keepQuery = true, $absolute = true)
+    protected function generateNamedRouteURL($locale, $parameters = [], $absolute = true)
     {
-        if ($keepQuery === true) {
-            $routeParameters += $queryStringParameters;
-        }
-
         try {
-            return route($this->route->getName(), $routeParameters, $absolute, $locale);
+            return route($this->route->getName(), $parameters, $absolute, $locale);
         } catch (InvalidArgumentException $e) {
             return '';
         }
