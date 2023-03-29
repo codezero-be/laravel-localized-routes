@@ -28,7 +28,7 @@ class LocaleConfig
     /**
      * The configured route action that holds a route's locale.
      *
-     * @var string
+     * @var string|null
      */
     protected $routeAction;
 
@@ -37,7 +37,7 @@ class LocaleConfig
      *
      * @param array $config
      */
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         $this->supportedLocales = $config['supported_locales'] ?? [];
         $this->omittedLocale = $config['omitted_locale'] ?? null;
@@ -50,7 +50,7 @@ class LocaleConfig
      *
      * @return array
      */
-    public function getSupportedLocales()
+    public function getSupportedLocales(): array
     {
         return $this->supportedLocales;
     }
@@ -62,7 +62,7 @@ class LocaleConfig
      *
      * @return void
      */
-    public function setSupportedLocales($locales)
+    public function setSupportedLocales(array $locales): void
     {
         $this->supportedLocales = $locales;
     }
@@ -72,7 +72,7 @@ class LocaleConfig
      *
      * @return string|null
      */
-    public function getOmittedLocale()
+    public function getOmittedLocale(): ?string
     {
         return $this->omittedLocale;
     }
@@ -84,7 +84,7 @@ class LocaleConfig
      *
      * @return void
      */
-    public function setOmittedLocale($locale)
+    public function setOmittedLocale(?string $locale): void
     {
         $this->omittedLocale = $locale;
     }
@@ -94,7 +94,7 @@ class LocaleConfig
      *
      * @return string|null
      */
-    public function getFallbackLocale()
+    public function getFallbackLocale(): ?string
     {
         return $this->fallbackLocale;
     }
@@ -106,7 +106,7 @@ class LocaleConfig
      *
      * @return void
      */
-    public function setFallbackLocale($locale)
+    public function setFallbackLocale(?string $locale): void
     {
         $this->fallbackLocale = $locale;
     }
@@ -114,9 +114,9 @@ class LocaleConfig
     /**
      * Get the route action that holds a route's locale.
      *
-     * @return string
+     * @return string|null
      */
-    public function getRouteAction()
+    public function getRouteAction(): ?string
     {
         return $this->routeAction;
     }
@@ -124,13 +124,13 @@ class LocaleConfig
     /**
      * Set the route action that holds a route's locale.
      *
-     * @param string $locale
+     * @param string $action
      *
      * @return string
      */
-    public function setRouteAction($locale)
+    public function setRouteAction(string $action): string
     {
-        return $this->routeAction = $locale;
+        return $this->routeAction = $action;
     }
 
     /**
@@ -138,7 +138,7 @@ class LocaleConfig
      *
      * @return array
      */
-    public function getLocales()
+    public function getLocales(): array
     {
         $locales = $this->getSupportedLocales();
 
@@ -156,7 +156,7 @@ class LocaleConfig
      *
      * @return string|null
      */
-    public function findSlugByLocale($locale)
+    public function findSlugByLocale(string $locale): ?string
     {
         if ( ! $this->isSupportedLocale($locale) || $this->hasCustomDomains()) {
             return null;
@@ -172,7 +172,7 @@ class LocaleConfig
      *
      * @return string|null
      */
-    public function findDomainByLocale($locale)
+    public function findDomainByLocale(string $locale): ?string
     {
         if ( ! $this->isSupportedLocale($locale) || ! $this->hasCustomDomains()) {
             return null;
@@ -188,7 +188,7 @@ class LocaleConfig
      *
      * @return string|null
      */
-    public function findLocaleBySlug($slug)
+    public function findLocaleBySlug(string $slug): ?string
     {
         if ($this->hasCustomDomains()) {
             return null;
@@ -208,7 +208,7 @@ class LocaleConfig
      *
      * @return string|null
      */
-    public function findLocaleByDomain($domain)
+    public function findLocaleByDomain(string $domain): ?string
     {
         if ( ! $this->hasCustomDomains()) {
             return null;
@@ -222,7 +222,7 @@ class LocaleConfig
      *
      * @return bool
      */
-    public function hasLocales()
+    public function hasLocales(): bool
     {
         return count($this->getSupportedLocales()) > 0;
     }
@@ -233,7 +233,7 @@ class LocaleConfig
      *
      * @return bool
      */
-    public function hasSimpleLocales()
+    public function hasSimpleLocales(): bool
     {
         return is_numeric(key($this->getSupportedLocales()));
     }
@@ -243,7 +243,7 @@ class LocaleConfig
      *
      * @return bool
      */
-    public function hasCustomSlugs()
+    public function hasCustomSlugs(): bool
     {
         return $this->hasLocales() && ! $this->hasSimpleLocales() && ! $this->hasCustomDomains();
     }
@@ -253,7 +253,7 @@ class LocaleConfig
      *
      * @return bool
      */
-    public function hasCustomDomains()
+    public function hasCustomDomains(): bool
     {
         $firstValue = array_values($this->getSupportedLocales())[0] ?? '';
         $containsDot =  strpos($firstValue, '.') !== false;
@@ -264,11 +264,11 @@ class LocaleConfig
     /**
      * Check if the given locale is supported.
      *
-     * @param string $locale
+     * @param string|null $locale
      *
      * @return bool
      */
-    public function isSupportedLocale($locale)
+    public function isSupportedLocale(?string $locale): bool
     {
         return in_array($locale, $this->getLocales());
     }

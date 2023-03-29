@@ -18,7 +18,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public static function make($url)
+    public static function make(string $url): UrlBuilder
     {
         return new self($url);
     }
@@ -28,7 +28,7 @@ class UrlBuilder
      *
      * @param string $url
      */
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->urlParts = parse_url($url) ?: [];
     }
@@ -40,13 +40,31 @@ class UrlBuilder
      *
      * @return string
      */
-    public function build($absolute = true)
+    public function build(bool $absolute = true): string
     {
-        $host = $absolute ? $this->get('scheme') . '://' . $this->get('host') . (($port = $this->get('port')) ? ":{$port}": '') : '';
-        $path = rtrim('/' . ltrim($this->get('path'), '/'), '/');
-        $query = $this->get('query') ? '?' . $this->get('query') : '';
+        $url = '';
 
-        return  $host . $path . $query;
+        if ($absolute === true) {
+            $url .= $this->getScheme() . $this->getHost() . $this->getPort();
+        }
+
+        if ($this->getPath() !== '/') {
+            $url .= $this->getPath();
+        }
+
+        $url .= $this->getQueryString();
+
+        return $url;
+    }
+
+    /**
+     * Get the scheme.
+     *
+     * @return string
+     */
+    public function getScheme(): string
+    {
+        return $this->get('scheme') . '://';
     }
 
     /**
@@ -54,7 +72,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->get('host');
     }
@@ -66,7 +84,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setHost($host)
+    public function setHost(string $host): UrlBuilder
     {
         $this->set('host', $host);
 
@@ -74,11 +92,23 @@ class UrlBuilder
     }
 
     /**
+     * Get the port.
+     *
+     * @return string
+     */
+    public function getPort(): string
+    {
+        $port = $this->get('port');
+
+        return $port ? ":{$port}" : '';
+    }
+
+    /**
      * Get the path.
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->get('path');
     }
@@ -90,7 +120,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setPath($path)
+    public function setPath(string $path): UrlBuilder
     {
         $this->set('path', '/' . trim($path, '/'));
 
@@ -102,7 +132,7 @@ class UrlBuilder
      *
      * @return array
      */
-    public function getSlugs()
+    public function getSlugs(): array
     {
         return explode('/', trim($this->getPath(), '/'));
     }
@@ -114,7 +144,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setSlugs(array $slugs)
+    public function setSlugs(array $slugs): UrlBuilder
     {
         $this->setPath('/' . join('/', $slugs));
 
@@ -126,9 +156,35 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getQueryString()
+    public function getQueryString(): string
     {
         return $this->get('query') ? '?' . $this->get('query') : '';
+    }
+
+    /**
+     * Get the query string as an array.
+     *
+     * @return array
+     */
+    public function getQueryStringArray(): array
+    {
+        $query = $this->get('query');
+        $queryArray = [];
+
+        if ( ! $query) {
+            return $queryArray;
+        }
+
+        $pairs = explode('&', $query);
+
+        foreach ($pairs as $pair) {
+            $pair = explode('=', $pair);
+            $key = $pair[0] ?? null;
+            $value = $pair[1] ?? null;
+            $queryArray[$key] = $value;
+        }
+
+        return  $queryArray;
     }
 
     /**
@@ -138,7 +194,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setQuery(array $query)
+    public function setQueryString(array $query): UrlBuilder
     {
         $this->set('query', http_build_query($query));
 
@@ -152,7 +208,7 @@ class UrlBuilder
      *
      * @return string
      */
-    protected function get($part)
+    protected function get(string $part): string
     {
         return $this->urlParts[$part] ?? '';
     }
@@ -163,10 +219,12 @@ class UrlBuilder
      * @param string $part
      * @param string $value
      *
-     * @return void
+     * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    protected function set($part, $value)
+    protected function set(string $part, string $value): UrlBuilder
     {
         $this->urlParts[$part] = $value;
+
+        return $this;
     }
 }

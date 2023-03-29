@@ -20,19 +20,29 @@ class FallbackController extends Controller
      */
     public function __invoke()
     {
-        $shouldRedirect = Config::get('localized-routes.redirect_to_localized_urls', false);
+        return $this->redirectResponse() ?: $this->notFoundResponse();
+    }
 
-        if ($shouldRedirect) {
-            $localizedUrl = Route::localizedUrl();
-            $route = $this->findRouteByUrl($localizedUrl);
-
-            if ( ! $route->isFallback) {
-                return Redirect::to($localizedUrl, Config::get('localized-routes.redirect_status_code', 301))
-                    ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
-            }
+    /**
+     * Return a redirect response if needed.
+     *
+     * @return \Illuminate\Http\RedirectResponse|false
+     */
+    protected function redirectResponse()
+    {
+        if ( ! $this->shouldRedirect()) {
+            return false;
         }
 
-        return $this->notFoundResponse();
+        $localizedUrl = Route::localizedUrl();
+        $route = $this->findRouteByUrl($localizedUrl);
+
+        if ($route->isFallback) {
+            return false;
+        }
+
+        return Redirect::to($localizedUrl, $this->getRedirectStatusCode())
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
     }
 
     /**
@@ -42,7 +52,7 @@ class FallbackController extends Controller
      *
      * @return \Illuminate\Routing\Route
      */
-    protected function findRouteByUrl($url)
+    protected function findRouteByUrl(string $url)
     {
         return Collection::make(Route::getRoutes())->first(function ($route) use ($url) {
             return $route->matches(Request::create($url));
@@ -63,5 +73,25 @@ class FallbackController extends Controller
         }
 
         abort(404);
+    }
+
+    /**
+     * Determine if we need to redirect to a localized version of this route.
+     *
+     * @return bool
+     */
+    protected function shouldRedirect()
+    {
+        return Config::get('localized-routes.redirect_to_localized_urls');
+    }
+
+    /**
+     * Get the redirect status code from config.
+     *
+     * @return int
+     */
+    protected function getRedirectStatusCode()
+    {
+        return Config::get('localized-routes.redirect_status_code', 301);
     }
 }

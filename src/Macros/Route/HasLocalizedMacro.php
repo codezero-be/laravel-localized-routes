@@ -15,12 +15,9 @@ class HasLocalizedMacro
     public static function register()
     {
         Route::macro('hasLocalized', function ($name, $locale = null) {
-            $locale = $locale ?? App::getLocale();
-            if (! $this->routes->hasNamedRoute($locale . ".{$name}")) {
-                return false;
-            }
+            $locale = $locale ?: App::getLocale();
 
-            return true;
+            return $this->routes->hasNamedRoute("{$locale}.{$name}");
         });
     }
 }
