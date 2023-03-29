@@ -272,7 +272,7 @@ class LocalizedUrlGenerator
     }
 
     /**
-     * Prepare any route parameters.
+     * Normalize any route parameters.
      *
      * @param string $locale
      * @param mixed $parameters
@@ -342,7 +342,7 @@ class LocalizedUrlGenerator
      *
      * The binding field is the custom route key that you can define in your route:
      * Route::get('path/{model:key}')
-     * If you did not use a custom key, use the default route key.
+     * If you did not use a custom key, we'll use the default route key.
      *
      * @param string|int $key
      * @param \Illuminate\Contracts\Routing\UrlRoutable $model
