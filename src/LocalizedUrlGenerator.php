@@ -200,13 +200,11 @@ class LocalizedUrlGenerator
         $slug = LocaleConfig::findSlugByLocale($locale);
 
         if ($this->getLocaleFromSlugs($slugs)) {
-            $slugs[0] = $slug;
-        } else {
-            array_unshift($slugs, $slug);
+            array_shift($slugs);
         }
 
-        if ($locale === LocaleConfig::getOmittedLocale()) {
-            array_shift($slugs);
+        if ($locale !== LocaleConfig::getOmittedLocale()) {
+            array_unshift($slugs, $slug);
         }
 
         return $slugs;
