@@ -52,7 +52,7 @@ class FallbackController extends Controller
      *
      * @return \Illuminate\Routing\Route
      */
-    protected function findRouteByUrl($url)
+    protected function findRouteByUrl(string $url)
     {
         return Collection::make(Route::getRoutes())->first(function ($route) use ($url) {
             return $route->matches(Request::create($url));

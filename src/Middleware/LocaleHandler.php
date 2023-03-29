@@ -77,7 +77,7 @@ class LocaleHandler
      *
      * @return void
      */
-    public function store($locale)
+    public function store(string $locale): void
     {
         foreach ($this->stores as $store) {
             $this->getInstance($store)->store($locale);
@@ -91,7 +91,7 @@ class LocaleHandler
      *
      * @return bool
      */
-    protected function isSupportedLocale($locale)
+    protected function isSupportedLocale(?string $locale): bool
     {
         return in_array($locale, $this->locales);
     }
@@ -103,7 +103,7 @@ class LocaleHandler
      *
      * @return bool
      */
-    protected function isTrustedDetector($detector)
+    protected function isTrustedDetector($detector): bool
     {
         if (is_string($detector)) {
             return in_array($detector, $this->trustedDetectors);

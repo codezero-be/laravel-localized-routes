@@ -37,7 +37,7 @@ class LocalizedUrlGenerator
      *
      * @return string
      */
-    public function generateFromRequest($locale = null, $parameters = null, $absolute = true, $keepQuery = true)
+    public function generateFromRequest(string $locale = null, $parameters = null, bool $absolute = true, bool $keepQuery = true): string
     {
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
 
@@ -118,7 +118,7 @@ class LocalizedUrlGenerator
      *
      * @return string
      */
-    protected function generateNamedRouteURL($locale, $parameters = [], $absolute = true)
+    protected function generateNamedRouteURL(string $locale, array $parameters = [], bool $absolute = true): string
     {
         try {
             return route($this->route->getName(), $parameters, $absolute, $locale);
@@ -132,7 +132,7 @@ class LocalizedUrlGenerator
      *
      * @return bool
      */
-    protected function isLocalized()
+    protected function isLocalized(): bool
     {
         $routeAction = LocaleConfig::getRouteAction();
 
@@ -145,7 +145,7 @@ class LocalizedUrlGenerator
      *
      * @return bool
      */
-    protected function is404()
+    protected function is404(): bool
     {
         return ! $this->routeExists() || $this->isFallback();
     }
@@ -155,7 +155,7 @@ class LocalizedUrlGenerator
      *
      * @return bool
      */
-    protected function isFallback()
+    protected function isFallback(): bool
     {
         return $this->route->isFallback;
     }
@@ -165,7 +165,7 @@ class LocalizedUrlGenerator
      *
      * @return bool
      */
-    protected function routeExists()
+    protected function routeExists(): bool
     {
         return $this->route !== null;
     }
@@ -177,7 +177,7 @@ class LocalizedUrlGenerator
      *
      * @return string|null
      */
-    protected function getLocaleFromSlugs(array $slugs)
+    protected function getLocaleFromSlugs(array $slugs): ?string
     {
         $locale = $slugs[0] ?? null;
 
@@ -196,7 +196,7 @@ class LocalizedUrlGenerator
      *
      * @return array
      */
-    protected function updateLocaleInSlugs(array $slugs, $locale)
+    protected function updateLocaleInSlugs(array $slugs, string $locale): array
     {
         $slug = LocaleConfig::findSlugByLocale($locale);
 
@@ -219,7 +219,7 @@ class LocalizedUrlGenerator
      *
      * @return array
      */
-    protected function extractRouteAndQueryStringParameters($uri, $parameters)
+    protected function extractRouteAndQueryStringParameters(string $uri, array $parameters): array
     {
         preg_match_all('/{([a-zA-Z_.-]+\??)}/', $uri, $matches);
         $placeholders = $matches[1] ?? [];
@@ -259,7 +259,7 @@ class LocalizedUrlGenerator
      *
      * @return string
      */
-    protected function replaceParameterPlaceholders($uri, $parameters)
+    protected function replaceParameterPlaceholders(string $uri, array $parameters): string
     {
         foreach ($parameters as $placeholder => $value) {
             $uri = str_replace($placeholder, $value, $uri);
@@ -279,7 +279,7 @@ class LocalizedUrlGenerator
      *
      * @return array
      */
-    protected function normalizeParameters($locale, $parameters)
+    protected function normalizeParameters(string $locale, $parameters): array
     {
         $models = Collection::make($parameters)->filter(function ($model) {
             return $model instanceof ProvidesRouteParameters;
@@ -309,7 +309,7 @@ class LocalizedUrlGenerator
      *
      * @return array
      */
-    protected function getRouteParameters()
+    protected function getRouteParameters(): array
     {
         return $this->routeExists() ? $this->route->parameters() : [];
     }
@@ -323,7 +323,7 @@ class LocalizedUrlGenerator
      *
      * @return string
      */
-    protected function getLocalizedRouteKey($key, UrlRoutable $model, $locale)
+    protected function getLocalizedRouteKey(string $key, UrlRoutable $model, string $locale): string
     {
         $originalLocale = App::getLocale();
 
@@ -349,7 +349,7 @@ class LocalizedUrlGenerator
      *
      * @return string|null
      */
-    protected function getBindingFieldFor($key, UrlRoutable $model)
+    protected function getBindingFieldFor($key, UrlRoutable $model): ?string
     {
         return $this->route->bindingFieldFor($key) ?: $model->getRouteKeyName();
     }

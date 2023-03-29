@@ -18,7 +18,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public static function make($url)
+    public static function make(string $url): UrlBuilder
     {
         return new self($url);
     }
@@ -28,7 +28,7 @@ class UrlBuilder
      *
      * @param string $url
      */
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->urlParts = parse_url($url) ?: [];
     }
@@ -40,7 +40,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function build($absolute = true)
+    public function build(bool $absolute = true): string
     {
         $url = '';
 
@@ -62,7 +62,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->get('scheme') . '://';
     }
@@ -72,7 +72,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getHost()
+    public function getHost(): string
     {
         return $this->get('host');
     }
@@ -84,7 +84,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setHost($host)
+    public function setHost(string $host): UrlBuilder
     {
         $this->set('host', $host);
 
@@ -96,7 +96,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getPort()
+    public function getPort(): string
     {
         $port = $this->get('port');
 
@@ -108,7 +108,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->get('path');
     }
@@ -120,7 +120,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setPath($path)
+    public function setPath(string $path): UrlBuilder
     {
         $this->set('path', '/' . trim($path, '/'));
 
@@ -132,7 +132,7 @@ class UrlBuilder
      *
      * @return array
      */
-    public function getSlugs()
+    public function getSlugs(): array
     {
         return explode('/', trim($this->getPath(), '/'));
     }
@@ -144,7 +144,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setSlugs(array $slugs)
+    public function setSlugs(array $slugs): UrlBuilder
     {
         $this->setPath('/' . join('/', $slugs));
 
@@ -156,7 +156,7 @@ class UrlBuilder
      *
      * @return string
      */
-    public function getQueryString()
+    public function getQueryString(): string
     {
         return $this->get('query') ? '?' . $this->get('query') : '';
     }
@@ -166,7 +166,7 @@ class UrlBuilder
      *
      * @return array
      */
-    public function getQueryStringArray()
+    public function getQueryStringArray(): array
     {
         $query = $this->get('query');
         $queryArray = [];
@@ -194,7 +194,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setQueryString(array $query)
+    public function setQueryString(array $query): UrlBuilder
     {
         $this->set('query', http_build_query($query));
 
@@ -208,7 +208,7 @@ class UrlBuilder
      *
      * @return string
      */
-    protected function get($part)
+    protected function get(string $part): string
     {
         return $this->urlParts[$part] ?? '';
     }
@@ -219,10 +219,12 @@ class UrlBuilder
      * @param string $part
      * @param string $value
      *
-     * @return void
+     * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    protected function set($part, $value)
+    protected function set(string $part, string $value): UrlBuilder
     {
         $this->urlParts[$part] = $value;
+
+        return $this;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use Closure;
 use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +17,7 @@ class LocalizedRoutesRegistrar
      *
      * @return void
      */
-    public function register($closure, $options = [])
+    public function register(Closure $closure, array $options = []): void
     {
         $locales = $options['supported_locales'] ?? LocaleConfig::getSupportedLocales();
         $omittedLocale = $options['omitted_locale'] ?? LocaleConfig::getOmittedLocale();
@@ -90,7 +91,7 @@ class LocalizedRoutesRegistrar
      *
      * @return array
      */
-    protected function moveOmittedLocaleToEnd($locales, $omittedLocale, $usingDomains, $usingCustomSlugs)
+    protected function moveOmittedLocaleToEnd(array $locales, ?string $omittedLocale, bool $usingDomains, bool $usingCustomSlugs): array
     {
         if ( ! $omittedLocale || $usingDomains) {
             return $locales;
