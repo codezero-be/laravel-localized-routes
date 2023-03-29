@@ -2,9 +2,8 @@
 
 namespace CodeZero\LocalizedRoutes\Macros\Route;
 
-use CodeZero\LocalizedRoutes\LocalizedUrlGenerator;
+use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 class IsLocalizedMacro
@@ -18,7 +17,10 @@ class IsLocalizedMacro
     {
         Route::macro('isLocalized', function ($patterns = null, $locales = '*') {
             if ($patterns === null) {
-                return App::make(LocalizedUrlGenerator::class)->isLocalized();
+                $routeAction = LocaleConfig::getRouteAction();
+                $route = Route::current();
+
+                return $route && $route->getAction($routeAction) !== null;
             }
 
             $locales = Collection::make($locales);

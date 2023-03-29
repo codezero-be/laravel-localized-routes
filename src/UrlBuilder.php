@@ -42,11 +42,25 @@ class UrlBuilder
      */
     public function build($absolute = true)
     {
-        $host = $absolute ? $this->get('scheme') . '://' . $this->get('host') . (($port = $this->get('port')) ? ":{$port}": '') : '';
-        $path = rtrim('/' . ltrim($this->get('path'), '/'), '/');
-        $query = $this->get('query') ? '?' . $this->get('query') : '';
+        $url = '';
 
-        return  $host . $path . $query;
+        if ($absolute === true) {
+            $url .= $this->getScheme() . $this->getHost() . $this->getPort();
+        }
+
+        $url .= $this->getPath() . $this->getQueryString();
+
+        return $url;
+    }
+
+    /**
+     * Get the scheme.
+     *
+     * @return string
+     */
+    public function getScheme()
+    {
+        return $this->get('scheme') . '://';
     }
 
     /**
@@ -71,6 +85,18 @@ class UrlBuilder
         $this->set('host', $host);
 
         return $this;
+    }
+
+    /**
+     * Get the port.
+     *
+     * @return string
+     */
+    public function getPort()
+    {
+        $port = $this->get('port');
+
+        return $port ? ":{$port}" : '';
     }
 
     /**
@@ -138,7 +164,7 @@ class UrlBuilder
      *
      * @return \CodeZero\LocalizedRoutes\UrlBuilder
      */
-    public function setQuery(array $query)
+    public function setQueryString(array $query)
     {
         $this->set('query', http_build_query($query));
 
