@@ -49,7 +49,10 @@ class LocalizedUrlGenerator
         $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? null;
 
         // Determine in which locale the URL needs to be localized.
-        $locale = $this->determineLocale($locale, $currentLocaleSlug, $currentDomain);
+        $locale = $locale
+            ?? LocaleConfig::findLocaleBySlug($currentLocaleSlug)
+            ?? LocaleConfig::findLocaleByDomain($currentDomain)
+            ?? App::getLocale();
 
         if ( ! $this->is404()) {
             // Use the provided parameter values or get them from the current route.
@@ -164,23 +167,6 @@ class LocalizedUrlGenerator
     protected function routeExists(): bool
     {
         return $this->route !== null;
-    }
-
-    /**
-     * Determine in which locale the URL needs to be localized.
-     *
-     * @param string|null $locale
-     * @param string|null $currentLocaleSlug
-     * @param string $currentDomain
-     *
-     * @return string
-     */
-    protected function determineLocale(?string $locale, ?string $currentLocaleSlug, string $currentDomain): string
-    {
-        return $locale
-            ?? LocaleConfig::findLocaleBySlug($currentLocaleSlug)
-            ?? LocaleConfig::findLocaleByDomain($currentDomain)
-            ?? App::getLocale();
     }
 
     /**
