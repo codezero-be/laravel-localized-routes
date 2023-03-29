@@ -41,6 +41,10 @@ class LocalizedUrlGenerator
     {
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
 
+        if ($keepQuery === false) {
+            $urlBuilder->setQueryString([]);
+        }
+
         $currentDomain = $urlBuilder->getHost();
         $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? null;
 
@@ -64,25 +68,27 @@ class LocalizedUrlGenerator
             $routeUri = $this->route->uri();
 
             // Separate the route parameters from any query string parameters.
-            list($routeParameters, $queryStringParameters) = $this->extractRouteAndQueryStringParameters($routeUri, $normalizedParameters);
+            // $routePlaceholders contains "{key}" => "value" pairs.
+            // $routeParameters contains "key" => "value" pairs.
+            // $queryStringParameters contains "key" => "value" pairs.
+            list($routePlaceholders, $routeParameters, $queryStringParameters) = $this->extractRouteAndQueryStringParameters($routeUri, $normalizedParameters);
 
-            // Overwrite any query string parameters from the current request.
-            if (count($queryStringParameters) > 0) {
+            // If any query string parameters have been passed to this method,
+            // and we need to keep the query string, set them in the UrlBuilder.
+            if (count($queryStringParameters) > 0 && $keepQuery === true) {
                 $urlBuilder->setQueryString($queryStringParameters);
             }
 
-            // Generate the URL using the route's name, if possible.
-            if ($url = $this->generateNamedRouteURL($locale, $normalizedParameters, $absolute)) {
-                $url = empty($queryStringParameters) ? $url . $urlBuilder->getQueryString() : $url;
-                $startQueryString = strpos($url, '?');
+            // Merge the route parameters with the query string parameters, if any.
+            $namedRouteParameters = array_merge($routeParameters, $urlBuilder->getQueryStringArray());
 
-                return ($keepQuery === false && $startQueryString !== false)
-                    ? substr($url, 0, $startQueryString)
-                    : $url;
+            // Generate the URL using the route's name, if possible.
+            if ($url = $this->generateNamedRouteURL($locale, $namedRouteParameters, $absolute)) {
+                return $url;
             }
 
             // Fill the parameter placeholders in the URI with their values, manually.
-            $uriWithParameterValues = $this->replaceParameterPlaceholders($routeUri, $routeParameters);
+            $uriWithParameterValues = $this->replaceParameterPlaceholders($routeUri, $routePlaceholders);
             $urlBuilder->setPath($uriWithParameterValues);
         }
 
@@ -221,30 +227,33 @@ class LocalizedUrlGenerator
     protected function extractRouteAndQueryStringParameters($uri, $parameters)
     {
         preg_match_all('/{([a-zA-Z_.-]+\??)}/', $uri, $matches);
-        $paramKeys = $matches[1] ?? [];
+        $placeholders = $matches[1] ?? [];
 
+        $routePlaceholders = [];
         $routeParameters = [];
-        $queryStringParameter = [];
+        $queryStringParameters = [];
         $i = 0;
 
         foreach ($parameters as $key => $value) {
             // Parameters should be in the same order as the placeholders.
             // $key can be a name or an index, so grab the matching key name from the URI.
-            $paramKey = $paramKeys[$i] ?? null;
+            $placeholder = $placeholders[$i] ?? null;
 
             // If there is a matching $paramKey,
             // we are dealing with a normal parameter,
             // else we are dealing with a query string parameter.
-            if ($paramKey) {
-                $routeParameters["{{$paramKey}}"] = $value;
+            if ($placeholder) {
+                $parameterKey = trim($placeholder, '?');
+                $routeParameters[$parameterKey] = $value;
+                $routePlaceholders["{{$placeholder}}"] = $value;
             } else {
-                $queryStringParameter[$key] = $value;
+                $queryStringParameters[$key] = $value;
             }
 
             $i++;
         }
 
-        return [$routeParameters, $queryStringParameter];
+        return [$routePlaceholders, $routeParameters, $queryStringParameters];
     }
 
     /**

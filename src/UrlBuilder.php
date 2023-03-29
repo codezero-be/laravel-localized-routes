@@ -162,6 +162,32 @@ class UrlBuilder
     }
 
     /**
+     * Get the query string as an array.
+     *
+     * @return array
+     */
+    public function getQueryStringArray()
+    {
+        $query = $this->get('query');
+        $queryArray = [];
+
+        if ( ! $query) {
+            return $queryArray;
+        }
+
+        $pairs = explode('&', $query);
+
+        foreach ($pairs as $pair) {
+            $pair = explode('=', $pair);
+            $key = $pair[0] ?? null;
+            $value = $pair[1] ?? null;
+            $queryArray[$key] = $value;
+        }
+
+        return  $queryArray;
+    }
+
+    /**
      * Set the query string parameters.
      *
      * @param array $query
