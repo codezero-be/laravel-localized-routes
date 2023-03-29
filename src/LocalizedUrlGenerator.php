@@ -106,11 +106,6 @@ class LocalizedUrlGenerator
             $urlBuilder->setHost($domain);
         }
 
-        // Remove the query string if needed.
-        if ($keepQuery === false) {
-            $urlBuilder->setQueryString([]);
-        }
-
         return $urlBuilder->build($absolute);
     }
 
