@@ -384,6 +384,9 @@ Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class)
 
 Because the fallback route is an actual `Route`, the middleware will run and update the locale.
 
+The fallback route is a "catch all" route that Laravel provides.
+If you type in a URL that doesn't exist, this route will be triggered instead of a typical 404 exception.
+
 The `FallbackController` will attempt to respond with a 404 error view, located at `resources/views/errors/404.blade.php`.
 If this view does not exist, the normal `Symfony\Component\HttpKernel\Exception\NotFoundHttpException` will be thrown.
 You can configure which view to use by changing the `404_view` entry in the config file.
@@ -656,6 +659,11 @@ To redirect any non-localized URL to its localized version, you can set the conf
 ```php
 Route::fallback(\CodeZero\LocalizedRoutes\Controllers\FallbackController::class);
 ```
+
+The fallback route is a "catch all" route that Laravel provides.
+If you type in a URL that doesn't exist, this route will be triggered instead of a typical 404 exception.
+
+The `FallbackController` will attempt to redirect to a localized version of the URL, or return a [localized 404 response](#-localize-404-pages) if it doesn't exist.
 
 For example:
 
