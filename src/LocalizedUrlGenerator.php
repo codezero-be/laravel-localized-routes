@@ -40,10 +40,7 @@ class LocalizedUrlGenerator
     public function generateFromRequest(string $locale = null, $parameters = null, bool $absolute = true, bool $keepQuery = true): string
     {
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
-
-        if ($keepQuery === false) {
-            $urlBuilder->setQueryString([]);
-        }
+        $requestQueryString = $urlBuilder->getQueryStringArray();
 
         $currentDomain = $urlBuilder->getHost();
         $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? null;
@@ -71,11 +68,9 @@ class LocalizedUrlGenerator
             // $queryStringParameters contains "key" => "value" pairs.
             list($routePlaceholders, $routeParameters, $queryStringParameters) = $this->extractRouteAndQueryStringParameters($routeUri, $normalizedParameters);
 
-            // If any query string parameters have been passed to this method,
-            // and we need to keep the query string, set them in the UrlBuilder.
-            if (count($queryStringParameters) > 0 && $keepQuery === true) {
-                $urlBuilder->setQueryString($queryStringParameters);
-            }
+            $urlBuilder->setQueryString(
+                $this->determineQueryStringParameters($requestQueryString, $queryStringParameters, $keepQuery)
+            );
 
             // Merge the route parameters with the query string parameters, if any.
             $namedRouteParameters = array_merge($routeParameters, $urlBuilder->getQueryStringArray());
@@ -208,6 +203,28 @@ class LocalizedUrlGenerator
         }
 
         return $slugs;
+    }
+
+    /**
+     * Determine what query string parameters to use.
+     *
+     * @param array $requestQueryString
+     * @param array $queryStringParameters
+     * @param bool $keepQuery
+     *
+     * @return array
+     */
+    protected function determineQueryStringParameters(array $requestQueryString, array $queryStringParameters, bool $keepQuery): array
+    {
+        if ($keepQuery === false) {
+            return [];
+        }
+
+        if (count($queryStringParameters) > 0) {
+            return $queryStringParameters;
+        }
+
+        return $requestQueryString;
     }
 
     /**
