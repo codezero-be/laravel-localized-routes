@@ -2,6 +2,18 @@
 
 ## Upgrading To 3.0 From 2.x
 
+This upgrade contains a number of small but breaking changes, as well as a huge internal makeover.
+I listed the most important ones below.
+But if you were overriding internal classes or methods, you will need to review the new source in more detail.
+
+Over the years, this package has grown greatly in features and the codebase was getting a bit out of hand.
+Therefor, I spent a lot of time refactoring every bit of code to make it more obvious what is going on, making it easier to maintain in the future.
+
+I spent possibly even longer rewriting the README.
+Hopefully, this is now a 1000 times better structured and easier to digest.
+
+If you have any problems or improvements, you are always welcome to create an issue or pull request.
+
 ### ➡ Minimum Requirements Updated
 
 We dropped support for Laravel 5.6, 5.7, 5.8 and 6.x.
