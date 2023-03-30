@@ -110,7 +110,7 @@ class LocaleHandlerTest extends TestCase
 
         $localeHandler = new LocaleHandler($supportedLocales, $detectors);
 
-        $this->assertFalse($localeHandler->detect());
+        $this->assertNull($localeHandler->detect());
     }
 
     /** @test */

@@ -53,9 +53,9 @@ class LocaleHandler
     /**
      * Detect any supported locale and return the first match.
      *
-     * @return string|false
+     * @return string|null
      */
-    public function detect()
+    public function detect(): ?string
     {
         foreach ($this->detectors as $detector) {
             $locales = (array) $this->getInstance($detector)->detect();
@@ -67,7 +67,7 @@ class LocaleHandler
             }
         }
 
-        return false;
+        return null;
     }
 
     /**
