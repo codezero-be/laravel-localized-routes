@@ -4,6 +4,7 @@ namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use CodeZero\UrlBuilder\UrlBuilder;
+use Illuminate\Support\Facades\URL;
 use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -116,7 +117,7 @@ class LocalizedUrlGenerator
     protected function generateNamedRouteURL(string $locale, array $parameters = [], bool $absolute = true): string
     {
         try {
-            return route($this->route->getName(), $parameters, $absolute, $locale);
+            return URL::route($this->route->getName(), $parameters, $absolute, $locale);
         } catch (InvalidArgumentException $e) {
             return '';
         }

@@ -35,13 +35,13 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('en/route/name', 'en.route.name');
         $this->registerRoute('nl/route/name', 'nl.route.name');
 
-        $this->assertEquals(url('weirdly-named-route'), route('en'));
-        $this->assertEquals(url('route'), route('route'));
-        $this->assertEquals(url('en/route'), route('en.route'));
-        $this->assertEquals(url('nl/route'), route('nl.route'));
-        $this->assertEquals(url('route/name'), route('route.name'));
-        $this->assertEquals(url('en/route/name'), route('en.route.name'));
-        $this->assertEquals(url('nl/route/name'), route('nl.route.name'));
+        $this->assertEquals(URL::to('weirdly-named-route'), URL::route('en'));
+        $this->assertEquals(URL::to('route'), URL::route('route'));
+        $this->assertEquals(URL::to('en/route'), URL::route('en.route'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('nl.route'));
+        $this->assertEquals(URL::to('route/name'), URL::route('route.name'));
+        $this->assertEquals(URL::to('en/route/name'), URL::route('en.route.name'));
+        $this->assertEquals(URL::to('nl/route/name'), URL::route('nl.route.name'));
     }
 
     /** @test */
@@ -52,7 +52,7 @@ class UrlGeneratorTest extends TestCase
 
         $this->registerRoute('en/route', 'en.route.name');
 
-        $this->assertEquals(url('en/route'), route('route.name'));
+        $this->assertEquals(URL::to('en/route'), URL::route('route.name'));
     }
 
     /** @test */
@@ -65,7 +65,7 @@ class UrlGeneratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        route('route');
+        URL::route('route');
     }
 
     /** @test */
@@ -78,7 +78,7 @@ class UrlGeneratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        route('route.name');
+        URL::route('route.name');
     }
 
     /** @test */
@@ -90,9 +90,9 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('en/route', 'en.route.name');
         $this->registerRoute('nl/route', 'nl.route.name');
 
-        $this->assertEquals(url('nl/route'), route('route.name', [], true, 'nl'));
-        $this->assertEquals(url('nl/route'), route('en.route.name', [], true, 'nl'));
-        $this->assertEquals(url('nl/route'), route('nl.route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('en.route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('nl.route.name', [], true, 'nl'));
     }
 
     /** @test */
@@ -107,9 +107,9 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('route', 'en.route.name')->domain('en.domain.test');
         $this->registerRoute('route', 'nl.route.name')->domain('nl.domain.test');
 
-        $this->assertEquals('http://nl.domain.test/route', route('route.name', [], true, 'nl'));
-        $this->assertEquals('http://nl.domain.test/route', route('en.route.name', [], true, 'nl'));
-        $this->assertEquals('http://nl.domain.test/route', route('nl.route.name', [], true, 'nl'));
+        $this->assertEquals('http://nl.domain.test/route', URL::route('route.name', [], true, 'nl'));
+        $this->assertEquals('http://nl.domain.test/route', URL::route('en.route.name', [], true, 'nl'));
+        $this->assertEquals('http://nl.domain.test/route', URL::route('nl.route.name', [], true, 'nl'));
     }
 
     /** @test */
@@ -123,9 +123,9 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('english/route', 'en.route.name');
         $this->registerRoute('dutch/route', 'nl.route.name');
 
-        $this->assertEquals(url('dutch/route'), route('route.name', [], true, 'nl'));
-        $this->assertEquals(url('dutch/route'), route('en.route.name', [], true, 'nl'));
-        $this->assertEquals(url('dutch/route'), route('nl.route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('dutch/route'), URL::route('route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('dutch/route'), URL::route('en.route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('dutch/route'), URL::route('nl.route.name', [], true, 'nl'));
     }
 
     /** @test */
@@ -137,7 +137,7 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('route', 'route.name');
         $this->registerRoute('nl/route', 'nl.route.name');
 
-        $this->assertEquals(url('nl/route'), route('route.name', [], true, 'nl'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('route.name', [], true, 'nl'));
     }
 
     /** @test */
@@ -149,7 +149,7 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('route', 'route.name');
         $this->registerRoute('nl/route', 'nl.route.name');
 
-        $this->assertEquals(url('route'), route('route.name', [], true, 'en'));
+        $this->assertEquals(URL::to('route'), URL::route('route.name', [], true, 'en'));
     }
 
     /** @test */
@@ -162,7 +162,7 @@ class UrlGeneratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        route('en.route.name', [], true, 'nl');
+        URL::route('en.route.name', [], true, 'nl');
     }
 
     /** @test */
@@ -175,7 +175,7 @@ class UrlGeneratorTest extends TestCase
 
         $this->expectException(InvalidArgumentException::class);
 
-        route('en.', [], true, 'en');
+        URL::route('en.', [], true, 'en');
     }
 
     /** @test */
@@ -196,9 +196,9 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('en/route/{slug}', 'en.route.name');
         $this->registerRoute('nl/route/{slug}', 'nl.route.name');
 
-        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model]));
-        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model], true, 'en'));
-        $this->assertEquals(url('nl/route/nl-slug'), route('route.name', [$model], true, 'nl'));
+        $this->assertEquals(URL::to('en/route/en-slug'), URL::route('route.name', [$model]));
+        $this->assertEquals(URL::to('en/route/en-slug'), URL::route('route.name', [$model], true, 'en'));
+        $this->assertEquals(URL::to('nl/route/nl-slug'), URL::route('route.name', [$model], true, 'nl'));
     }
 
     /** @test */
@@ -219,9 +219,9 @@ class UrlGeneratorTest extends TestCase
         $this->registerRoute('en/route/{model:slug}', 'en.route.name');
         $this->registerRoute('nl/route/{model:slug}', 'nl.route.name');
 
-        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model]));
-        $this->assertEquals(url('en/route/en-slug'), route('route.name', [$model], true, 'en'));
-        $this->assertEquals(url('nl/route/nl-slug'), route('route.name', [$model], true, 'nl'));
+        $this->assertEquals(URL::to('en/route/en-slug'), URL::route('route.name', [$model]));
+        $this->assertEquals(URL::to('en/route/en-slug'), URL::route('route.name', [$model], true, 'en'));
+        $this->assertEquals(URL::to('nl/route/nl-slug'), URL::route('route.name', [$model], true, 'nl'));
     }
 
     /** @test */

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
 class LocalizedUrlMacroTest extends TestCase
@@ -45,9 +46,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/en-slug/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/en-slug/en-slug'),
-            'en' => url('/en/route/en-slug/en-slug'),
-            'nl' => url('/nl/route/nl-slug/nl-slug'),
+            'current' => URL::to('/en/route/en-slug/en-slug'),
+            'en' => URL::to('/en/route/en-slug/en-slug'),
+            'nl' => URL::to('/nl/route/nl-slug/nl-slug'),
         ], $response->original);
     }
 
@@ -87,9 +88,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/en-slug-foo/en-slug-bar');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/en-slug-foo/en-slug-bar'),
-            'en' => url('/en/route/en-slug-foo/en-slug-bar'),
-            'nl' => url('/nl/route/nl-slug-foo/nl-slug-bar'),
+            'current' => URL::to('/en/route/en-slug-foo/en-slug-bar'),
+            'en' => URL::to('/en/route/en-slug-foo/en-slug-bar'),
+            'nl' => URL::to('/nl/route/nl-slug-foo/nl-slug-bar'),
         ], $response->original);
     }
 
@@ -121,9 +122,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/en-slug'),
-            'en' => url('/en/route/en-slug'),
-            'nl' => url('/nl/route/nl-slug'),
+            'current' => URL::to('/en/route/en-slug'),
+            'en' => URL::to('/en/route/en-slug'),
+            'nl' => URL::to('/nl/route/nl-slug'),
         ], $response->original);
     }
 
@@ -156,9 +157,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/1/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/1/en-slug'),
-            'en' => url('/en/route/1/en-slug'),
-            'nl' => url('/nl/route/1/nl-slug'),
+            'current' => URL::to('/en/route/1/en-slug'),
+            'en' => URL::to('/en/route/1/en-slug'),
+            'nl' => URL::to('/nl/route/1/nl-slug'),
         ], $response->original);
     }
 
@@ -190,9 +191,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/en-slug'),
-            'en' => url('/en/route/en-slug'),
-            'nl' => url('/nl/route/en-slug'), // Wrong slug!
+            'current' => URL::to('/en/route/en-slug'),
+            'en' => URL::to('/en/route/en-slug'),
+            'nl' => URL::to('/nl/route/en-slug'), // Wrong slug!
         ], $response->original);
     }
 
@@ -224,9 +225,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/en-slug'),
-            'en' => url('/en/route/en-slug'),
-            'nl' => url('/nl/route/nl-slug'),
+            'current' => URL::to('/en/route/en-slug'),
+            'en' => URL::to('/en/route/en-slug'),
+            'nl' => URL::to('/nl/route/nl-slug'),
         ], $response->original);
     }
 
@@ -263,9 +264,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/1/en-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/1/en-slug'),
-            'en' => url('/en/route/1/en-slug'),
-            'nl' => url('/nl/route/1/nl-slug'),
+            'current' => URL::to('/en/route/1/en-slug'),
+            'en' => URL::to('/en/route/1/en-slug'),
+            'nl' => URL::to('/nl/route/1/nl-slug'),
         ], $response->original);
     }
 
@@ -293,17 +294,17 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/one');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/one'),
-            'en' => url('/route/one'),
-            'nl' => url('/route/one'),
+            'current' => URL::to('/route/one'),
+            'en' => URL::to('/route/one'),
+            'nl' => URL::to('/route/one'),
         ], $response->original);
 
         $response = $this->call('GET', '/route/two');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/two'),
-            'en' => url('/route/two'),
-            'nl' => url('/route/two'),
+            'current' => URL::to('/route/two'),
+            'en' => URL::to('/route/two'),
+            'nl' => URL::to('/route/two'),
         ], $response->original);
     }
 
@@ -333,17 +334,17 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/en/route/one');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/one'),
-            'en' => url('/en/route/one'),
-            'nl' => url('/nl/route/one'),
+            'current' => URL::to('/en/route/one'),
+            'en' => URL::to('/en/route/one'),
+            'nl' => URL::to('/nl/route/one'),
         ], $response->original);
 
         $response = $this->call('GET', '/en/route/two');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/en/route/two'),
-            'en' => url('/en/route/two'),
-            'nl' => url('/nl/route/two'),
+            'current' => URL::to('/en/route/two'),
+            'en' => URL::to('/en/route/two'),
+            'nl' => URL::to('/nl/route/two'),
         ], $response->original);
     }
 
@@ -364,9 +365,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/non/localized/route');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/non/localized/route'),
-            'en' => url('/non/localized/route'),
-            'nl' => url('/non/localized/route'),
+            'current' => URL::to('/non/localized/route'),
+            'en' => URL::to('/non/localized/route'),
+            'nl' => URL::to('/non/localized/route'),
         ], $response->original);
     }
 
@@ -393,9 +394,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/english');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/english'),
-            'en' => url('/english'),
-            'nl' => url('/dutch'),
+            'current' => URL::to('/english'),
+            'en' => URL::to('/english'),
+            'nl' => URL::to('/dutch'),
         ], $response->original);
     }
 
@@ -422,9 +423,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/english');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/english'),
-            'en' => url('/english'),
-            'nl' => url('/dutch'),
+            'current' => URL::to('/english'),
+            'en' => URL::to('/english'),
+            'nl' => URL::to('/dutch'),
         ], $response->original);
     }
 
@@ -516,7 +517,7 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->get('/nl/route/does/not/exist');
         $response->assertNotFound();
         $response->assertResponseHasNoView();
-        $this->assertEquals(url('/nl/route/does/not/exist'), trim($response->original));
+        $this->assertEquals(URL::to('/nl/route/does/not/exist'), trim($response->original));
     }
 
     /** @test */
@@ -624,9 +625,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/nl/non/existing/route');
         $response->assertNotFound();
         $this->assertEquals([
-            'current' => url('/nl/non/existing/route'),
-            'en' => url('/en/non/existing/route'),
-            'nl' => url('/nl/non/existing/route'),
+            'current' => URL::to('/nl/non/existing/route'),
+            'en' => URL::to('/en/non/existing/route'),
+            'nl' => URL::to('/nl/non/existing/route'),
         ], $response->original);
     }
 
@@ -648,9 +649,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/nl/non/existing/route');
         $response->assertNotFound();
         $this->assertEquals([
-            'current' => url('/nl/non/existing/route'),
-            'en' => url('/en/non/existing/route'),
-            'nl' => url('/nl/non/existing/route'),
+            'current' => URL::to('/nl/non/existing/route'),
+            'en' => URL::to('/en/non/existing/route'),
+            'nl' => URL::to('/nl/non/existing/route'),
         ], $response->original);
     }
 
@@ -672,9 +673,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/non/existing/route');
         $response->assertNotFound();
         $this->assertEquals([
-            'current' => url('/nl/non/existing/route'),
-            'en' => url('/en/non/existing/route'),
-            'nl' => url('/nl/non/existing/route'),
+            'current' => URL::to('/nl/non/existing/route'),
+            'en' => URL::to('/en/non/existing/route'),
+            'nl' => URL::to('/nl/non/existing/route'),
         ], $response->original);
     }
 
@@ -697,9 +698,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/non/existing/route');
         $response->assertNotFound();
         $this->assertEquals([
-            'current' => url('/non/existing/route'),
-            'en' => url('/en/non/existing/route'),
-            'nl' => url('/non/existing/route'),
+            'current' => URL::to('/non/existing/route'),
+            'en' => URL::to('/en/non/existing/route'),
+            'nl' => URL::to('/non/existing/route'),
         ], $response->original);
     }
 
@@ -788,9 +789,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route?another=one&param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route?another=one&param=value'),
-            'en' => url('/route?another=one&param=value'),
-            'nl' => url('/route?another=one&param=value'),
+            'current' => URL::to('/route?another=one&param=value'),
+            'en' => URL::to('/route?another=one&param=value'),
+            'nl' => URL::to('/route?another=one&param=value'),
         ], $response->original);
     }
 
@@ -814,9 +815,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/nl/route?another=one&param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/nl/route?another=one&param=value'),
-            'en' => url('/en/route?another=one&param=value'),
-            'nl' => url('/nl/route?another=one&param=value'),
+            'current' => URL::to('/nl/route?another=one&param=value'),
+            'en' => URL::to('/en/route?another=one&param=value'),
+            'nl' => URL::to('/nl/route?another=one&param=value'),
         ], $response->original);
     }
 
@@ -837,9 +838,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route?another=one&param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route?another=one&param=value'),
-            'en' => url('/route?another=one&param=value'),
-            'nl' => url('/route?another=one&param=value'),
+            'current' => URL::to('/route?another=one&param=value'),
+            'en' => URL::to('/route?another=one&param=value'),
+            'nl' => URL::to('/route?another=one&param=value'),
         ], $response->original);
     }
 
@@ -863,9 +864,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/nl/route?another=one&param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/nl/route?another=one&param=value'),
-            'en' => url('/en/route?another=one&param=value'),
-            'nl' => url('/nl/route?another=one&param=value'),
+            'current' => URL::to('/nl/route?another=one&param=value'),
+            'en' => URL::to('/en/route?another=one&param=value'),
+            'nl' => URL::to('/nl/route?another=one&param=value'),
         ], $response->original);
     }
 
@@ -889,9 +890,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/nl/route?another=one&param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/nl/route'),
-            'en' => url('/en/route'),
-            'nl' => url('/nl/route'),
+            'current' => URL::to('/nl/route'),
+            'en' => URL::to('/en/route'),
+            'nl' => URL::to('/nl/route'),
         ], $response->original);
     }
 
@@ -912,9 +913,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug?param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug/optional-slug?new=value'),
-            'en' => url('/route/another-slug/optional-slug?new=value'),
-            'nl' => url('/route/another-slug/optional-slug?new=value'),
+            'current' => URL::to('/route/another-slug/optional-slug?new=value'),
+            'en' => URL::to('/route/another-slug/optional-slug?new=value'),
+            'nl' => URL::to('/route/another-slug/optional-slug?new=value'),
         ], $response->original);
     }
 
@@ -935,9 +936,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug?param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug/optional-slug'),
-            'en' => url('/route/another-slug/optional-slug'),
-            'nl' => url('/route/another-slug/optional-slug'),
+            'current' => URL::to('/route/another-slug/optional-slug'),
+            'en' => URL::to('/route/another-slug/optional-slug'),
+            'nl' => URL::to('/route/another-slug/optional-slug'),
         ], $response->original);
     }
 
@@ -958,9 +959,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug?param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug/optional-slug?new=value'),
-            'en' => url('/route/another-slug/optional-slug?new=value'),
-            'nl' => url('/route/another-slug/optional-slug?new=value'),
+            'current' => URL::to('/route/another-slug/optional-slug?new=value'),
+            'en' => URL::to('/route/another-slug/optional-slug?new=value'),
+            'nl' => URL::to('/route/another-slug/optional-slug?new=value'),
         ], $response->original);
     }
 
@@ -981,9 +982,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug?param=value');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug/optional-slug'),
-            'en' => url('/route/another-slug/optional-slug'),
-            'nl' => url('/route/another-slug/optional-slug'),
+            'current' => URL::to('/route/another-slug/optional-slug'),
+            'en' => URL::to('/route/another-slug/optional-slug'),
+            'nl' => URL::to('/route/another-slug/optional-slug'),
         ], $response->original);
     }
 
@@ -1004,9 +1005,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug'),
-            'en' => url('/route/another-slug'),
-            'nl' => url('/route/another-slug'),
+            'current' => URL::to('/route/another-slug'),
+            'en' => URL::to('/route/another-slug'),
+            'nl' => URL::to('/route/another-slug'),
         ], $response->original);
     }
 
@@ -1027,9 +1028,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug'),
-            'en' => url('/route/another-slug'),
-            'nl' => url('/route/another-slug'),
+            'current' => URL::to('/route/another-slug'),
+            'en' => URL::to('/route/another-slug'),
+            'nl' => URL::to('/route/another-slug'),
         ], $response->original);
     }
 
@@ -1050,9 +1051,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/route/some-slug');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/route/another-slug'),
-            'en' => url('/route/another-slug'),
-            'nl' => url('/route/another-slug'),
+            'current' => URL::to('/route/another-slug'),
+            'en' => URL::to('/route/another-slug'),
+            'nl' => URL::to('/route/another-slug'),
         ], $response->original);
     }
 
@@ -1085,9 +1086,9 @@ class LocalizedUrlMacroTest extends TestCase
         $response = $this->call('GET', '/nl/route/nl-route');
         $response->assertOk();
         $this->assertEquals([
-            'current' => url('/nl/route/nl-route'),
-            'en' => url('/en/route/en-route'),
-            'nl' => url('/nl/route/nl-route'),
+            'current' => URL::to('/nl/route/nl-route'),
+            'en' => URL::to('/en/route/en-route'),
+            'nl' => URL::to('/nl/route/nl-route'),
         ], $response->original);
     }
 

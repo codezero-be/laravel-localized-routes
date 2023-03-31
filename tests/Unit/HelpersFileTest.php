@@ -4,6 +4,7 @@ namespace CodeZero\LocalizedRoutes\Tests\Unit;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class HelpersFileTest extends TestCase
@@ -18,9 +19,9 @@ class HelpersFileTest extends TestCase
             Route::get('route')->name('route');
         });
 
-        $this->assertEquals(url('en/route'), route('route', [], true, null));
-        $this->assertEquals(url('en/route'), route('route', [], true, 'en'));
-        $this->assertEquals(url('nl/route'), route('route', [], true, 'nl'));
+        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, null));
+        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'en'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('route', [], true, 'nl'));
     }
 
     /** @test */
@@ -35,7 +36,7 @@ class HelpersFileTest extends TestCase
 
         $this->expectException(RouteNotFoundException::class);
 
-        route('route', [], true, 'wk');
+        URL::route('route', [], true, 'wk');
     }
 
     /** @test */
@@ -49,8 +50,8 @@ class HelpersFileTest extends TestCase
             Route::get('route')->name('route');
         });
 
-        $this->assertEquals(url('en/route'), route('route', [], true, 'en'));
-        $this->assertEquals(url('nl/route'), route('route', [], true, 'nl'));
-        $this->assertEquals(url('en/route'), route('route', [], true, 'wk'));
+        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'en'));
+        $this->assertEquals(URL::to('nl/route'), URL::route('route', [], true, 'nl'));
+        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'wk'));
     }
 }
