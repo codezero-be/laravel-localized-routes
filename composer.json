@@ -21,7 +21,6 @@
     ],
     "require": {
         "php": "^7.2.5|^8.0",
-        "0.0.0/composer-include-files": "^1.5",
         "codezero/browser-locale": "^3.0",
         "codezero/laravel-uri-translator": "^1.0",
         "codezero/php-url-builder": "^1.0",
@@ -58,11 +57,7 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true,
-        "allow-plugins": {
-            "0.0.0/composer-include-files": true,
-            "kylekatarnls/update-helper": true
-        }
+        "optimize-autoloader": true
     },
     "minimum-stability": "dev",
     "prefer-stable": true
