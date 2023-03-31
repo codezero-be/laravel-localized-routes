@@ -3,6 +3,7 @@
 namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
+use CodeZero\UrlBuilder\UrlBuilder;
 use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -40,7 +41,7 @@ class LocalizedUrlGenerator
     public function generateFromRequest(string $locale = null, $parameters = null, bool $absolute = true, bool $keepQuery = true): string
     {
         $urlBuilder = UrlBuilder::make(Request::fullUrl());
-        $requestQueryString = $urlBuilder->getQueryStringArray();
+        $requestQueryString = $urlBuilder->getQuery();
 
         $currentDomain = $urlBuilder->getHost();
         $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? null;
@@ -68,12 +69,12 @@ class LocalizedUrlGenerator
             // $queryStringParameters contains "key" => "value" pairs.
             list($routePlaceholders, $routeParameters, $queryStringParameters) = $this->extractRouteAndQueryStringParameters($routeUri, $normalizedParameters);
 
-            $urlBuilder->setQueryString(
+            $urlBuilder->setQuery(
                 $this->determineQueryStringParameters($requestQueryString, $queryStringParameters, $keepQuery)
             );
 
             // Merge the route parameters with the query string parameters, if any.
-            $namedRouteParameters = array_merge($routeParameters, $urlBuilder->getQueryStringArray());
+            $namedRouteParameters = array_merge($routeParameters, $urlBuilder->getQuery());
 
             // Generate the URL using the route's name, if possible.
             if ($url = $this->generateNamedRouteURL($locale, $namedRouteParameters, $absolute)) {
