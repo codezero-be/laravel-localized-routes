@@ -54,8 +54,8 @@ class LocalizedUrlGenerator
         if ( ! $this->is404()) {
             // Use the provided parameter values or get them from the current route.
             // Parameters passed to this method may also contain query string parameters.
-            // Parameters fetched from the current route will never contain query string parameters.
             // $parameters can be an array, a function, or it can contain model instances!
+            // Parameters fetched from the current route will never contain query string parameters.
             // Normalize the parameters, so we end up with an array of key => value pairs.
             $normalizedParameters = $this->normalizeParameters($locale, $parameters ?: $this->getRouteParameters());
 
@@ -80,7 +80,7 @@ class LocalizedUrlGenerator
                 return $url;
             }
 
-            // If a named route could not be resolved, fill the parameter
+            // If a named route could not be resolved, replace the parameter
             // placeholders in the URI with their values manually.
             $uriWithParameterValues = $this->replaceParameterPlaceholders($routeUri, $routePlaceholders);
             $urlBuilder->setPath($uriWithParameterValues);
