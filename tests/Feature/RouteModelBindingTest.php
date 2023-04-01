@@ -1,12 +1,12 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit;
+namespace CodeZero\LocalizedRoutes\Tests\Feature;
 
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
-use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelOneWithRouteBinding;
 
 class RouteModelBindingTest extends TestCase
 {
@@ -15,20 +15,20 @@ class RouteModelBindingTest extends TestCase
     {
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('slug');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
-        Route::get('test/{model}', function (Model $model) {})
+        Route::get('test/{model}', function (ModelOneWithRouteBinding $model) {})
             ->middleware(['web']);
 
         Route::localized(function () {
-            Route::get('test/{model}', function (Model $model) {})
+            Route::get('test/{model}', function (ModelOneWithRouteBinding $model) {})
                 ->middleware(['web', SetLocale::class]);
         });
 
@@ -49,20 +49,20 @@ class RouteModelBindingTest extends TestCase
     {
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('id');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
-        Route::get('test/{model:slug}', function (Model $model) {})
+        Route::get('test/{model:slug}', function (ModelOneWithRouteBinding $model) {})
             ->middleware(['web']);
 
         Route::localized(function () {
-            Route::get('test/{model:slug}', function (Model $model) {})
+            Route::get('test/{model:slug}', function (ModelOneWithRouteBinding $model) {})
                 ->middleware(['web', SetLocale::class]);
         });
 
@@ -86,20 +86,20 @@ class RouteModelBindingTest extends TestCase
             'nl' => 'dutch',
         ]);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('slug');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
-        Route::get('test/{model}', function (Model $model) {})
+        Route::get('test/{model}', function (ModelOneWithRouteBinding $model) {})
             ->middleware(['web']);
 
         Route::localized(function () {
-            Route::get('test/{model}', function (Model $model) {})
+            Route::get('test/{model}', function (ModelOneWithRouteBinding $model) {})
                 ->middleware(['web', SetLocale::class]);
         });
 

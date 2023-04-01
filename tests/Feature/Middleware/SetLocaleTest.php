@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit\Middleware;
+namespace CodeZero\LocalizedRoutes\Tests\Feature\Middleware;
 
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use CodeZero\LocalizedRoutes\Tests\TestCase;

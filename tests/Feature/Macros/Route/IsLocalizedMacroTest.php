@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros\Route;
+namespace CodeZero\LocalizedRoutes\Tests\Feature\Macros\Route;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Route;

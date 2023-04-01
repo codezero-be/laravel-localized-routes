@@ -55,7 +55,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return void
      */
-    protected function skipTestIfLaravelVersionIsLowerThan($version)
+    protected function skipTestIfLaravelVersionIsLowerThan(string $version): void
     {
         if (version_compare(App::version(), $version) === -1) {
             $this->markTestSkipped("This test only applies to Laravel {$version} and higher.");
@@ -69,7 +69,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return void
      */
-    protected function setAppLocale($locale)
+    protected function setAppLocale(string $locale): void
     {
         App::setLocale($locale);
     }
@@ -81,7 +81,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return void
      */
-    protected function setSupportedLocales($locales)
+    protected function setSupportedLocales(array $locales): void
     {
         Config::set('localized-routes.supported_locales', $locales);
     }
@@ -89,11 +89,11 @@ abstract class TestCase extends  BaseTestCase
     /**
      * Set the fallback locale config option.
      *
-     * @param string $locale
+     * @param string|null $locale
      *
      * @return void
      */
-    protected function setFallbackLocale($locale): void
+    protected function setFallbackLocale(?string $locale): void
     {
         Config::set('localized-routes.fallback_locale', $locale);
     }
@@ -101,13 +101,13 @@ abstract class TestCase extends  BaseTestCase
     /**
      * Set the 'omitted_locale' config option.
      *
-     * @param string $value
+     * @param string|null $locale
      *
      * @return void
      */
-    protected function setOmittedLocale($value)
+    protected function setOmittedLocale(?string $locale): void
     {
-        Config::set('localized-routes.omitted_locale', $value);
+        Config::set('localized-routes.omitted_locale', $locale);
     }
 
     /**
@@ -115,9 +115,9 @@ abstract class TestCase extends  BaseTestCase
      *
      * @param string $locale
      *
-     * @return $this
+     * @return void
      */
-    protected function setSessionLocale($locale)
+    protected function setSessionLocale(string $locale): void
     {
         Session::put($this->sessionKey, $locale);
     }
@@ -125,16 +125,17 @@ abstract class TestCase extends  BaseTestCase
     /**
      * Set the locales used by the browser detector.
      *
-     * @param string $locales
+     * @param string|null $locales
      *
-     * @return $this
+     * @return void
      */
-    protected function setBrowserLocales($locales)
+    protected function setBrowserLocales(?string $locales): void
     {
         App::bind(BrowserLocale::class, function () use ($locales) {
             return new BrowserLocale($locales);
         });
     }
+
     /**
      * Set the 'redirect_to_localized_urls' config option.
      *
@@ -142,7 +143,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return void
      */
-    protected function setRedirectToLocalizedUrls($value)
+    protected function setRedirectToLocalizedUrls(bool $value): void
     {
         Config::set('localized-routes.redirect_to_localized_urls', $value);
     }
@@ -151,12 +152,12 @@ abstract class TestCase extends  BaseTestCase
      * Fake that we created a routes.php file in 'resources/lang/'
      * for each language with the given translations.
      *
-     * @param $translations
+     * @param array $translations
      * @param string $namespace
      *
      * @return void
      */
-    protected function setTranslations($translations, $namespace = '*')
+    protected function setTranslations(array $translations, string $namespace = '*'): void
     {
         Lang::setLoaded([
             $namespace => [
@@ -170,7 +171,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return \Illuminate\Support\Collection
      */
-    protected function getRoutes()
+    protected function getRoutes(): Collection
     {
         // Route::has() doesn't seem to be working
         // when you create routes on the fly.
@@ -185,7 +186,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return void
      */
-    protected function resolveApplicationHttpKernel($app)
+    protected function resolveApplicationHttpKernel($app): void
     {
         // In Laravel 6+, we need to add the middleware to
         // $middlewarePriority in Kernel.php for route
@@ -203,7 +204,7 @@ abstract class TestCase extends  BaseTestCase
      *
      * @return array
      */
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
             LocalizedRoutesServiceProvider::class,

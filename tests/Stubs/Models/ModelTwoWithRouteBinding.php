@@ -1,11 +1,11 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Stubs;
+namespace CodeZero\LocalizedRoutes\Tests\Stubs\Models;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\Facades\App;
 
-class Model extends BaseModel
+class ModelTwoWithRouteBinding extends BaseModel
 {
     protected $guarded = [];
 
@@ -14,7 +14,7 @@ class Model extends BaseModel
      *
      * @return string
      */
-    protected function getSlugAttribute()
+    protected function getSlugAttribute(): string
     {
         return $this->getSlug();
     }
@@ -26,7 +26,7 @@ class Model extends BaseModel
      *
      * @return string
      */
-    public function getSlug($locale = null)
+    public function getSlug(?string $locale = null): string
     {
         return $this->attributes['slug'][$locale ?: App::getLocale()];
     }
@@ -34,12 +34,12 @@ class Model extends BaseModel
     /**
      * Fake route model binding.
      *
-     * @param string $parameter
+     * @param mixed $value
      * @param string|null $field
      *
      * @return mixed
      */
-    public function resolveRouteBinding($parameter, $field = null)
+    public function resolveRouteBinding($value, $field = null)
     {
         $field = $field ?: $this->getRouteKeyName();
 
@@ -53,7 +53,7 @@ class Model extends BaseModel
         // and return the current model as if it was found in the database.
         $validSlug = $this->attributes[$field][App::getLocale()];
 
-        if ($validSlug !== $parameter) {
+        if ($validSlug !== $value) {
             abort(404);
         }
 

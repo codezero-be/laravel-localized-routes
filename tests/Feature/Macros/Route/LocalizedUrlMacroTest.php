@@ -1,12 +1,11 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros\Route;
+namespace CodeZero\LocalizedRoutes\Tests\Feature\Macros\Route;
 
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
-use CodeZero\LocalizedRoutes\Tests\Stubs\Model;
-use CodeZero\LocalizedRoutes\Tests\Stubs\ModelBar;
-use CodeZero\LocalizedRoutes\Tests\Stubs\ModelFoo;
-use CodeZero\LocalizedRoutes\Tests\Stubs\ModelWithCustomRouteParameters;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelOneWithRouteBinding;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelTwoWithRouteBinding;
+use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelWithMultipleRouteParameters;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\App;
@@ -24,17 +23,17 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('slug');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
         Route::localized(function () {
-            Route::get('route/{first}/{second}', function (Model $first, Model $second) {
+            Route::get('route/{first}/{second}', function (ModelOneWithRouteBinding $first, ModelOneWithRouteBinding $second) {
                 return [
                     'current' => Route::localizedUrl(),
                     'en' => Route::localizedUrl('en'),
@@ -58,25 +57,25 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $foo = (new ModelFoo([
+        $foo = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug-foo',
                 'nl' => 'nl-slug-foo',
             ],
         ]))->setKeyName('slug');
 
-        $bar = (new ModelBar([
+        $bar = (new ModelTwoWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug-bar',
                 'nl' => 'nl-slug-bar',
             ],
         ]))->setKeyName('slug');
 
-        App::instance(ModelFoo::class, $foo);
-        App::instance(ModelBar::class, $bar);
+        App::instance(ModelOneWithRouteBinding::class, $foo);
+        App::instance(ModelTwoWithRouteBinding::class, $bar);
 
         Route::localized(function () {
-            Route::get('route/{foo}/{bar}', function (ModelFoo $foo, ModelBar $bar) {
+            Route::get('route/{foo}/{bar}', function (ModelOneWithRouteBinding $foo, ModelTwoWithRouteBinding $bar) {
                 return [
                     'current' => Route::localizedUrl(),
                     'en' => Route::localizedUrl('en'),
@@ -100,17 +99,17 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('id');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
         Route::localized(function () {
-            Route::get('route/{model:slug}', function (Model $model) {
+            Route::get('route/{model:slug}', function (ModelOneWithRouteBinding $model) {
                 return [
                     'current' => Route::localizedUrl(),
                     'en' => Route::localizedUrl('en'),
@@ -134,7 +133,7 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new ModelWithCustomRouteParameters([
+        $model = (new ModelWithMultipleRouteParameters([
             'id' => 1,
             'slug' => [
                 'en' => 'en-slug',
@@ -142,10 +141,10 @@ class LocalizedUrlMacroTest extends TestCase
             ],
         ]))->setKeyName('id');
 
-        App::instance(ModelWithCustomRouteParameters::class, $model);
+        App::instance(ModelWithMultipleRouteParameters::class, $model);
 
         Route::localized(function () {
-            Route::get('route/{model}/{slug}', function (ModelWithCustomRouteParameters $model, $slug) {
+            Route::get('route/{model}/{slug}', function (ModelWithMultipleRouteParameters $model, $slug) {
                 return [
                     'current' => Route::localizedUrl(),
                     'en' => Route::localizedUrl('en'),
@@ -169,14 +168,14 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('slug');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
         Route::localized(function () {
             Route::get('route/{slug}', function ($slug) {
@@ -203,14 +202,14 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'slug' => [
                 'en' => 'en-slug',
                 'nl' => 'nl-slug',
             ],
         ]))->setKeyName('slug');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
         Route::localized(function () use ($model) {
             Route::get('route/{slug}', function ($slug) use ($model) {
@@ -237,7 +236,7 @@ class LocalizedUrlMacroTest extends TestCase
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
 
-        $model = (new Model([
+        $model = (new ModelOneWithRouteBinding([
             'id' => 1,
             'slug' => [
                 'en' => 'en-slug',
@@ -245,7 +244,7 @@ class LocalizedUrlMacroTest extends TestCase
             ],
         ]))->setKeyName('id');
 
-        App::instance(Model::class, $model);
+        App::instance(ModelOneWithRouteBinding::class, $model);
 
         Route::localized(function () use ($model) {
             Route::get('route/{id}/{slug}', function ($id, $slug) use ($model) {

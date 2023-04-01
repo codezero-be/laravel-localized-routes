@@ -1,12 +1,12 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Stubs;
+namespace CodeZero\LocalizedRoutes\Tests\Stubs\Models;
 
 use CodeZero\LocalizedRoutes\ProvidesRouteParameters;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\Facades\App;
 
-class ModelWithCustomRouteParameters extends BaseModel implements ProvidesRouteParameters
+class ModelWithMultipleRouteParameters extends BaseModel implements ProvidesRouteParameters
 {
     protected $guarded = [];
 
@@ -17,7 +17,7 @@ class ModelWithCustomRouteParameters extends BaseModel implements ProvidesRouteP
      *
      * @return array
      */
-    public function getRouteParameters($locale = null)
+    public function getRouteParameters($locale = null): array
     {
         return [
             $this->id,
@@ -28,12 +28,12 @@ class ModelWithCustomRouteParameters extends BaseModel implements ProvidesRouteP
     /**
      * Fake route model binding (avoid database for test purpose).
      *
-     * @param int $id
+     * @param mixed $value
      * @param string|null $field
      *
      * @return mixed
      */
-    public function resolveRouteBinding($id, $field = null)
+    public function resolveRouteBinding($value, $field = null)
     {
         return $this;
     }

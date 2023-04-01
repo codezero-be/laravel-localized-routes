@@ -1,6 +1,6 @@
 <?php
 
-namespace CodeZero\LocalizedRoutes\Tests\Unit\Macros\Route;
+namespace CodeZero\LocalizedRoutes\Tests\Feature\Macros\Route;
 
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Config;
@@ -242,41 +242,5 @@ class LocalizedMacroTest extends TestCase
         $this->assertEquals('en', $route->action['localized-routes-locale']);
         $this->assertEquals('en.scoped', $route->action['as']);
         $this->assertEquals('with-scoped-config', $route->uri);
-    }
-
-    /** @test */
-    public function it_creates_localized_routes_within_route_groups()
-    {
-        $this->setSupportedLocales(['en', 'nl']);
-
-        Route::group([
-            'as' => 'admin.',
-            'prefix' => 'admin'
-        ], function () {
-            Route::localized(function () {
-                Route::get('route', function () {})
-                    ->name('route.name');
-            });
-        });
-
-        $routes = $this->getRoutes();
-        $domains = $routes->pluck('action.domain');
-        $names = $routes->pluck('action.as');
-        $uris = $routes->pluck('uri');
-
-        // Verify that no custom domains are registered.
-        $this->assertTrue($domains->filter()->isEmpty());
-
-        $this->assertNotContains('admin.route.name', $names);
-        $this->assertContains('admin.en.route.name', $names);
-        $this->assertContains('admin.nl.route.name', $names);
-
-        $this->assertNotContains('admin/route', $uris);
-        $this->assertContains('admin/en/route', $uris);
-        $this->assertContains('admin/nl/route', $uris);
-
-        $this->call('GET', '/admin/route')->assertNotFound();
-        $this->call('GET', '/admin/en/route')->assertOk();
-        $this->call('GET', '/admin/nl/route')->assertOk();
     }
 }
