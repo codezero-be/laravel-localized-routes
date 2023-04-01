@@ -184,14 +184,14 @@ class UrlGeneratorTest extends TestCase
     /** @test */
     public function it_uses_a_fallback_locale_when_the_requested_locale_is_not_registered()
     {
-//        $this->setSupportedLocales(['en', 'nl']);
-//        $this->setAppLocale('en');
-//        $this->setFallbackLocale('en');
-//
-//        Route::get('en/route')->name('en.route');
-//
-//        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'en'));
-//        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'nl'));
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+        $this->setFallbackLocale('en');
+
+        Route::get('en/route')->name('en.route');
+
+        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'en'));
+        $this->assertEquals(URL::to('en/route'), URL::route('route', [], true, 'nl'));
     }
 
     /** @test */

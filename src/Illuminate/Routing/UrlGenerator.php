@@ -93,26 +93,29 @@ class UrlGenerator extends BaseUrlGenerator
             return $name;
         }
 
-        // Use the specified or current locale
-        // as a prefix for the route name.
-        $locale = $locale ?: $currentLocale;
-
-        // If the locale is not supported, use a fallback
-        // locale if one is configured.
-        if ( ! LocaleConfig::isSupportedLocale($locale)) {
-            $locale = LocaleConfig::getFallbackLocale() ?: $locale;
-        }
-
         // Normalize the route name by removing any locale prefix.
         // We will prepend the applicable locale manually.
         $baseName = $this->stripLocaleFromRouteName($name);
 
-        // If the route has a name (not just the locale prefix)
-        // add the requested locale prefix.
-        $newName = $baseName ? "{$locale}.{$baseName}" : '';
+        if ($baseName === '') {
+            return '';
+        }
 
-        // If the new localized route name does not exist, but the unprefixed route name does,
-        // someone is calling "route($name, [], true, $locale)" on a non localized route.
+        // Use the specified or current locale
+        // as a prefix for the route name.
+        $locale = $locale ?: $currentLocale;
+        $newName = "{$locale}.{$baseName}";
+        $fallbackLocale = LocaleConfig::getFallbackLocale();
+
+        // If the localized route name doesn't exist,
+        // use a fallback locale if one is configured.
+        if ( ! Route::has($newName) && $fallbackLocale) {
+            $newName = "{$fallbackLocale}.{$baseName}";
+        }
+
+        // If the unprefixed route name exists, but the new localized route name doesn't,
+        // someone may be trying to resolve a localized name in an unsupported locale,
+        // e.g. "route('en.route', [], true, 'fr')" (where 'fr.route' doesn't exist and 'route' does)
         // In that case, resolve the unprefixed route name.
         if (Route::has($baseName) && ! Route::has($newName)) {
             $newName = $baseName;
