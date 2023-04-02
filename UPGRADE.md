@@ -25,26 +25,6 @@ We dropped support for Laravel 5.6, 5.7, 5.8 and 6.x.
 
 ---
 
-### ➡ Manually Load `route()` Helper
-
-If you would like to continue to use the `route()` helper function to generate localized URLs, you will need to load the helpers file before Laravel's helpers are loaded.
-
-This used to be handled automatically by a composer plugin, but this caused an issue for some people.
-Once we find a better way to automate this, we will implement it.
-
-If you don't load the helpers file, you can always generate localized routes using `URL::route()` with Laravel's URL facade.
-
-🔸 **Actions Required**
-
-- Require our `helpers.php` in your `public/index.php` file, right before composer's `autoload.php` is loaded:
-
-```php
-require __DIR__.'/../vendor/codezero/laravel-localized-routes/src/helpers.php'; //=> add this line
-require __DIR__.'/../vendor/autoload.php';
-```
-
----
-
 ### ➡ Middleware Changes
 
 Applying the `CodeZero\LocalizedRoutes\Middleware\SetLocale` middleware is now more straightforward.

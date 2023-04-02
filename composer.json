@@ -22,6 +22,7 @@
     "require": {
         "php": "^7.2.5|^8.0",
         "codezero/browser-locale": "^3.0",
+        "codezero/composer-preload-files": "^1.0",
         "codezero/laravel-uri-translator": "^1.0",
         "codezero/php-url-builder": "^1.0",
         "illuminate/support": "^7.0|^8.0|^9.0|^10.0"
@@ -50,14 +51,17 @@
                 "CodeZero\\LocalizedRoutes\\LocalizedRoutesServiceProvider"
             ]
         },
-        "include_files": [
+        "preload-files": [
             "src/helpers.php"
         ]
     },
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "codezero/composer-preload-files": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

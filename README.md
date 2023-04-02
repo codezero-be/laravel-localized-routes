@@ -26,7 +26,6 @@ A convenient way to set up and use localized routes in a Laravel app.
   - [Use Fallback Locale](#-use-fallback-locale)
   - [Omit Slug for Main Locale](#-omit-slug-for-main-locale)
   - [Scoped Options](#-scoped-options)
-- [Load Helper Functions](#-load-helper-functions)
 - [Add Middleware to Update App Locale](#-add-middleware-to-update-app-locale)
   - [Detectors](#detectors)
   - [Stores](#stores)
@@ -149,18 +148,6 @@ Route::localized(function () {
     'omitted_locale' => 'en',
 ]);
 ```
-
-## 📂 Load Helper Functions
-
-If you would like to use the `route()` helper function to generate localized URLs, you will need to load the helpers file before Laravel's helpers are loaded.
-You do this by requiring our `helpers.php` in your `public/index.php` file, right before composer's `autoload.php` is loaded:
-
-```php
-require __DIR__.'/../vendor/codezero/laravel-localized-routes/src/helpers.php'; //=> add this line
-require __DIR__.'/../vendor/autoload.php';
-```
-
-If you don't load the helpers file, you can always generate localized routes using `URL::route()` with Laravel's URL facade.
 
 ## 🧩 Add Middleware to Update App Locale
 
