@@ -341,6 +341,66 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
+    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_route_url()
+    {
+        $this->expectException(RouteNotFoundException::class);
+
+        URL::route('missing.route');
+    }
+
+    /** @test */
+    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_route_url()
+    {
+        $this->setAppLocale('en');
+
+        try {
+            URL::route('missing.route', [], true, 'nl');
+        } catch (RouteNotFoundException $exception) {}
+
+        $this->assertEquals('en', App::getLocale());
+    }
+
+    /** @test */
+    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_signed_route_url()
+    {
+        $this->expectException(RouteNotFoundException::class);
+
+        URL::signedRoute('missing.route');
+    }
+
+    /** @test */
+    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_signed_route_url()
+    {
+        $this->setAppLocale('en');
+
+        try {
+            URL::signedRoute('missing.route', [], null, true, 'nl');
+        } catch (RouteNotFoundException $exception) {}
+
+        $this->assertEquals('en', App::getLocale());
+    }
+
+    /** @test */
+    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_temporary_signed_route_url()
+    {
+        $this->expectException(RouteNotFoundException::class);
+
+        URL::temporarySignedRoute('missing.route', now()->addMinutes(30));
+    }
+
+    /** @test */
+    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_temporary_signed_route_url()
+    {
+        $this->setAppLocale('en');
+
+        try {
+            URL::temporarySignedRoute('missing.route', now()->addMinutes(30), [], true, 'nl');
+        } catch (RouteNotFoundException $exception) {}
+
+        $this->assertEquals('en', App::getLocale());
+    }
+
+    /** @test */
     public function it_allows_routes_to_be_cached()
     {
         $this->withoutExceptionHandling();

@@ -5,12 +5,12 @@ namespace CodeZero\LocalizedRoutes;
 use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use CodeZero\UrlBuilder\UrlBuilder;
 use Illuminate\Support\Facades\URL;
-use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Contracts\Routing\UrlRoutable;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class LocalizedUrlGenerator
 {
@@ -118,7 +118,7 @@ class LocalizedUrlGenerator
     {
         try {
             return URL::route($this->route->getName(), $parameters, $absolute, $locale);
-        } catch (InvalidArgumentException $e) {
+        } catch (RouteNotFoundException $e) {
             return '';
         }
     }
