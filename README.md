@@ -639,19 +639,32 @@ Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more
 
 ## 🚌 Redirect to Routes
 
-You can redirect to routes, just like you would in a normal Laravel app.
+You can redirect to routes, just like you would in a normal Laravel app, using the `redirect()` helper or the `Redirect` facade.
 
 If you register an `about` route that is not localized, then `about` is an existing route name and its URL will be redirected to.
-Otherwise, this will try to redirect to the `about` route for the active locale, e.g. `en.about`.
+Otherwise, this will try to redirect to the `about` route for the active locale, e.g. `en.about`:
 
 ```php
 return redirect()->route('about');
 ```
 
-You can't redirect to URL's in a specific locale this way, but you can of course just use the `route()` function.
+You can also redirect to URLs in a specific locale:
 
 ```php
-return redirect(route('about', [], true, 'nl')); // this redirects to nl.about
+// Redirects to 'nl.about'
+return redirect()->route('about', [], 302, [], 'nl');
+```
+
+A localized version of the `signedRoute` and `temporarySignedRoute` redirects are included as well:
+
+```php
+// Redirects to the active locale
+return redirect()->signedRoute('signed.route', ['user' => $id]);
+return redirect()->temporarySignedRoute('signed.route', now()->addMinutes(30), ['user' => $id]);
+
+// Redirects to 'nl.signed.route'
+return redirect()->signedRoute('signed.route', ['user' => $id], null, 302, [], 'nl');
+return redirect()->temporarySignedRoute('signed.route', now()->addMinutes(30), ['user' => $id], 302, [], 'nl');
 ```
 
 ## 🪧 Automatically Redirect to Localized URLs

@@ -3,6 +3,7 @@
 namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\BrowserLocale\Laravel\BrowserLocaleServiceProvider;
+use CodeZero\LocalizedRoutes\Illuminate\Routing\Redirector;
 use CodeZero\LocalizedRoutes\Illuminate\Routing\UrlGenerator;
 use CodeZero\LocalizedRoutes\Macros\Route\HasLocalizedMacro;
 use CodeZero\LocalizedRoutes\Macros\Route\IsFallbackMacro;
@@ -45,6 +46,7 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         $this->registerLocaleConfig();
         $this->registerLocaleHandler();
         $this->registerUrlGenerator();
+        $this->registerRedirector();
         $this->registerProviders();
     }
 
@@ -189,5 +191,30 @@ class LocalizedRoutesServiceProvider extends ServiceProvider
         return function ($app, $request) {
             $app['url']->setRequest($request);
         };
+    }
+
+    /**
+     * Register a custom URL redirector that extends the one that comes with Laravel.
+     * This will override a few methods that enables us to redirect to localized URLs.
+     *
+     * This method is an exact copy from:
+     * \Illuminate\Routing\RoutingServiceProvider
+     *
+     * @return void
+     */
+    protected function registerRedirector()
+    {
+        $this->app->singleton('redirect', function ($app) {
+            $redirector = new Redirector($app['url']);
+
+            // If the session is set on the application instance, we'll inject it into
+            // the redirector instance. This allows the redirect responses to allow
+            // for the quite convenient "with" methods that flash to the session.
+            if (isset($app['session.store'])) {
+                $redirector->setSession($app['session.store']);
+            }
+
+            return $redirector;
+        });
     }
 }
