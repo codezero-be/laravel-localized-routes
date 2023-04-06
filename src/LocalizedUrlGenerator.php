@@ -2,13 +2,13 @@
 
 namespace CodeZero\LocalizedRoutes;
 
+use InvalidArgumentException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Contracts\Routing\UrlRoutable;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class LocalizedUrlGenerator
 {
@@ -107,7 +107,7 @@ class LocalizedUrlGenerator
     {
         try {
             return route($this->route->getName(), $parameters, $absolute, $locale);
-        } catch (RouteNotFoundException $e) {
+        } catch (InvalidArgumentException $e) {
             return '';
         }
     }

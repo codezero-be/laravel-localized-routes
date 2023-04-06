@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use InvalidArgumentException;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class UrlGeneratorTest extends TestCase
 {
@@ -260,7 +259,7 @@ class UrlGeneratorTest extends TestCase
     /** @test */
     public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_route_url()
     {
-        $this->expectException(RouteNotFoundException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         URL::route('missing.route');
     }
@@ -272,7 +271,7 @@ class UrlGeneratorTest extends TestCase
 
         try {
             URL::route('missing.route', [], true, 'nl');
-        } catch (RouteNotFoundException $exception) {}
+        } catch (InvalidArgumentException $exception) {}
 
         $this->assertEquals('en', App::getLocale());
     }
