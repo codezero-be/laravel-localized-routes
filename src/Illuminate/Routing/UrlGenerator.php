@@ -32,11 +32,13 @@ class UrlGenerator extends BaseUrlGenerator
             App::setLocale($locale);
         }
 
-        $url = parent::route($resolvedName, $parameters, $absolute);
-
-        // Restore the current locale if needed.
-        if ($locale !== null && $locale !== $currentLocale) {
-            App::setLocale($currentLocale);
+        try {
+            $url = parent::route($resolvedName, $parameters, $absolute);
+        } finally {
+            // Restore the current locale if needed.
+            if ($locale !== null && $locale !== $currentLocale) {
+                App::setLocale($currentLocale);
+            }
         }
 
         return $url;
@@ -66,11 +68,13 @@ class UrlGenerator extends BaseUrlGenerator
             App::setLocale($locale);
         }
 
-        $url = parent::signedRoute($resolvedName, $parameters, $expiration, $absolute);
-
-        // Restore the current locale if needed.
-        if ($locale !== null && $locale !== $currentLocale) {
-            App::setLocale($currentLocale);
+        try {
+            $url = parent::signedRoute($resolvedName, $parameters, $expiration, $absolute);
+        } finally {
+            // Restore the current locale if needed.
+            if ($locale !== null && $locale !== $currentLocale) {
+                App::setLocale($currentLocale);
+            }
         }
 
         return $url;
