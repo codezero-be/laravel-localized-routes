@@ -77,6 +77,22 @@ class UrlGenerator extends BaseUrlGenerator
     }
 
     /**
+     * Create a temporary signed route URL for a named route.
+     *
+     * @param string $name
+     * @param \DateTimeInterface|\DateInterval|int $expiration
+     * @param array $parameters
+     * @param bool $absolute
+     * @param string|null $locale
+     *
+     * @return string
+     */
+    public function temporarySignedRoute($name, $expiration, $parameters = [], $absolute = true, $locale = null)
+    {
+        return $this->signedRoute($name, $parameters, $expiration, $absolute, $locale);
+    }
+
+    /**
      * Resolve a localized version of the route name in the given locale.
      *
      * @param string $name

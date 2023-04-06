@@ -298,6 +298,49 @@ class UrlGeneratorTest extends TestCase
     }
 
     /** @test */
+    public function it_generates_a_temporary_signed_route_url_for_the_current_locale()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+
+        $callback = function () {
+            return Request::hasValidSignature()
+                ? 'Valid Signature'
+                : 'Expired Signature';
+        };
+
+        Route::get('en/route', $callback)->name('en.route.name');
+
+        $validUrl = URL::temporarySignedRoute('route.name', now()->addHour());
+        $expiredUrl = URL::temporarySignedRoute('route.name', now()->subHour());
+
+        $this->get($validUrl)->assertSee('Valid Signature');
+        $this->get($expiredUrl)->assertSee('Expired Signature');
+    }
+
+    /** @test */
+    public function it_generates_a_temporary_signed_route_url_for_a_specific_locale()
+    {
+        $this->setSupportedLocales(['en', 'nl']);
+        $this->setAppLocale('en');
+
+        $callback = function () {
+            return Request::hasValidSignature()
+                ? 'Valid Signature'
+                : 'Expired Signature';
+        };
+
+        Route::get('en/route', $callback)->name('en.route.name');
+        Route::get('nl/route', $callback)->name('nl.route.name');
+
+        $validUrl = URL::temporarySignedRoute('route.name', now()->addHour(), [], true, 'nl');
+        $expiredUrl = URL::temporarySignedRoute('route.name', now()->subHour(), [], true, 'nl');
+
+        $this->get($validUrl)->assertSee('Valid Signature');
+        $this->get($expiredUrl)->assertSee('Expired Signature');
+    }
+
+    /** @test */
     public function it_allows_routes_to_be_cached()
     {
         $this->withoutExceptionHandling();

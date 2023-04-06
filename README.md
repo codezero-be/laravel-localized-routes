@@ -620,17 +620,19 @@ It will only run if the current route is localized or a fallback route.
 
 ## 🖋 Generate Signed Route URLs
 
-Generating a localized signed route URL is just as easy as generating normal route URLs.
+Generating a localized signed route and temporary signed route URL is just as easy as generating normal route URLs.
 Pass it the route name, the necessary parameters, and you will get the URL for the current locale.
 
 ```php
-$signedUrl = URL::signedRoute('reset.password', ['user' => $id], now()->addMinutes(30));
+$signedUrl = URL::signedRoute('reset.password', ['user' => $id]);
+$signedUrl = URL::temporarySignedRoute('reset.password', now()->addMinutes(30), ['user' => $id]);
 ```
 
 You can also generate a signed route URL for a specific locale:
 
 ```php
-$signedUrl = URL::signedRoute('reset.password', ['user' => $id], now()->addMinutes(30), true, 'nl');
+$signedUrl = URL::signedRoute('reset.password', ['user' => $id], null, true, 'nl');
+$signedUrl = URL::temporarySignedRoute('reset.password', now()->addMinutes(30), ['user' => $id], true, 'nl');
 ```
 
 Check out the [Laravel docs](https://laravel.com/docs/urls#signed-urls) for more info on signed routes.
