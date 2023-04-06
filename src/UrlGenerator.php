@@ -80,11 +80,13 @@ class UrlGenerator extends BaseUrlGenerator
             App::setLocale($locale);
         }
 
-        $url = parent::route($newName, $parameters, $absolute);
-
-        // Restore the current locale if needed.
-        if ($locale !== $currentLocale) {
-            App::setLocale($currentLocale);
+        try {
+            $url = parent::route($newName, $parameters, $absolute);
+        } finally {
+            // Restore the current locale if needed.
+            if ($locale !== null && $locale !== $currentLocale) {
+                App::setLocale($currentLocale);
+            }
         }
 
         return $url;
