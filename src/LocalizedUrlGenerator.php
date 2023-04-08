@@ -4,16 +4,22 @@ namespace CodeZero\LocalizedRoutes;
 
 use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use CodeZero\UrlBuilder\UrlBuilder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Contracts\Routing\UrlRoutable;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class LocalizedUrlGenerator
 {
+    /**
+     * The current Request.
+     *
+     * @var \Illuminate\Http\Request
+     */
+    protected $request;
+
     /**
      * The current Route.
      *
@@ -23,10 +29,13 @@ class LocalizedUrlGenerator
 
     /**
      * Create a new LocalizedUrlGenerator instance.
+     *
+     * @param \Illuminate\Http\Request $request
      */
-    public function __construct()
+    public function __construct(Request $request)
     {
-        $this->route = Route::current();
+        $this->request = $request;
+        $this->route = $request->route();
     }
 
     /**
@@ -41,7 +50,7 @@ class LocalizedUrlGenerator
      */
     public function generateFromRequest(string $locale = null, $parameters = null, bool $absolute = true, bool $keepQuery = true): string
     {
-        $urlBuilder = UrlBuilder::make(Request::fullUrl());
+        $urlBuilder = UrlBuilder::make($this->request->fullUrl());
         $requestQueryString = $urlBuilder->getQuery();
 
         $currentDomain = $urlBuilder->getHost();
