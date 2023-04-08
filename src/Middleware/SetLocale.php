@@ -48,11 +48,13 @@ class SetLocale
             $this->handler->store($locale);
         }
 
-        // This is rom the SubstituteBindings middleware, but
-        // it needs to run on the request we created,
-        // after the locale is updated.
-        Route::substituteBindings($originalRequest->route());
-        Route::substituteImplicitBindings($originalRequest->route());
+        if ($originalRequest) {
+            // This is rom the SubstituteBindings middleware, but
+            // it needs to run on the request we created,
+            // after the locale is updated.
+            Route::substituteBindings($originalRequest->route());
+            Route::substituteImplicitBindings($originalRequest->route());
+        }
 
         return $next($request);
     }
@@ -66,6 +68,10 @@ class SetLocale
      */
     public function useOriginalRequestDuringLivewireRequests(Request $request)
     {
+        if ( ! $this->isLivewireRequest()) {
+            //return null;
+        }
+
         $url = $request->fullUrl();// Livewire::originalUrl();
         $originalRequest = Request::create($url);
 
@@ -90,5 +96,16 @@ class SetLocale
         });
 
         return  $originalRequest;
+    }
+
+    /**
+     * Check if this is a Livewire ajax call.
+     *
+     * @return bool
+     */
+    protected function isLivewireRequest(): bool
+    {
+        return class_exists(\Livewire\LivewireManager::class)
+            && $this->app->make(\Livewire\LivewireManager::class)->isLivewireRequest();
     }
 }
