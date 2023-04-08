@@ -162,7 +162,7 @@ class LocalizedUrlGenerator
      */
     protected function isFallback(): bool
     {
-        return $this->route->isFallback;
+        return $this->routeExists() && $this->route->isFallback;
     }
 
     /**
