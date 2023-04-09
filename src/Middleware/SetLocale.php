@@ -38,9 +38,13 @@ class SetLocale
      *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $originalRequest = $this->useOriginalRequestDuringLivewireRequests($request);
+        // If this is a Livewire request, we have to recreate
+        // the original Request and rebind the classes that need it.
+        // This needs to be done before the locale is updated,
+        // because some Detector classes use the Request.
+        $originalRequest = $this->useOriginalRequestDuringLivewireRequests();
 
         $locale = $this->handler->detect();
 
@@ -49,9 +53,10 @@ class SetLocale
         }
 
         if ($originalRequest) {
-            // This is rom the SubstituteBindings middleware, but
-            // it needs to run on the request we created,
-            // after the locale is updated.
+            // This is from the SubstituteBindings middleware.
+            // If this is a Livewire request, this needs to run on
+            // the request we created, after the locale is updated,
+            // to enable localized route model binding.
             Route::substituteBindings($originalRequest->route());
             Route::substituteImplicitBindings($originalRequest->route());
         }
@@ -60,19 +65,18 @@ class SetLocale
     }
 
     /**
-     * Handle an incoming request.
+     * If this is a Livewire request, recreate the original Request,
+     * and use it in the classes that need it.
      *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return mixed
+     * @return \Illuminate\Http\Request|null
      */
-    public function useOriginalRequestDuringLivewireRequests(Request $request)
+    public function useOriginalRequestDuringLivewireRequests(): ?Request
     {
         if ( ! $this->isLivewireRequest()) {
-            //return null;
+            return null;
         }
 
-        $url = $request->fullUrl();// Livewire::originalUrl();
+        $url = \Livewire\Livewire::originalUrl();
         $originalRequest = Request::create($url);
 
         $originalRequest->setRouteResolver(function () use ($originalRequest) {
@@ -106,6 +110,6 @@ class SetLocale
     protected function isLivewireRequest(): bool
     {
         return class_exists(\Livewire\LivewireManager::class)
-            && $this->app->make(\Livewire\LivewireManager::class)->isLivewireRequest();
+            && App::make(\Livewire\LivewireManager::class)->isLivewireRequest();
     }
 }
