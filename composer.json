@@ -49,7 +49,10 @@
         "laravel": {
             "providers": [
                 "CodeZero\\LocalizedRoutes\\LocalizedRoutesServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "LocaleConfig": "CodeZero\\LocalizedRoutes\\Facades\\LocaleConfig"
+            }
         },
         "preload-files": [
             "src/helpers.php"
