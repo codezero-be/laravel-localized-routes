@@ -988,6 +988,74 @@ class LocalizedUrlMacroTest extends TestCase
     }
 
     /** @test */
+    public function it_prefers_route_parameters_before_query_string_parameters_with_the_same_name_in_unnamed_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        $model = (new ModelOneWithRouteBinding([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('slug');
+
+        App::instance(ModelOneWithRouteBinding::class, $model);
+
+        Route::localized(function () use ($model) {
+            Route::get('route/{slug}', function (ModelOneWithRouteBinding $slug) {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->middleware(['web']);
+        });
+
+        $response = $this->call('GET', '/en/route/en-slug?slug=duplicate');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => URL::to('/en/route/en-slug?slug=duplicate'),
+            'en' => URL::to('/en/route/en-slug?slug=duplicate'),
+            'nl' => URL::to('/nl/route/nl-slug?slug=duplicate'),
+        ], $response->original);
+    }
+
+    /** @test */
+    public function it_prefers_route_parameters_before_query_string_parameters_with_the_same_name_in_named_routes()
+    {
+        $this->withoutExceptionHandling();
+        $this->setSupportedLocales(['en', 'nl']);
+
+        $model = (new ModelOneWithRouteBinding([
+            'slug' => [
+                'en' => 'en-slug',
+                'nl' => 'nl-slug',
+            ],
+        ]))->setKeyName('slug');
+
+        App::instance(ModelOneWithRouteBinding::class, $model);
+
+        Route::localized(function () use ($model) {
+            Route::get('route/{slug}', function (ModelOneWithRouteBinding $slug) {
+                return [
+                    'current' => Route::localizedUrl(),
+                    'en' => Route::localizedUrl('en'),
+                    'nl' => Route::localizedUrl('nl'),
+                ];
+            })->middleware(['web'])->name('test');
+        });
+
+        $response = $this->call('GET', '/en/route/en-slug?slug=duplicate');
+        $response->assertOk();
+        $this->assertEquals([
+            'current' => URL::to('/en/route/en-slug?slug=duplicate'),
+            'en' => URL::to('/en/route/en-slug?slug=duplicate'),
+            'nl' => URL::to('/nl/route/nl-slug?slug=duplicate'),
+        ], $response->original);
+    }
+
+    /** @test */
     public function it_allows_optional_parameters_with_named_routes()
     {
         $this->withoutExceptionHandling();

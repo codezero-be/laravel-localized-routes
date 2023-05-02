@@ -83,12 +83,9 @@ class LocalizedUrlGenerator
                 $this->determineQueryStringParameters($requestQueryString, $queryStringParameters, $keepQuery)
             );
 
-            // Merge the route parameters with the query string parameters, if any.
-            $namedRouteParameters = array_merge($routeParameters, $urlBuilder->getQuery());
-
             // Generate the URL using the route's name, if possible.
-            if ($url = $this->generateNamedRouteURL($locale, $namedRouteParameters, $absolute)) {
-                return $url;
+            if ($url = $this->generateNamedRouteURL($locale, $routeParameters, $absolute)) {
+                return $urlBuilder->getQueryString() ? $url . '?' . $urlBuilder->getQueryString() : $url;
             }
 
             // If a named route could not be resolved, replace the parameter
