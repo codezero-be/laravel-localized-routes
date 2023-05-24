@@ -184,11 +184,11 @@ class LocaleConfig
     /**
      * Find the locale that belongs to the given slug.
      *
-     * @param string $slug
+     * @param ?string $slug
      *
      * @return string|null
      */
-    public function findLocaleBySlug(string $slug): ?string
+    public function findLocaleBySlug(?string $slug): ?string
     {
         if ($this->hasCustomDomains()) {
             return null;
