@@ -353,8 +353,8 @@ class LocalizedUrlGenerator
 
         App::setLocale($locale);
 
-        $bindingField = $this->getBindingFieldFor($key, $model);
-        $routeKey = $model->$bindingField;
+        $bindingField = $this->getBindingFieldFor($key);
+        $routeKey = $bindingField ? $model->$bindingField : $model->getRouteKey();
 
         App::setLocale($originalLocale);
 
@@ -369,12 +369,11 @@ class LocalizedUrlGenerator
      * If you did not use a custom key, we'll use the default route key.
      *
      * @param string|int $key
-     * @param \Illuminate\Contracts\Routing\UrlRoutable $model
      *
      * @return string|null
      */
-    protected function getBindingFieldFor($key, UrlRoutable $model): ?string
+    protected function getBindingFieldFor($key): ?string
     {
-        return $this->route->bindingFieldFor($key) ?: $model->getRouteKeyName();
+        return $this->route->bindingFieldFor($key);
     }
 }
