@@ -54,7 +54,7 @@ class LocalizedUrlGenerator
         $requestQueryString = $urlBuilder->getQuery();
 
         $currentDomain = $urlBuilder->getHost();
-        $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? null;
+        $currentLocaleSlug = $urlBuilder->getSlugs()[0] ?? '';
 
         // Determine in which locale the URL needs to be localized.
         $locale = $locale
