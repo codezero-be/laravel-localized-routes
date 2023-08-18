@@ -165,20 +165,6 @@ protected $middlewareGroups = [
 ];
 ```
 
-You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
-If you don't see the `$middlewarePriority` array, you can copy it from the parent class `Illuminate\Foundation\Http\Kernel`.
-
-Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
-
-```php
-protected $middlewarePriority = [
-    \Illuminate\Session\Middleware\StartSession::class, // <= after this
-    //...
-    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
-];
-```
-
 ### Detectors
 
 The middleware runs the following detectors in sequence, until one returns a supported locale:
