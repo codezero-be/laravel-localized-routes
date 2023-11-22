@@ -55,6 +55,7 @@ A convenient way to set up and use localized routes in a Laravel app.
 
 - PHP >= 7.2.5
 - Laravel >= 7.0
+- Composer ^2.3 (for [codezero/composer-preload-files](https://github.com/codezero-be/composer-preload-files))
 
 ## ⬆ Upgrade
 
