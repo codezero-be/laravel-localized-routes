@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature\Middleware;
 
+use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Database\Eloquent\Model;
@@ -298,5 +299,24 @@ class SetLocaleTest extends TestCase
 
         $response = $this->get('de/with-scoped-config');
         $this->assertEquals('de', $response->original);
+    }
+
+    /** @test */
+    public function that_scoped_config_does_not_override_global_config(): void
+    {
+        $this->setSupportedLocales(['en']);
+
+        Route::localized(function () {
+            Route::get('with-scoped-config', function () {
+                return App::getLocale();
+            })->middleware(['web', SetLocale::class]);
+        }, [
+            'supported_locales' => ['en', 'nl'],
+        ]);
+
+        $this->assertEquals(
+            ['en'],
+            LocaleConfig::getSupportedLocales()
+        );
     }
 }
