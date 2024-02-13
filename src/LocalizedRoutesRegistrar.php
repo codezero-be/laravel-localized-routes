@@ -26,9 +26,6 @@ class LocalizedRoutesRegistrar
             return;
         }
 
-        LocaleConfig::setSupportedLocales($locales);
-        LocaleConfig::setOmittedLocale($omittedLocale);
-
         $localeRouteAction = LocaleConfig::getRouteAction();
         $usingDomains = LocaleConfig::hasCustomDomains();
         $usingCustomSlugs = LocaleConfig::hasCustomSlugs();
