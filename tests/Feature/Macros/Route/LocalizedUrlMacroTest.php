@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
-class LocalizedUrlMacroTest extends TestCase
+final class LocalizedUrlMacroTest extends TestCase
 {
     #[Test]
     public function it_generates_urls_with_default_localized_route_keys_for_the_current_route_using_route_model_binding(): void

@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Route;
 
-class IsLocalizedMacroTest extends TestCase
+final class IsLocalizedMacroTest extends TestCase
 {
     #[Test]
     public function it_checks_if_the_current_route_is_localized(): void

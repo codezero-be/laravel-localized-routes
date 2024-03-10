@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\URL;
 use InvalidArgumentException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
-class UrlGeneratorTest extends TestCase
+final class UrlGeneratorTest extends TestCase
 {
     #[Test]
     public function it_binds_our_custom_url_generator_class(): void

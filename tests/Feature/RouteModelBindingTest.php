@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelOneWithRouteBinding;
 
-class RouteModelBindingTest extends TestCase
+final class RouteModelBindingTest extends TestCase
 {
     #[Test]
     public function it_loads_a_route_with_a_localized_route_key_based_on_the_active_locale(): void

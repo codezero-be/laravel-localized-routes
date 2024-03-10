@@ -10,7 +10,7 @@ use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\App;
 use Mockery;
 
-class LocaleHandlerTest extends TestCase
+final class LocaleHandlerTest extends TestCase
 {
     #[Test]
     public function it_loops_through_the_detectors_and_returns_the_first_supported_locale(): void

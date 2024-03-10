@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
-class SetLocaleTest extends TestCase
+final class SetLocaleTest extends TestCase
 {
     #[Test]
     public function it_looks_for_a_locale_in_a_custom_route_action(): void

@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Route;
 
-class RedirectToLocalizedTest extends TestCase
+final class RedirectToLocalizedTest extends TestCase
 {
     #[Test]
     public function it_redirects_to_the_localized_url(): void

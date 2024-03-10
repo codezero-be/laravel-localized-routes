@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
-class RedirectorTest extends TestCase
+final class RedirectorTest extends TestCase
 {
     #[Test]
     public function it_redirects_to_a_named_route_in_the_current_locale(): void

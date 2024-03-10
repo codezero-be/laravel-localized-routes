@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\LocaleConfig;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 
-class LocaleConfigTest extends TestCase
+final class LocaleConfigTest extends TestCase
 {
     #[Test]
     public function it_gets_the_supported_locales(): void
