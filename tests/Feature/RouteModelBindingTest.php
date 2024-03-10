@@ -12,7 +12,7 @@ use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelOneWithRouteBinding;
 class RouteModelBindingTest extends TestCase
 {
     #[Test]
-    public function it_loads_a_route_with_a_localized_route_key_based_on_the_active_locale()
+    public function it_loads_a_route_with_a_localized_route_key_based_on_the_active_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -46,7 +46,7 @@ class RouteModelBindingTest extends TestCase
     }
 
     #[Test]
-    public function it_loads_a_route_with_a_custom_localized_route_key_based_on_the_active_locale()
+    public function it_loads_a_route_with_a_custom_localized_route_key_based_on_the_active_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -80,7 +80,7 @@ class RouteModelBindingTest extends TestCase
     }
 
     #[Test]
-    public function it_loads_a_route_with_a_localized_route_key_with_custom_slugs()
+    public function it_loads_a_route_with_a_localized_route_key_with_custom_slugs(): void
     {
         $this->setSupportedLocales([
             'en' => 'english',

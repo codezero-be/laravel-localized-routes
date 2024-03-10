@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 class LocalizedMacroTest extends TestCase
 {
     #[Test]
-    public function it_registers_a_route_for_each_locale()
+    public function it_registers_a_route_for_each_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -37,7 +37,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_registers_a_root_route_for_each_locale()
+    public function it_registers_a_root_route_for_each_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -60,7 +60,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_registers_a_url_without_prefix_for_a_configured_main_locale()
+    public function it_registers_a_url_without_prefix_for_a_configured_main_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmittedLocale('en');
@@ -84,7 +84,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale()
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmittedLocale('en');
@@ -101,7 +101,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_maps_a_custom_slug_to_each_locale()
+    public function it_maps_a_custom_slug_to_each_locale(): void
     {
         $this->setSupportedLocales([
             'en' => 'english',
@@ -125,7 +125,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_custom_slugs()
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_custom_slugs(): void
     {
         $this->setSupportedLocales([
             'en' => 'english',
@@ -145,7 +145,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_maps_a_custom_domain_to_each_locale()
+    public function it_maps_a_custom_domain_to_each_locale(): void
     {
         $this->setSupportedLocales([
             'en' => 'english-domain.com',
@@ -171,7 +171,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_domains()
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_domains(): void
     {
         $this->setSupportedLocales([
             'en' => 'english-domain.com',
@@ -210,7 +210,7 @@ class LocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_uses_scoped_config_options()
+    public function it_uses_scoped_config_options(): void
     {
         $this->setSupportedLocales(['en']);
         $this->setOmittedLocale(null);

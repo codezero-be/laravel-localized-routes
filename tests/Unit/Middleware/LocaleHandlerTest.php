@@ -13,7 +13,7 @@ use Mockery;
 class LocaleHandlerTest extends TestCase
 {
     #[Test]
-    public function it_loops_through_the_detectors_and_returns_the_first_supported_locale()
+    public function it_loops_through_the_detectors_and_returns_the_first_supported_locale(): void
     {
         $supportedLocales = ['en', 'nl'];
         $detectors = [
@@ -28,7 +28,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_the_first_match_if_an_array_of_locales_is_detected()
+    public function it_returns_the_first_match_if_an_array_of_locales_is_detected(): void
     {
         $supportedLocales = ['en', 'nl'];
         $detectors = [
@@ -41,7 +41,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function trusted_detectors_ignore_supported_locales_and_may_set_any_locale()
+    public function trusted_detectors_ignore_supported_locales_and_may_set_any_locale(): void
     {
         $supportedLocales = ['en'];
         $detectors = [
@@ -57,7 +57,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_skips_null_and_false_and_empty_values()
+    public function it_skips_null_and_false_and_empty_values(): void
     {
         App::instance(Detector::class, Mockery::mock(Detector::class)->allows()->detect()->andReturns('')->getMock());
 
@@ -77,7 +77,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_skips_null_and_false_and_empty_values_from_trusted_detectors()
+    public function it_skips_null_and_false_and_empty_values_from_trusted_detectors(): void
     {
         App::instance(Detector::class, Mockery::mock(Detector::class)->allows()->detect()->andReturns('')->getMock());
 
@@ -100,7 +100,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_false_if_no_supported_locale_could_be_detected()
+    public function it_returns_false_if_no_supported_locale_could_be_detected(): void
     {
         $supportedLocales = ['en'];
         $detectors = [
@@ -115,7 +115,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_loops_through_the_stores_and_calls_the_store_method_with_the_given_locale()
+    public function it_loops_through_the_stores_and_calls_the_store_method_with_the_given_locale(): void
     {
         $stores = [
             Mockery::mock(Store::class)->expects()->store('nl')->once()->getMock(),
@@ -129,7 +129,7 @@ class LocaleHandlerTest extends TestCase
     }
 
     #[Test]
-    public function it_accepts_class_names_instead_of_instances_in_the_constructor()
+    public function it_accepts_class_names_instead_of_instances_in_the_constructor(): void
     {
         App::instance(Store::class, Mockery::mock(Store::class)->expects()->store('nl')->once()->getMock());
         App::instance(Detector::class, Mockery::mock(Detector::class)->expects()->detect()->once()->getMock());

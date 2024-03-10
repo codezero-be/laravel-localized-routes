@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 class IsLocalizedMacroTest extends TestCase
 {
     #[Test]
-    public function it_checks_if_the_current_route_is_localized()
+    public function it_checks_if_the_current_route_is_localized(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -38,7 +38,7 @@ class IsLocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_the_current_route_has_a_name_with_any_locale_prefix()
+    public function it_checks_if_the_current_route_has_a_name_with_any_locale_prefix(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -71,7 +71,7 @@ class IsLocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_the_current_route_has_a_name_with_a_specific_locale_prefix()
+    public function it_checks_if_the_current_route_has_a_name_with_a_specific_locale_prefix(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -92,7 +92,7 @@ class IsLocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_the_current_route_has_a_name_that_is_in_an_array_of_names_with_any_locale_prefix()
+    public function it_checks_if_the_current_route_has_a_name_that_is_in_an_array_of_names_with_any_locale_prefix(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -137,7 +137,7 @@ class IsLocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_the_current_route_has_a_name_that_is_in_an_array_of_names_with_a_specific_locale_prefix()
+    public function it_checks_if_the_current_route_has_a_name_that_is_in_an_array_of_names_with_a_specific_locale_prefix(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -182,7 +182,7 @@ class IsLocalizedMacroTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_the_current_route_has_a_name_with_a_locale_prefix_in_an_array()
+    public function it_checks_if_the_current_route_has_a_name_with_a_locale_prefix_in_an_array(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl', 'fr']);

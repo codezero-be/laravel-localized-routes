@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\URL;
 class RedirectorTest extends TestCase
 {
     #[Test]
-    public function it_redirects_to_a_named_route_in_the_current_locale()
+    public function it_redirects_to_a_named_route_in_the_current_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -26,7 +26,7 @@ class RedirectorTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_to_a_named_route_in_a_specific_locale()
+    public function it_redirects_to_a_named_route_in_a_specific_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -42,7 +42,7 @@ class RedirectorTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_to_a_signed_route_in_the_current_locale()
+    public function it_redirects_to_a_signed_route_in_the_current_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -57,7 +57,7 @@ class RedirectorTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_to_a_signed_route_in_a_specific_locale()
+    public function it_redirects_to_a_signed_route_in_a_specific_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -73,7 +73,7 @@ class RedirectorTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_to_a_temporary_signed_route_in_the_current_locale()
+    public function it_redirects_to_a_temporary_signed_route_in_the_current_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -88,7 +88,7 @@ class RedirectorTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_to_a_temporary_signed_route_in_a_specific_locale()
+    public function it_redirects_to_a_temporary_signed_route_in_a_specific_locale(): void
     {
         $this->setAppLocale('en');
 

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 class RedirectToLocalizedTest extends TestCase
 {
     #[Test]
-    public function it_redirects_to_the_localized_url()
+    public function it_redirects_to_the_localized_url(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -36,7 +36,7 @@ class RedirectToLocalizedTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_when_default_locale_slug_is_omitted()
+    public function it_redirects_when_default_locale_slug_is_omitted(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -62,7 +62,7 @@ class RedirectToLocalizedTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_404_and_does_not_redirect_if_no_localized_route_is_registered()
+    public function it_throws_404_and_does_not_redirect_if_no_localized_route_is_registered(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setRedirectToLocalizedUrls(true);
@@ -74,7 +74,7 @@ class RedirectToLocalizedTest extends TestCase
     }
 
     #[Test]
-    public function it_redirects_to_the_localized_url_with_custom_slugs()
+    public function it_redirects_to_the_localized_url_with_custom_slugs(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([

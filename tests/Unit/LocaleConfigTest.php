@@ -9,7 +9,7 @@ use CodeZero\LocalizedRoutes\Tests\TestCase;
 class LocaleConfigTest extends TestCase
 {
     #[Test]
-    public function it_gets_the_supported_locales()
+    public function it_gets_the_supported_locales(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertEquals([], $config->getSupportedLocales());
@@ -25,7 +25,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_sets_the_supported_locales()
+    public function it_sets_the_supported_locales(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $config->setSupportedLocales(['en' => 'english', 'nl' => 'dutch']);
@@ -33,7 +33,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_omitted_locale()
+    public function it_gets_the_omitted_locale(): void
     {
         $config = new LocaleConfig(['omitted_locale' => null]);
         $this->assertEquals(null, $config->getOmittedLocale());
@@ -43,7 +43,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_sets_the_omitted_locale()
+    public function it_sets_the_omitted_locale(): void
     {
         $config = new LocaleConfig(['omitted_locale' => null]);
         $config->setOmittedLocale('en');
@@ -51,7 +51,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_fallback_locale()
+    public function it_gets_the_fallback_locale(): void
     {
         $config = new LocaleConfig(['fallback_locale' => null]);
         $this->assertEquals(null, $config->getFallbackLocale());
@@ -61,7 +61,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_sets_the_fallback_locale()
+    public function it_sets_the_fallback_locale(): void
     {
         $config = new LocaleConfig(['fallback_locale' => null]);
         $config->setFallbackLocale('en');
@@ -69,7 +69,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_route_action()
+    public function it_gets_the_route_action(): void
     {
         $config = new LocaleConfig(['route_action' => null]);
         $this->assertEquals(null, $config->getRouteAction());
@@ -79,7 +79,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_sets_the_route_action()
+    public function it_sets_the_route_action(): void
     {
         $config = new LocaleConfig(['route_action' => null]);
         $config->setRouteAction('locale');
@@ -87,7 +87,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_locales()
+    public function it_gets_the_locales(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertEquals([], $config->getLocales());
@@ -103,7 +103,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_finds_a_slug_by_its_locale()
+    public function it_finds_a_slug_by_its_locale(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertEquals(null, $config->findSlugByLocale('en'));
@@ -122,7 +122,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_finds_a_domain_by_its_locale()
+    public function it_finds_a_domain_by_its_locale(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertEquals(null, $config->findDomainByLocale('en'));
@@ -139,7 +139,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_finds_a_locale_by_its_slug()
+    public function it_finds_a_locale_by_its_slug(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertEquals(null, $config->findLocaleBySlug('en'));
@@ -158,7 +158,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_finds_a_locale_by_its_domain()
+    public function it_finds_a_locale_by_its_domain(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertEquals(null, $config->findLocaleByDomain('english.test'));
@@ -177,7 +177,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_there_are_any_locales_configured()
+    public function it_checks_if_there_are_any_locales_configured(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertFalse($config->hasLocales());
@@ -193,7 +193,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_custom_slugs_are_configured()
+    public function it_checks_if_custom_slugs_are_configured(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertFalse($config->hasCustomSlugs());
@@ -209,7 +209,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_custom_domains_are_configured()
+    public function it_checks_if_custom_domains_are_configured(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertFalse($config->hasCustomDomains());
@@ -225,7 +225,7 @@ class LocaleConfigTest extends TestCase
     }
 
     #[Test]
-    public function it_checks_if_a_locale_is_supported()
+    public function it_checks_if_a_locale_is_supported(): void
     {
         $config = new LocaleConfig(['supported_locales' => null]);
         $this->assertFalse($config->isSupportedLocale(null));

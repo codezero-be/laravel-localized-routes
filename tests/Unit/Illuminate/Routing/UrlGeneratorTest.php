@@ -17,14 +17,14 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 class UrlGeneratorTest extends TestCase
 {
     #[Test]
-    public function it_binds_our_custom_url_generator_class()
+    public function it_binds_our_custom_url_generator_class(): void
     {
         $this->assertInstanceOf(UrlGenerator::class, App::make('url'));
         $this->assertInstanceOf(UrlGenerator::class, App::make('redirect')->getUrlGenerator());
     }
 
     #[Test]
-    public function it_gets_the_url_of_a_named_route_as_usual()
+    public function it_gets_the_url_of_a_named_route_as_usual(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -47,7 +47,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_url_of_a_route_in_the_current_locale_if_the_given_route_name_does_not_exist()
+    public function it_gets_the_url_of_a_route_in_the_current_locale_if_the_given_route_name_does_not_exist(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -58,7 +58,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_if_no_valid_route_can_be_found()
+    public function it_throws_if_no_valid_route_can_be_found(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -71,7 +71,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_if_no_valid_localized_route_can_be_found()
+    public function it_throws_if_no_valid_localized_route_can_be_found(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -84,7 +84,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_url_of_a_route_in_the_given_locale()
+    public function it_gets_the_url_of_a_route_in_the_given_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -98,7 +98,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_url_of_a_route_in_the_given_locale_when_using_custom_domains()
+    public function it_gets_the_url_of_a_route_in_the_given_locale_when_using_custom_domains(): void
     {
         $this->setSupportedLocales([
             'en' => 'en.domain.test',
@@ -115,7 +115,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_gets_the_url_of_a_route_in_the_given_locale_when_using_custom_slugs()
+    public function it_gets_the_url_of_a_route_in_the_given_locale_when_using_custom_slugs(): void
     {
         $this->setSupportedLocales([
             'en' => 'english',
@@ -131,7 +131,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_always_gets_the_url_of_a_localized_route_if_a_locale_is_specified()
+    public function it_always_gets_the_url_of_a_localized_route_if_a_locale_is_specified(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -143,7 +143,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_a_registered_non_localized_url_if_a_localized_version_does_not_exist()
+    public function it_returns_a_registered_non_localized_url_if_a_localized_version_does_not_exist(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -155,7 +155,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_if_no_valid_route_can_be_found_for_the_given_locale()
+    public function it_throws_if_no_valid_route_can_be_found_for_the_given_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -168,7 +168,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    function it_uses_a_fallback_locale_when_the_requested_locale_is_unsupported()
+    function it_uses_a_fallback_locale_when_the_requested_locale_is_unsupported(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -183,7 +183,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_uses_a_fallback_locale_when_the_requested_locale_is_not_registered()
+    public function it_uses_a_fallback_locale_when_the_requested_locale_is_not_registered(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -196,7 +196,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_if_you_do_not_specify_a_name_for_a_localized_route()
+    public function it_throws_if_you_do_not_specify_a_name_for_a_localized_route(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -209,7 +209,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_generates_a_url_for_a_route_with_a_default_localized_route_key()
+    public function it_generates_a_url_for_a_route_with_a_default_localized_route_key(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -232,7 +232,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_generates_a_url_for_a_route_with_a_custom_localized_route_key()
+    public function it_generates_a_url_for_a_route_with_a_custom_localized_route_key(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -255,7 +255,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_generates_a_signed_route_url_for_the_current_locale()
+    public function it_generates_a_signed_route_url_for_the_current_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -277,7 +277,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_generates_a_signed_route_url_for_a_specific_locale()
+    public function it_generates_a_signed_route_url_for_a_specific_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -299,7 +299,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_generates_a_temporary_signed_route_url_for_the_current_locale()
+    public function it_generates_a_temporary_signed_route_url_for_the_current_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -320,7 +320,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_generates_a_temporary_signed_route_url_for_a_specific_locale()
+    public function it_generates_a_temporary_signed_route_url_for_a_specific_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -342,7 +342,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_route_url()
+    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_route_url(): void
     {
         $this->expectException(RouteNotFoundException::class);
 
@@ -350,7 +350,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_route_url()
+    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_route_url(): void
     {
         $this->setAppLocale('en');
 
@@ -362,7 +362,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_signed_route_url()
+    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_signed_route_url(): void
     {
         $this->expectException(RouteNotFoundException::class);
 
@@ -370,7 +370,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_signed_route_url()
+    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_signed_route_url(): void
     {
         $this->setAppLocale('en');
 
@@ -382,7 +382,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_temporary_signed_route_url()
+    public function it_throws_a_route_not_found_exception_for_missing_route_names_when_generating_a_temporary_signed_route_url(): void
     {
         $this->expectException(RouteNotFoundException::class);
 
@@ -390,7 +390,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_temporary_signed_route_url()
+    public function the_app_locale_is_correctly_restored_when_catching_a_route_not_found_exception_when_generating_a_temporary_signed_route_url(): void
     {
         $this->setAppLocale('en');
 
@@ -402,7 +402,7 @@ class UrlGeneratorTest extends TestCase
     }
 
     #[Test]
-    public function it_allows_routes_to_be_cached()
+    public function it_allows_routes_to_be_cached(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en']);
