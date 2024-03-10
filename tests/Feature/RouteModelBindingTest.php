@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
@@ -10,7 +11,7 @@ use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelOneWithRouteBinding;
 
 class RouteModelBindingTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_loads_a_route_with_a_localized_route_key_based_on_the_active_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -44,7 +45,7 @@ class RouteModelBindingTest extends TestCase
         $this->get('en/test/nl-slug')->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function it_loads_a_route_with_a_custom_localized_route_key_based_on_the_active_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -78,7 +79,7 @@ class RouteModelBindingTest extends TestCase
         $this->get('en/test/nl-slug')->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function it_loads_a_route_with_a_localized_route_key_with_custom_slugs()
     {
         $this->setSupportedLocales([

@@ -2,12 +2,13 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\LocaleConfig;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 
 class LocaleConfigTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_gets_the_supported_locales()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -23,7 +24,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals(['en' => 'english.test', 'nl' => 'dutch.test'], $config->getSupportedLocales());
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_the_supported_locales()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -31,7 +32,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals(['en' => 'english', 'nl' => 'dutch'], $config->getSupportedLocales());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_the_omitted_locale()
     {
         $config = new LocaleConfig(['omitted_locale' => null]);
@@ -41,7 +42,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('en', $config->getOmittedLocale());
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_the_omitted_locale()
     {
         $config = new LocaleConfig(['omitted_locale' => null]);
@@ -49,7 +50,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('en', $config->getOmittedLocale());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_the_fallback_locale()
     {
         $config = new LocaleConfig(['fallback_locale' => null]);
@@ -59,7 +60,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('en', $config->getFallbackLocale());
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_the_fallback_locale()
     {
         $config = new LocaleConfig(['fallback_locale' => null]);
@@ -67,7 +68,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('en', $config->getFallbackLocale());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_the_route_action()
     {
         $config = new LocaleConfig(['route_action' => null]);
@@ -77,7 +78,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('locale', $config->getRouteAction());
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_the_route_action()
     {
         $config = new LocaleConfig(['route_action' => null]);
@@ -85,7 +86,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('locale', $config->getRouteAction());
     }
 
-    /** @test */
+    #[Test]
     public function it_gets_the_locales()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -101,7 +102,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals(['en', 'nl'], $config->getLocales());
     }
 
-    /** @test */
+    #[Test]
     public function it_finds_a_slug_by_its_locale()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -120,7 +121,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals(null, $config->findSlugByLocale('en'));
     }
 
-    /** @test */
+    #[Test]
     public function it_finds_a_domain_by_its_locale()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -137,7 +138,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('english.test', $config->findDomainByLocale('en'));
     }
 
-    /** @test */
+    #[Test]
     public function it_finds_a_locale_by_its_slug()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -156,7 +157,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals(null, $config->findLocaleBySlug('english.test'));
     }
 
-    /** @test */
+    #[Test]
     public function it_finds_a_locale_by_its_domain()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -175,7 +176,7 @@ class LocaleConfigTest extends TestCase
         $this->assertEquals('en', $config->findLocaleByDomain('english.test'));
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_there_are_any_locales_configured()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -191,7 +192,7 @@ class LocaleConfigTest extends TestCase
         $this->assertTrue($config->hasLocales());
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_custom_slugs_are_configured()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -207,7 +208,7 @@ class LocaleConfigTest extends TestCase
         $this->assertFalse($config->hasCustomSlugs());
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_custom_domains_are_configured()
     {
         $config = new LocaleConfig(['supported_locales' => null]);
@@ -223,7 +224,7 @@ class LocaleConfigTest extends TestCase
         $this->assertTrue($config->hasCustomDomains());
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_a_locale_is_supported()
     {
         $config = new LocaleConfig(['supported_locales' => null]);

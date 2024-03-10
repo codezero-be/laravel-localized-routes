@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Middleware;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Middleware\Detectors\Detector;
 use CodeZero\LocalizedRoutes\Middleware\LocaleHandler;
 use CodeZero\LocalizedRoutes\Middleware\Stores\Store;
@@ -11,7 +12,7 @@ use Mockery;
 
 class LocaleHandlerTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_loops_through_the_detectors_and_returns_the_first_supported_locale()
     {
         $supportedLocales = ['en', 'nl'];
@@ -26,7 +27,7 @@ class LocaleHandlerTest extends TestCase
         $this->assertEquals('nl', $localeHandler->detect());
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_first_match_if_an_array_of_locales_is_detected()
     {
         $supportedLocales = ['en', 'nl'];
@@ -39,7 +40,7 @@ class LocaleHandlerTest extends TestCase
         $this->assertEquals('nl', $localeHandler->detect());
     }
 
-    /** @test */
+    #[Test]
     public function trusted_detectors_ignore_supported_locales_and_may_set_any_locale()
     {
         $supportedLocales = ['en'];
@@ -55,7 +56,7 @@ class LocaleHandlerTest extends TestCase
         $this->assertEquals('nl', $localeHandler->detect());
     }
 
-    /** @test */
+    #[Test]
     public function it_skips_null_and_false_and_empty_values()
     {
         App::instance(Detector::class, Mockery::mock(Detector::class)->allows()->detect()->andReturns('')->getMock());
@@ -75,7 +76,7 @@ class LocaleHandlerTest extends TestCase
         $this->assertEquals('nl', $localeHandler->detect());
     }
 
-    /** @test */
+    #[Test]
     public function it_skips_null_and_false_and_empty_values_from_trusted_detectors()
     {
         App::instance(Detector::class, Mockery::mock(Detector::class)->allows()->detect()->andReturns('')->getMock());
@@ -98,7 +99,7 @@ class LocaleHandlerTest extends TestCase
         $this->assertEquals('nl', $localeHandler->detect());
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_false_if_no_supported_locale_could_be_detected()
     {
         $supportedLocales = ['en'];
@@ -113,7 +114,7 @@ class LocaleHandlerTest extends TestCase
         $this->assertNull($localeHandler->detect());
     }
 
-    /** @test */
+    #[Test]
     public function it_loops_through_the_stores_and_calls_the_store_method_with_the_given_locale()
     {
         $stores = [
@@ -127,7 +128,7 @@ class LocaleHandlerTest extends TestCase
         $localeHandler->store('nl');
     }
 
-    /** @test */
+    #[Test]
     public function it_accepts_class_names_instead_of_instances_in_the_constructor()
     {
         App::instance(Store::class, Mockery::mock(Store::class)->expects()->store('nl')->once()->getMock());

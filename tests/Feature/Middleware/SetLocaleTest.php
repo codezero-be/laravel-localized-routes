@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature\Middleware;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Facades\LocaleConfig;
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 class SetLocaleTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_looks_for_a_locale_in_a_custom_route_action()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -34,7 +35,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_a_locale_in_the_url()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -51,7 +52,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_custom_slugs()
     {
         $this->setSupportedLocales([
@@ -71,7 +72,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_custom_domains()
     {
         $this->setSupportedLocales([
@@ -93,7 +94,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_for_a_configured_omitted_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -112,7 +113,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_a_locale_on_the_authenticated_user()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -133,7 +134,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_will_bypass_missing_attribute_exception_if_the_locale_attribute_is_missing_on_the_user_model()
     {
         $this->skipTestIfLaravelVersionIsLowerThan('9.35.0');
@@ -156,7 +157,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('en', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_a_locale_in_the_session()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -175,7 +176,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_a_locale_in_a_cookie()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -195,7 +196,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_a_locale_in_the_browser()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -214,7 +215,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_returns_the_best_match_when_a_browser_locale_is_used()
     {
         $this->setSupportedLocales(['en', 'nl', 'fr']);
@@ -233,7 +234,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_looks_for_the_current_app_locale()
     {
         $this->setSupportedLocales(['en', 'nl']);
@@ -250,7 +251,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function trusted_detectors_ignore_supported_locales_and_may_set_any_locale()
     {
         $this->setSupportedLocales(['en']);
@@ -275,7 +276,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('nl', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_sets_the_locale_of_routes_with_scoped_config()
     {
         $this->setSupportedLocales(['en']);
@@ -301,7 +302,7 @@ class SetLocaleTest extends TestCase
         $this->assertEquals('de', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function that_scoped_config_does_not_override_global_config(): void
     {
         $this->setSupportedLocales(['en']);

@@ -2,12 +2,13 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature\Macros\Route;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Route;
 
 class IsLocalizedMacroTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_checks_if_the_current_route_is_localized()
     {
         $this->withoutExceptionHandling();
@@ -36,7 +37,7 @@ class IsLocalizedMacroTest extends TestCase
         $this->assertEquals('false', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_current_route_has_a_name_with_any_locale_prefix()
     {
         $this->withoutExceptionHandling();
@@ -69,7 +70,7 @@ class IsLocalizedMacroTest extends TestCase
         $this->assertEquals('false', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_current_route_has_a_name_with_a_specific_locale_prefix()
     {
         $this->withoutExceptionHandling();
@@ -90,7 +91,7 @@ class IsLocalizedMacroTest extends TestCase
         $this->assertEquals('false', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_current_route_has_a_name_that_is_in_an_array_of_names_with_any_locale_prefix()
     {
         $this->withoutExceptionHandling();
@@ -135,7 +136,7 @@ class IsLocalizedMacroTest extends TestCase
         $this->assertEquals('false', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_current_route_has_a_name_that_is_in_an_array_of_names_with_a_specific_locale_prefix()
     {
         $this->withoutExceptionHandling();
@@ -180,7 +181,7 @@ class IsLocalizedMacroTest extends TestCase
         $this->assertEquals('false', $response->original);
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_current_route_has_a_name_with_a_locale_prefix_in_an_array()
     {
         $this->withoutExceptionHandling();
