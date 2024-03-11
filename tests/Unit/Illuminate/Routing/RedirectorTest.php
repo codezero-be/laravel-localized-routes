@@ -2,15 +2,16 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Unit\Illuminate\Routing;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 
-class RedirectorTest extends TestCase
+final class RedirectorTest extends TestCase
 {
-    /** @test */
-    public function it_redirects_to_a_named_route_in_the_current_locale()
+    #[Test]
+    public function it_redirects_to_a_named_route_in_the_current_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -24,8 +25,8 @@ class RedirectorTest extends TestCase
         $response->assertRedirect('/en/target/route');
     }
 
-    /** @test */
-    public function it_redirects_to_a_named_route_in_a_specific_locale()
+    #[Test]
+    public function it_redirects_to_a_named_route_in_a_specific_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -40,8 +41,8 @@ class RedirectorTest extends TestCase
         $response->assertRedirect('/nl/target/route');
     }
 
-    /** @test */
-    public function it_redirects_to_a_signed_route_in_the_current_locale()
+    #[Test]
+    public function it_redirects_to_a_signed_route_in_the_current_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -55,8 +56,8 @@ class RedirectorTest extends TestCase
         $response->assertRedirect(URL::signedRoute('target.route'));
     }
 
-    /** @test */
-    public function it_redirects_to_a_signed_route_in_a_specific_locale()
+    #[Test]
+    public function it_redirects_to_a_signed_route_in_a_specific_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -71,8 +72,8 @@ class RedirectorTest extends TestCase
         $response->assertRedirect(URL::signedRoute('target.route', [], null, true, 'nl'));
     }
 
-    /** @test */
-    public function it_redirects_to_a_temporary_signed_route_in_the_current_locale()
+    #[Test]
+    public function it_redirects_to_a_temporary_signed_route_in_the_current_locale(): void
     {
         $this->setAppLocale('en');
 
@@ -86,8 +87,8 @@ class RedirectorTest extends TestCase
         $response->assertRedirect(URL::temporarySignedRoute('target.route', now()->addMinutes(30)));
     }
 
-    /** @test */
-    public function it_redirects_to_a_temporary_signed_route_in_a_specific_locale()
+    #[Test]
+    public function it_redirects_to_a_temporary_signed_route_in_a_specific_locale(): void
     {
         $this->setAppLocale('en');
 

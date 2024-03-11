@@ -2,6 +2,7 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature\Macros\Route;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Middleware\SetLocale;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelOneWithRouteBinding;
 use CodeZero\LocalizedRoutes\Tests\Stubs\Models\ModelTwoWithRouteBinding;
@@ -15,10 +16,10 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 
-class LocalizedUrlMacroTest extends TestCase
+final class LocalizedUrlMacroTest extends TestCase
 {
-    /** @test */
-    public function it_generates_urls_with_default_localized_route_keys_for_the_current_route_using_route_model_binding()
+    #[Test]
+    public function it_generates_urls_with_default_localized_route_keys_for_the_current_route_using_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -51,8 +52,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_generates_urls_for_the_current_route_with_different_models_using_route_model_binding()
+    #[Test]
+    public function it_generates_urls_for_the_current_route_with_different_models_using_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -93,8 +94,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_generates_urls_with_custom_localized_route_keys_for_the_current_route_using_route_model_binding()
+    #[Test]
+    public function it_generates_urls_with_custom_localized_route_keys_for_the_current_route_using_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -127,8 +128,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function you_can_implement_an_interface_and_let_your_model_return_custom_parameters_with_route_model_binding()
+    #[Test]
+    public function you_can_implement_an_interface_and_let_your_model_return_custom_parameters_with_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -162,8 +163,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_cannot_guess_a_localized_route_key_without_route_model_binding()
+    #[Test]
+    public function it_cannot_guess_a_localized_route_key_without_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -196,8 +197,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function you_can_pass_it_a_model_with_a_localized_route_key_without_route_model_binding()
+    #[Test]
+    public function you_can_pass_it_a_model_with_a_localized_route_key_without_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -230,8 +231,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function you_can_pass_it_a_closure_that_returns_the_parameters_without_route_model_binding()
+    #[Test]
+    public function you_can_pass_it_a_closure_that_returns_the_parameters_without_route_model_binding(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -269,8 +270,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_handles_unnamed_non_localized_routes()
+    #[Test]
+    public function it_handles_unnamed_non_localized_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -307,8 +308,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_handles_unnamed_localized_routes()
+    #[Test]
+    public function it_handles_unnamed_localized_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -347,8 +348,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_the_current_url_for_existing_non_localized_routes()
+    #[Test]
+    public function it_returns_the_current_url_for_existing_non_localized_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -370,8 +371,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_the_url_for_existing_unnamed_localized_routes_using_custom_slugs()
+    #[Test]
+    public function it_returns_the_url_for_existing_unnamed_localized_routes_using_custom_slugs(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([
@@ -399,8 +400,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_the_url_for_existing_named_localized_routes_using_custom_slugs()
+    #[Test]
+    public function it_returns_the_url_for_existing_named_localized_routes_using_custom_slugs(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([
@@ -428,8 +429,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_the_url_for_existing_unnamed_localized_routes_using_domains()
+    #[Test]
+    public function it_returns_the_url_for_existing_unnamed_localized_routes_using_domains(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([
@@ -458,8 +459,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_the_url_for_existing_named_localized_routes_using_domains()
+    #[Test]
+    public function it_returns_the_url_for_existing_named_localized_routes_using_domains(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([
@@ -488,8 +489,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function the_macro_does_not_blow_up_on_a_default_404_error()
+    #[Test]
+    public function the_macro_does_not_blow_up_on_a_default_404_error(): void
     {
         // Although a default 404 has no Route::current() and is no real View, the composer still triggers.
         // Custom 404 views that trigger the macro still don't have a Route::current().
@@ -502,8 +503,8 @@ class LocalizedUrlMacroTest extends TestCase
         $response->assertResponseHasNoView();
     }
 
-    /** @test */
-    public function a_404_receives_the_correct_localized_url_from_a_view_composer()
+    #[Test]
+    public function a_404_receives_the_correct_localized_url_from_a_view_composer(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -519,8 +520,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertEquals(URL::to('/nl/route/does/not/exist'), trim($response->original));
     }
 
-    /** @test */
-    public function a_404_is_not_localized_when_triggered_by_a_non_existing_route()
+    #[Test]
+    public function a_404_is_not_localized_when_triggered_by_a_non_existing_route(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -532,8 +533,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertEquals('en', trim($response->original));
     }
 
-    /** @test */
-    public function a_404_is_localized_when_a_registered_route_throws_a_not_found_exception()
+    #[Test]
+    public function a_404_is_localized_when_a_registered_route_throws_a_not_found_exception(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -551,8 +552,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertEquals('nl', trim($response->original));
     }
 
-    /** @test */
-    public function a_404_is_localized_when_a_registered_route_throws_a_model_not_found_exception()
+    #[Test]
+    public function a_404_is_localized_when_a_registered_route_throws_a_model_not_found_exception(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -570,8 +571,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertEquals('nl', trim($response->original));
     }
 
-    /** @test */
-    public function a_fallback_route_is_not_triggered_when_a_registered_route_throws_a_not_found_exception()
+    #[Test]
+    public function a_fallback_route_is_not_triggered_when_a_registered_route_throws_a_not_found_exception(): void
     {
         Route::get('abort', function () {
             return abort(404);
@@ -587,8 +588,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertNotEquals('fallback', $response->original);
     }
 
-    /** @test */
-    public function a_fallback_route_is_not_triggered_when_a_registered_route_throws_a_model_not_found_exception()
+    #[Test]
+    public function a_fallback_route_is_not_triggered_when_a_registered_route_throws_a_model_not_found_exception(): void
     {
         Route::get('route/{model}', function ($model) {
             throw new ModelNotFoundException();
@@ -604,8 +605,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertNotEquals('fallback', $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_localized_url_for_a_localized_fallback_route()
+    #[Test]
+    public function it_returns_a_localized_url_for_a_localized_fallback_route(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -630,8 +631,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_contains_a_supported_locale()
+    #[Test]
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_contains_a_supported_locale(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -654,8 +655,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_does_not_contain_a_supported_locale()
+    #[Test]
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_if_the_url_does_not_contain_a_supported_locale(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -678,8 +679,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_omitting_the_main_locale()
+    #[Test]
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_omitting_the_main_locale(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -703,8 +704,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_using_custom_domains()
+    #[Test]
+    public function it_returns_a_localized_url_for_a_non_localized_fallback_route_when_using_custom_domains(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([
@@ -730,8 +731,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_generates_non_absolute_urls_for_existing_routes()
+    #[Test]
+    public function it_generates_non_absolute_urls_for_existing_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -754,8 +755,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_generates_non_absolute_urls_for_non_existing_routes()
+    #[Test]
+    public function it_generates_non_absolute_urls_for_non_existing_routes(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setAppLocale('en');
@@ -771,8 +772,8 @@ class LocalizedUrlMacroTest extends TestCase
         $this->assertEquals('/en/route/does/not/exist', trim($response->original));
     }
 
-    /** @test */
-    public function it_returns_a_url_with_query_string_for_existing_non_localized_unnamed_routes()
+    #[Test]
+    public function it_returns_a_url_with_query_string_for_existing_non_localized_unnamed_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -794,8 +795,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_url_with_query_string_for_existing_localized_unnamed_routes()
+    #[Test]
+    public function it_returns_a_url_with_query_string_for_existing_localized_unnamed_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -820,8 +821,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_url_with_query_string_for_existing_non_localized_named_routes()
+    #[Test]
+    public function it_returns_a_url_with_query_string_for_existing_non_localized_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -843,8 +844,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_url_with_query_string_for_existing_localized_named_routes()
+    #[Test]
+    public function it_returns_a_url_with_query_string_for_existing_localized_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -869,8 +870,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_url_without_query_string_for_existing_localized_named_routes()
+    #[Test]
+    public function it_returns_a_url_without_query_string_for_existing_localized_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -895,8 +896,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_accepts_query_string_parameters_using_named_routes()
+    #[Test]
+    public function it_accepts_query_string_parameters_using_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -918,8 +919,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_ignores_query_string_parameters_using_named_routes()
+    #[Test]
+    public function it_ignores_query_string_parameters_using_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -941,8 +942,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_accepts_query_string_parameters_using_unnamed_routes()
+    #[Test]
+    public function it_accepts_query_string_parameters_using_unnamed_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -964,8 +965,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_ignores_query_string_parameters_using_unnamed_routes()
+    #[Test]
+    public function it_ignores_query_string_parameters_using_unnamed_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -987,8 +988,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_prefers_route_parameters_before_query_string_parameters_with_the_same_name_in_unnamed_routes()
+    #[Test]
+    public function it_prefers_route_parameters_before_query_string_parameters_with_the_same_name_in_unnamed_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -1021,8 +1022,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_prefers_route_parameters_before_query_string_parameters_with_the_same_name_in_named_routes()
+    #[Test]
+    public function it_prefers_route_parameters_before_query_string_parameters_with_the_same_name_in_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -1055,8 +1056,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_allows_optional_parameters_with_named_routes()
+    #[Test]
+    public function it_allows_optional_parameters_with_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -1078,8 +1079,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_allows_optional_parameters_with_unnamed_routes()
+    #[Test]
+    public function it_allows_optional_parameters_with_unnamed_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -1101,8 +1102,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_handles_capitalized_parameter_names()
+    #[Test]
+    public function it_handles_capitalized_parameter_names(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -1124,8 +1125,8 @@ class LocalizedUrlMacroTest extends TestCase
         ], $response->original);
     }
 
-    /** @test */
-    public function it_returns_a_url_with_translated_slugs_for_named_routes()
+    #[Test]
+    public function it_returns_a_url_with_translated_slugs_for_named_routes(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);

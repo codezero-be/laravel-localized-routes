@@ -2,14 +2,15 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature\Macros\Route;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Route;
 
-class LocalizedMacroTest extends TestCase
+final class LocalizedMacroTest extends TestCase
 {
-    /** @test */
-    public function it_registers_a_route_for_each_locale()
+    #[Test]
+    public function it_registers_a_route_for_each_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -35,8 +36,8 @@ class LocalizedMacroTest extends TestCase
         $this->assertContains('nl/route', $uris);
     }
 
-    /** @test */
-    public function it_registers_a_root_route_for_each_locale()
+    #[Test]
+    public function it_registers_a_root_route_for_each_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
 
@@ -58,8 +59,8 @@ class LocalizedMacroTest extends TestCase
         $this->assertContains('nl', $uris);
     }
 
-    /** @test */
-    public function it_registers_a_url_without_prefix_for_a_configured_main_locale()
+    #[Test]
+    public function it_registers_a_url_without_prefix_for_a_configured_main_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmittedLocale('en');
@@ -82,8 +83,8 @@ class LocalizedMacroTest extends TestCase
         $this->assertContains('nl/about', $uris);
     }
 
-    /** @test */
-    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale()
+    #[Test]
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setOmittedLocale('en');
@@ -99,8 +100,8 @@ class LocalizedMacroTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_maps_a_custom_slug_to_each_locale()
+    #[Test]
+    public function it_maps_a_custom_slug_to_each_locale(): void
     {
         $this->setSupportedLocales([
             'en' => 'english',
@@ -123,8 +124,8 @@ class LocalizedMacroTest extends TestCase
         $this->assertEquals('dutch', $route->uri);
     }
 
-    /** @test */
-    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_custom_slugs()
+    #[Test]
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_custom_slugs(): void
     {
         $this->setSupportedLocales([
             'en' => 'english',
@@ -143,8 +144,8 @@ class LocalizedMacroTest extends TestCase
         );
     }
 
-    /** @test */
-    public function it_maps_a_custom_domain_to_each_locale()
+    #[Test]
+    public function it_maps_a_custom_domain_to_each_locale(): void
     {
         $this->setSupportedLocales([
             'en' => 'english-domain.com',
@@ -169,8 +170,8 @@ class LocalizedMacroTest extends TestCase
         $this->assertEquals('/', $route->uri);
     }
 
-    /** @test */
-    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_domains()
+    #[Test]
+    public function it_registers_routes_in_the_correct_order_without_prefix_for_a_configured_main_locale_with_domains(): void
     {
         $this->setSupportedLocales([
             'en' => 'english-domain.com',
@@ -208,8 +209,8 @@ class LocalizedMacroTest extends TestCase
         $this->assertEquals('{slug}', $route->uri);
     }
 
-    /** @test */
-    public function it_uses_scoped_config_options()
+    #[Test]
+    public function it_uses_scoped_config_options(): void
     {
         $this->setSupportedLocales(['en']);
         $this->setOmittedLocale(null);

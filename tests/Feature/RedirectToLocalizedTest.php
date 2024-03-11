@@ -2,13 +2,14 @@
 
 namespace CodeZero\LocalizedRoutes\Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use CodeZero\LocalizedRoutes\Tests\TestCase;
 use Illuminate\Support\Facades\Route;
 
-class RedirectToLocalizedTest extends TestCase
+final class RedirectToLocalizedTest extends TestCase
 {
-    /** @test */
-    public function it_redirects_to_the_localized_url()
+    #[Test]
+    public function it_redirects_to_the_localized_url(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -34,8 +35,8 @@ class RedirectToLocalizedTest extends TestCase
         $this->get('nl/about')->assertOk();
     }
 
-    /** @test */
-    public function it_redirects_when_default_locale_slug_is_omitted()
+    #[Test]
+    public function it_redirects_when_default_locale_slug_is_omitted(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales(['en', 'nl']);
@@ -60,8 +61,8 @@ class RedirectToLocalizedTest extends TestCase
         $this->get('nl/about')->assertOk();
     }
 
-    /** @test */
-    public function it_throws_404_and_does_not_redirect_if_no_localized_route_is_registered()
+    #[Test]
+    public function it_throws_404_and_does_not_redirect_if_no_localized_route_is_registered(): void
     {
         $this->setSupportedLocales(['en', 'nl']);
         $this->setRedirectToLocalizedUrls(true);
@@ -72,8 +73,8 @@ class RedirectToLocalizedTest extends TestCase
         $this->get('missing')->assertNotFound();
     }
 
-    /** @test */
-    public function it_redirects_to_the_localized_url_with_custom_slugs()
+    #[Test]
+    public function it_redirects_to_the_localized_url_with_custom_slugs(): void
     {
         $this->withoutExceptionHandling();
         $this->setSupportedLocales([
