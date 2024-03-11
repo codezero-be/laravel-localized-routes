@@ -1,5 +1,25 @@
 # Upgrade Guide
 
+## Upgrading To 4.0 From 3.x
+
+### ➡ Minimum Requirements Updated
+
+Due to PHP and PHPUnit version constraints with Laravel 11, we dropped support for Laravel 7.x, 8.x and 9.x.
+
+- The minimum PHP version required is now 8.1
+- The minimum Laravel version required is now 10
+
+---
+
+### ➡ Re-register Middleware
+
+Laravel 11 no longer has a `app/Http/Kernel.php` to register middleware.
+This is now handled in `bootstrap/app.php`.
+
+🔸 **Actions Required**
+
+If you use Laravel 11, register the middleware in `bootstrap/app.php` as described in the README.
+
 ## Upgrading To 3.0 From 2.x
 
 This upgrade contains a number of small but breaking changes, as well as a huge internal makeover.
