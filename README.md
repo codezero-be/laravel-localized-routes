@@ -153,30 +153,43 @@ Route::localized(function () {
 ## 🧩 Add Middleware to Update App Locale
 
 By default, the app locale will always be what you configured in `config/app.php`.
-To automatically update the app locale, you need to register the middleware.
+To automatically update the app locale, you need to register the middleware in the `web` middleware group.
+Make sure to add it after `StartSession` and before `SubstituteBindings`.
 
-Add the middleware to the `web` middleware group in `app/Http/Kernel.php`:
+The order of the middleware is important if you are using localized route keys (translated slugs)!
+The session needs to be active when setting the locale, and the locale needs to be set when substituting the route bindings.
+
+### Laravel 11 and newer:
+
+Add the middleware to the `web` middleware group in `bootstrap/app.php`.
 
 ```php
+// bootstrap/app.php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->web(remove: [
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    ]);
+    $middleware->web(append: [
+        \CodeZero\Localizer\Middleware\SetLocale::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+    ]);
+})
+```
+
+### Laravel 10:
+
+Add the middleware to the `web` middleware group in `app/Http/Kernel.php`.
+
+```php
+// app/Http/Kernel.php
 protected $middlewareGroups = [
     'web' => [
         //...
-        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
+        \Illuminate\Session\Middleware\StartSession::class, // <= after this
+        //...
+        \CodeZero\Localizer\Middleware\SetLocale::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
     ],
-];
-```
-
-You also need to add the middleware to the `$middlewarePriority` array in `app/Http/Kernel.php`.
-If you don't see the `$middlewarePriority` array, you can copy it from the parent class `Illuminate\Foundation\Http\Kernel`.
-
-Make sure to add it after `StartSession` and before `SubstituteBindings` to trigger it in the correct order:
-
-```php
-protected $middlewarePriority = [
-    \Illuminate\Session\Middleware\StartSession::class, // <= after this
-    //...
-    \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
-    \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
 ];
 ```
 
