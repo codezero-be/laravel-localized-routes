@@ -170,7 +170,7 @@ Add the middleware to the `web` middleware group in `bootstrap/app.php`.
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ]);
     $middleware->web(append: [
-        \CodeZero\Localizer\Middleware\SetLocale::class,
+        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class,
     ]);
 })
@@ -187,7 +187,7 @@ protected $middlewareGroups = [
         //...
         \Illuminate\Session\Middleware\StartSession::class, // <= after this
         //...
-        \CodeZero\Localizer\Middleware\SetLocale::class,
+        \CodeZero\LocalizedRoutes\Middleware\SetLocale::class,
         \Illuminate\Routing\Middleware\SubstituteBindings::class, // <= before this
     ],
 ];
