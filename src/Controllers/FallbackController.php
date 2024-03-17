@@ -41,7 +41,8 @@ class FallbackController extends Controller
         }
 
         return Redirect::to($localizedUrl, $this->getRedirectStatusCode())
-            ->header('Cache-Control', 'no-store, no-cache, must-revalidate');
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate')
+            ->header('Vary', 'Accept-Language');
     }
 
     /**
